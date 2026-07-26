@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+.git
+
+# Old static previews and screenshots
+hero-desktop.png
+hero-mobile.png
+scroll-start.png
+scroll-mobile.png
+carousel-five.png
+cone-scroll.html
+
+# Intermediate image-generation sources
+**/*-source.png
