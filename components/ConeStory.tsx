@@ -98,10 +98,10 @@ export default function ConeStory() {
         const isCompactMobile = window.innerWidth <= 480;
         const isMobile = window.innerWidth <= 820;
 
-        const angleStepDeg = isCompactMobile ? 34 : isMobile ? 36 : 38;
-        const yRadiusPercent = isCompactMobile ? 66 : isMobile ? 74 : 100;
-        const xRadiusPercent = isCompactMobile ? 170 : isMobile ? 190 : 220;
-        const maxRotationDeg = isCompactMobile ? 16 : 20;
+        const angleStepDeg = isCompactMobile ? 32 : isMobile ? 34 : 38;
+        const yRadiusPercent = isCompactMobile ? 56 : isMobile ? 64 : 100;
+        const xRadiusPercent = isCompactMobile ? 150 : isMobile ? 170 : 220;
+        const maxRotationDeg = isCompactMobile ? 14 : 18;
 
         coneRefs.current.forEach((cone, idx) => {
           if (!cone) return;
@@ -333,12 +333,12 @@ export default function ConeStory() {
 
           {/* Stage section */}
           <section
-            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(210px,34svh,340px)] max-sm:h-[clamp(190px,30svh,270px)] max-md:mt-3 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-2 max-sm:mt-2 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
             aria-label="Scroll-controlled ice cream flavours"
           >
             {/* White circle disc */}
             <div
-              className="stage-disc absolute w-[min(48vw,650px)] max-md:w-[min(72vw,min(34svh,320px))] max-sm:w-[min(68vw,min(32svh,270px))] aspect-square top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-panel shadow-[inset_0_0_0_1px_rgba(21,21,15,0.08),0_35px_90px_rgba(45,45,20,0.12)] before:content-[''] before:absolute before:inset-[8%] before:border before:border-dashed before:border-[rgba(21,21,15,0.16)] before:rounded-full"
+              className="stage-disc absolute w-[min(48vw,650px)] max-md:w-[min(88vw,min(48svh,410px))] max-sm:w-[min(84vw,min(44svh,350px))] aspect-square top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-panel shadow-[inset_0_0_0_1px_rgba(21,21,15,0.08),0_35px_90px_rgba(45,45,20,0.12)] before:content-[''] before:absolute before:inset-[8%] before:border before:border-dashed before:border-[rgba(21,21,15,0.16)] before:rounded-full"
               aria-hidden="true"
             />
 
@@ -355,12 +355,12 @@ export default function ConeStory() {
                       opacity: idx === 0 ? 1 : 0,
                       visibility: idx === 0 ? "visible" : "hidden",
                     }}
-                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 pointer-events-none select-none origin-center"
+                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(78vw,min(46svh,380px))] max-sm:w-[min(74vw,min(42svh,330px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 pointer-events-none select-none origin-center"
                     src={item.imageSrc}
                     alt={item.alt}
                     width={540}
                     height={1500}
-                    sizes="(max-width: 480px) 56vw, (max-width: 820px) 60vw, 34vw"
+                    sizes="(max-width: 480px) 74vw, (max-width: 820px) 78vw, 34vw"
                     loading={idx <= 1 ? "eager" : "lazy"}
                     decoding={idx === 0 ? "sync" : "async"}
                     data-color={item.color}
