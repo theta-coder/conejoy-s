@@ -20,6 +20,7 @@ export default function ConeStory() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
 
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
@@ -31,6 +32,11 @@ export default function ConeStory() {
         .slice(0, 5)
     : FLAVOURS.map((f, i) => ({ ...f, originalIndex: i })).slice(0, 5);
 
+  // Reset keyboard selected index when searchQuery changes
+  useEffect(() => {
+    setSearchSelectedIndex(-1);
+  }, [searchQuery]);
+
   // Search: scroll to a flavour by index
   const scrollToFlavour = useCallback((idx: number) => {
     if (!storyRef.current) return;
@@ -40,7 +46,42 @@ export default function ConeStory() {
     window.scrollTo({ top: targetScroll, behavior: "smooth" });
     setSearchQuery("");
     setSearchOpen(false);
+    setSearchSelectedIndex(-1);
   }, []);
+
+  // Keyboard navigation for search (ArrowDown, ArrowUp, Enter, Escape)
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!searchOpen || filteredFlavours.length === 0) {
+      if (e.key === "ArrowDown") {
+        setSearchOpen(true);
+        setSearchSelectedIndex(0);
+      }
+      return;
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSearchSelectedIndex((prev) =>
+        prev < filteredFlavours.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSearchSelectedIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredFlavours.length - 1
+      );
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const targetItemIndex =
+        searchSelectedIndex >= 0 ? searchSelectedIndex : 0;
+      if (filteredFlavours[targetItemIndex]) {
+        scrollToFlavour(filteredFlavours[targetItemIndex].originalIndex);
+      }
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setSearchOpen(false);
+      setSearchSelectedIndex(-1);
+    }
+  };
 
   // Search: close dropdown on outside click
   useEffect(() => {
@@ -341,6 +382,7 @@ export default function ConeStory() {
                   setSearchOpen(true);
                 }}
                 onFocus={() => setSearchOpen(true)}
+                onKeyDown={handleSearchKeyDown}
                 placeholder="Search flavour..."
                 className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.7rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
                 aria-label="Search flavours"
@@ -373,25 +415,33 @@ export default function ConeStory() {
                     Popular Suggestions
                   </div>
                 )}
-                {filteredFlavours.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => scrollToFlavour(item.originalIndex)}
-                    className="w-full flex items-center gap-3 px-3.5 py-2.5 max-sm:py-2 text-left hover:bg-[rgba(21,21,15,0.05)] active:bg-[rgba(21,21,15,0.08)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer"
-                  >
-                    <span
-                      className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3 rounded-full flex-shrink-0 shadow-sm border border-black/10"
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <span className="text-[0.84rem] max-lg:text-[0.78rem] max-sm:text-[0.72rem] font-bold tracking-tight text-ink">
-                      {item.name}
-                    </span>
-                    <span className="ml-auto text-[0.65rem] max-sm:text-[0.58rem] font-extrabold tracking-[0.14em] opacity-40 uppercase">
-                      {item.indexLabel}
-                    </span>
-                  </button>
-                ))}
+                {filteredFlavours.map((item, idx) => {
+                  const isSelected = idx === searchSelectedIndex;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => scrollToFlavour(item.originalIndex)}
+                      onMouseEnter={() => setSearchSelectedIndex(idx)}
+                      className={`w-full flex items-center gap-3 px-3.5 py-2.5 max-sm:py-2 text-left transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer ${
+                        isSelected
+                          ? "bg-[rgba(21,21,15,0.08)] font-black"
+                          : "hover:bg-[rgba(21,21,15,0.05)]"
+                      }`}
+                    >
+                      <span
+                        className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3 rounded-full flex-shrink-0 shadow-sm border border-black/10"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-[0.84rem] max-lg:text-[0.78rem] max-sm:text-[0.72rem] font-bold tracking-tight text-ink">
+                        {item.name}
+                      </span>
+                      <span className="ml-auto text-[0.65rem] max-sm:text-[0.58rem] font-extrabold tracking-[0.14em] opacity-40 uppercase">
+                        {item.indexLabel}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             )}
 

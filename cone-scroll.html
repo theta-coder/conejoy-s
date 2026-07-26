@@ -491,7 +491,10 @@
         searchDropdown.classList.add('hidden');
       }
 
+      let selectedSearchIdx = -1;
+
       function renderSuggestions() {
+        selectedSearchIdx = -1;
         const q = searchInput.value.trim().toLowerCase();
         const matches = q 
           ? flavourNames.filter(f => f.name.toLowerCase().includes(q)).slice(0, 5)
@@ -501,8 +504,8 @@
           searchDropdown.innerHTML = '<div class="px-3.5 py-3 text-center"><span class="text-[0.75rem] font-medium opacity-50">No flavour found</span></div>';
         } else {
           const headerHTML = !q ? '<div class="px-3.5 pt-2.5 pb-1 text-[0.6rem] font-extrabold tracking-[0.14em] uppercase opacity-40 border-b border-[rgba(21,21,15,0.05)] bg-[rgba(21,21,15,0.02)]">Popular Suggestions</div>' : '';
-          const itemsHTML = matches.map(f =>
-            `<button type="button" data-idx="${f.index}" class="search-result w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.04)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer bg-transparent">
+          const itemsHTML = matches.map((f, i) =>
+            `<button type="button" data-idx="${f.index}" data-list-idx="${i}" class="search-result w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.08)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer bg-transparent">
               <span class="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style="background-color:${f.color}"></span>
               <span class="text-[0.78rem] font-bold tracking-tight text-ink">${f.name}</span>
               <span class="ml-auto text-[0.6rem] font-extrabold tracking-[0.12em] opacity-40 uppercase">${f.label}</span>
@@ -513,8 +516,42 @@
         searchDropdown.classList.remove('hidden');
       }
 
+      function updateHighlight() {
+        const buttons = searchDropdown.querySelectorAll('.search-result');
+        buttons.forEach((btn, i) => {
+          if (i === selectedSearchIdx) {
+            btn.classList.add('bg-[rgba(21,21,15,0.08)]', 'font-black');
+          } else {
+            btn.classList.remove('bg-[rgba(21,21,15,0.08)]', 'font-black');
+          }
+        });
+      }
+
       searchInput.addEventListener('input', renderSuggestions);
       searchInput.addEventListener('focus', renderSuggestions);
+
+      searchInput.addEventListener('keydown', function (e) {
+        const buttons = searchDropdown.querySelectorAll('.search-result');
+        if (!buttons.length) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedSearchIdx = selectedSearchIdx < buttons.length - 1 ? selectedSearchIdx + 1 : 0;
+          updateHighlight();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedSearchIdx = selectedSearchIdx > 0 ? selectedSearchIdx - 1 : buttons.length - 1;
+          updateHighlight();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const target = selectedSearchIdx >= 0 ? buttons[selectedSearchIdx] : buttons[0];
+          if (target) scrollToFlavour(Number(target.dataset.idx));
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          searchDropdown.classList.add('hidden');
+          selectedSearchIdx = -1;
+        }
+      });
 
       searchDropdown.addEventListener('click', function (e) {
         const btn = e.target.closest('[data-idx]');
@@ -524,6 +561,7 @@
       document.addEventListener('mousedown', function (e) {
         if (searchWrapper && !searchWrapper.contains(e.target)) {
           searchDropdown.classList.add('hidden');
+          selectedSearchIdx = -1;
         }
       });
     })();
