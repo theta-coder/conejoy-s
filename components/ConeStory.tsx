@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { FLAVOURS } from "@/data/flavours";
 
 export default function ConeStory() {
@@ -21,16 +21,80 @@ export default function ConeStory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
+  const [recentIds, setRecentIds] = useState<string[]>([]);
+  const [randomIndices, setRandomIndices] = useState<number[]>([0, 1, 2, 3, 4]);
 
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
 
-  // Search: filtered results (max 5 suggestions)
-  const filteredFlavours = searchQuery.trim()
-    ? FLAVOURS.map((f, i) => ({ ...f, originalIndex: i }))
-        .filter((f) => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        .slice(0, 5)
-    : FLAVOURS.map((f, i) => ({ ...f, originalIndex: i })).slice(0, 5);
+  // Load recent flavours from localStorage on mount & generate random indices fallback
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("conejoys_recent");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setRecentIds(parsed);
+      }
+    } catch {}
+
+    // Generate random 5 indices for initial fallback
+    const indices = Array.from({ length: FLAVOURS.length }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    setRandomIndices(indices.slice(0, 5));
+  }, []);
+
+  // Save selected flavour to recent localStorage
+  const saveRecent = useCallback((id: string) => {
+    try {
+      setRecentIds((prev) => {
+        const next = [id, ...prev.filter((x) => x !== id)].slice(0, 5);
+        localStorage.setItem("conejoys_recent", JSON.stringify(next));
+        return next;
+      });
+    } catch {}
+  }, []);
+
+  // Search suggestions: Recent flavours if available, else random 5 flavours
+  const displaySuggestions = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (q) {
+      const matches = FLAVOURS.map((f, i) => ({ ...f, originalIndex: i }))
+        .filter((f) => f.name.toLowerCase().includes(q))
+        .slice(0, 5);
+      return { list: matches, title: "Search Results" };
+    }
+
+    if (recentIds.length > 0) {
+      const list: { id: string; name: string; indexLabel: string; color: string; originalIndex: number }[] = [];
+      recentIds.forEach((id) => {
+        const idx = FLAVOURS.findIndex((f) => f.id === id);
+        if (idx !== -1) {
+          list.push({ ...FLAVOURS[idx], originalIndex: idx });
+        }
+      });
+      // Fill remaining up to 5 with random flavours
+      if (list.length < 5) {
+        FLAVOURS.forEach((f, idx) => {
+          if (list.length < 5 && !list.some((item) => item.originalIndex === idx)) {
+            list.push({ ...f, originalIndex: idx });
+          }
+        });
+      }
+      return { list: list.slice(0, 5), title: "Recently Viewed" };
+    }
+
+    // Default: 5 Random flavours
+    const list = randomIndices.map((idx) => ({
+      ...FLAVOURS[idx],
+      originalIndex: idx,
+    }));
+    return { list, title: "Discover Flavours" };
+  }, [searchQuery, recentIds, randomIndices]);
+
+  const filteredFlavours = displaySuggestions.list;
 
   // Reset keyboard selected index when searchQuery changes
   useEffect(() => {
@@ -38,16 +102,22 @@ export default function ConeStory() {
   }, [searchQuery]);
 
   // Search: scroll to a flavour by index
-  const scrollToFlavour = useCallback((idx: number) => {
-    if (!storyRef.current) return;
-    const scrollRange = scrollRangeRef.current;
-    const storyTop = storyTopRef.current;
-    const targetScroll = storyTop + (idx / (FLAVOURS.length - 1)) * scrollRange;
-    window.scrollTo({ top: targetScroll, behavior: "smooth" });
-    setSearchQuery("");
-    setSearchOpen(false);
-    setSearchSelectedIndex(-1);
-  }, []);
+  const scrollToFlavour = useCallback(
+    (idx: number) => {
+      if (!storyRef.current) return;
+      const scrollRange = scrollRangeRef.current;
+      const storyTop = storyTopRef.current;
+      const targetScroll = storyTop + (idx / (FLAVOURS.length - 1)) * scrollRange;
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+      setSearchQuery("");
+      setSearchOpen(false);
+      setSearchSelectedIndex(-1);
+      if (FLAVOURS[idx]) {
+        saveRecent(FLAVOURS[idx].id);
+      }
+    },
+    [saveRecent]
+  );
 
   // Keyboard navigation for search (ArrowDown, ArrowUp, Enter, Escape)
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -412,7 +482,7 @@ export default function ConeStory() {
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_12px_40px_rgba(21,21,15,0.16)] border border-[rgba(21,21,15,0.1)] overflow-hidden z-50 animate-badge-pop min-w-[200px]">
                 {!searchQuery.trim() && (
                   <div className="px-3.5 pt-2.5 pb-1 text-[0.6rem] font-extrabold tracking-[0.14em] uppercase opacity-40 border-b border-[rgba(21,21,15,0.05)] bg-[rgba(21,21,15,0.02)]">
-                    Popular Suggestions
+                    {displaySuggestions.title}
                   </div>
                 )}
                 {filteredFlavours.map((item, idx) => {

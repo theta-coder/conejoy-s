@@ -481,12 +481,46 @@
         { name: 'Kit Kat', index: 11, label: '12 / 12', color: '#b76a48' },
       ];
 
+      function saveRecentFlavour(idx) {
+        try {
+          const item = flavourNames[idx];
+          if (!item) return;
+          let saved = JSON.parse(localStorage.getItem('conejoys_recent') || '[]');
+          saved = [item.name, ...saved.filter(x => x !== item.name)].slice(0, 5);
+          localStorage.setItem('conejoys_recent', JSON.stringify(saved));
+        } catch (err) {}
+      }
+
+      function getRecentFlavours() {
+        try {
+          const saved = JSON.parse(localStorage.getItem('conejoys_recent') || '[]');
+          if (Array.isArray(saved) && saved.length > 0) {
+            const list = [];
+            saved.forEach(name => {
+              const match = flavourNames.find(f => f.name === name);
+              if (match) list.push(match);
+            });
+            flavourNames.forEach(f => {
+              if (list.length < 5 && !list.some(x => x.index === f.index)) {
+                list.push(f);
+              }
+            });
+            return { list: list.slice(0, 5), title: 'Recently Viewed' };
+          }
+        } catch (err) {}
+
+        // Fallback: Random 5 flavours
+        const shuffled = [...flavourNames].sort(() => Math.random() - 0.5);
+        return { list: shuffled.slice(0, 5), title: 'Discover Flavours' };
+      }
+
       function scrollToFlavour(idx) {
         const storyRect = story.getBoundingClientRect();
         const storyTop = scrollY + storyRect.top;
         const scrollRange = Math.max(1, story.offsetHeight - innerHeight);
         const target = storyTop + (idx / (cones.length - 1)) * scrollRange;
         window.scrollTo({ top: target, behavior: 'smooth' });
+        saveRecentFlavour(idx);
         searchInput.value = '';
         searchDropdown.classList.add('hidden');
       }
@@ -496,14 +530,22 @@
       function renderSuggestions() {
         selectedSearchIdx = -1;
         const q = searchInput.value.trim().toLowerCase();
-        const matches = q 
-          ? flavourNames.filter(f => f.name.toLowerCase().includes(q)).slice(0, 5)
-          : flavourNames.slice(0, 5);
+        let matches = [];
+        let sectionTitle = '';
+
+        if (q) {
+          matches = flavourNames.filter(f => f.name.toLowerCase().includes(q)).slice(0, 5);
+          sectionTitle = 'Search Results';
+        } else {
+          const defaultData = getRecentFlavours();
+          matches = defaultData.list;
+          sectionTitle = defaultData.title;
+        }
 
         if (q && matches.length === 0) {
           searchDropdown.innerHTML = '<div class="px-3.5 py-3 text-center"><span class="text-[0.75rem] font-medium opacity-50">No flavour found</span></div>';
         } else {
-          const headerHTML = !q ? '<div class="px-3.5 pt-2.5 pb-1 text-[0.6rem] font-extrabold tracking-[0.14em] uppercase opacity-40 border-b border-[rgba(21,21,15,0.05)] bg-[rgba(21,21,15,0.02)]">Popular Suggestions</div>' : '';
+          const headerHTML = !q ? `<div class="px-3.5 pt-2.5 pb-1 text-[0.6rem] font-extrabold tracking-[0.14em] uppercase opacity-40 border-b border-[rgba(21,21,15,0.05)] bg-[rgba(21,21,15,0.02)]">${sectionTitle}</div>` : '';
           const itemsHTML = matches.map((f, i) =>
             `<button type="button" data-idx="${f.index}" data-list-idx="${i}" class="search-result w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.08)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer bg-transparent">
               <span class="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style="background-color:${f.color}"></span>
