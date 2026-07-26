@@ -328,6 +328,21 @@ export default function ConeStory() {
             <p className="lead max-w-[390px] max-md:max-w-[330px] max-sm:max-w-[300px] mt-[26px] max-md:mt-[4px] max-sm:mt-[2px] mx-0 max-md:mx-auto mb-0 text-[1rem] max-md:text-[0.84rem] max-sm:text-[0.78rem] leading-[1.6] max-md:leading-[1.32] max-sm:leading-[1.28]">
               From familiar favourites to something new, your next scoop is waiting.
             </p>
+
+            {/* Mobile Active Flavour Name Display (where red line is drawn!) */}
+            <div
+              className="mobile-flavour-badge hidden max-md:flex items-center justify-center gap-2.5 mt-3 max-sm:mt-2 px-4 py-1.5 mx-auto w-fit rounded-full bg-ink text-panel shadow-md transition-all duration-300 ease-custom"
+              aria-live="polite"
+            >
+              <span className="text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.14em] opacity-80 uppercase">
+                {FLAVOURS[activeIndex].indexLabel}
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-panel opacity-60" aria-hidden="true" />
+              <strong className="text-[0.95rem] max-sm:text-[0.88rem] font-black tracking-tight uppercase">
+                {FLAVOURS[activeIndex].name}
+              </strong>
+            </div>
+
             <div className="scroll-cue inline-flex max-md:hidden items-center gap-[10px] mt-[25px] text-[0.74rem] font-extrabold tracking-[0.12em] uppercase">
               <span
                 className="mouse w-[22px] h-[34px] border-[1.5px] border-current rounded-full grid place-items-start place-content-center pt-[7px] after:content-[''] after:w-[3px] after:h-[7px] after:rounded-full after:bg-current"
@@ -339,7 +354,7 @@ export default function ConeStory() {
 
           {/* Stage section */}
           <section
-            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-5 max-sm:mt-6 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-3 max-sm:mt-3 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
             aria-label="Scroll-controlled ice cream flavours"
           >
             {/* White circle disc */}
@@ -375,9 +390,9 @@ export default function ConeStory() {
               ))}
             </div>
 
-            {/* Flavour Text Stack */}
+            {/* Desktop Flavour Text Stack */}
             <div
-              className="flavour-stack absolute right-[6%] max-md:right-auto max-md:left-1/2 max-md:-translate-x-1/2 top-1/2 max-md:top-[6%] max-sm:top-[5%] w-[180px] max-md:w-[calc(100%-32px)] -translate-y-1/2 z-[10] max-md:text-center"
+              className="flavour-stack absolute right-[6%] top-1/2 w-[180px] -translate-y-1/2 z-[4] max-md:hidden text-right"
               aria-live="polite"
             >
               {FLAVOURS.map((item, idx) => (
