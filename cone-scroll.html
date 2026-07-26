@@ -1,109 +1,313 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#e6f23c" />
   <meta name="description" content="Scroll through twelve signature Cone Joys flavours." />
   <meta property="og:title" content="Cone Joys | Scroll the Flavours" />
-  <meta property="og:description" content="Scroll through twelve signature Cone Joys flavours, one delicious scoop at a time." />
+  <meta property="og:description"
+    content="Scroll through twelve signature Cone Joys flavours, one delicious scoop at a time." />
   <meta property="og:image" content="[REPLACE_WITH_ABSOLUTE_PRODUCTION_URL]/assets/og-image.jpg" />
   <meta property="og:type" content="website" />
   <title>Cone Joys | Scroll the Flavours</title>
   <link rel="icon" href="./assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="./assets/tailwind.css" />
 </head>
+
 <body class="m-0 text-ink bg-bg font-sans overflow-x-hidden">
   <div class="scroll-story relative h-[1200svh] bg-bg transition-colors duration-500 ease-custom" id="flavours">
     <main class="hero sticky top-0 min-h-[100svh] grid grid-rows-[auto_1fr_auto] overflow-hidden isolate">
       <!-- Background Ring -->
-      <div class="absolute w-[43vw] aspect-square -right-[11vw] -top-[15vw] border border-line rounded-full shadow-[0_0_0_7vw_rgba(255,255,255,0.11),0_0_0_14vw_rgba(255,255,255,0.07)] -z-10 pointer-events-none" aria-hidden="true"></div>
+      <div
+        class="absolute w-[43vw] aspect-square -right-[11vw] -top-[15vw] border border-line rounded-full shadow-[0_0_0_7vw_rgba(255,255,255,0.11),0_0_0_14vw_rgba(255,255,255,0.07)] -z-10 pointer-events-none"
+        aria-hidden="true"></div>
 
-      <nav class="nav w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-between min-h-[96px] max-md:min-h-[68px] max-sm:min-h-[60px] border-b border-line" aria-label="Primary navigation">
-        <a class="brand inline-flex items-center text-current no-underline" href="#flavours" aria-label="Cone Joy's Ice Cream home">
-          <img class="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto" src="./assets/conejoys-logo.png" alt="Cone Joy's Ice Cream" />
+      <nav
+        class="nav w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-between min-h-[96px] max-md:min-h-[68px] max-sm:min-h-[60px] border-b border-line"
+        aria-label="Primary navigation">
+        <a class="brand inline-flex items-center text-current no-underline" href="#flavours"
+          aria-label="Cone Joy's Ice Cream home">
+          <img class="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
+            src="./assets/conejoys-logo.png" alt="Cone Joy's Ice Cream" />
         </a>
-        <a class="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4" href="https://wa.me/923044490480" target="_blank" rel="noreferrer">Order online</a>
+
+        <!-- Live Search Bar -->
+        <div id="search-wrapper" class="relative max-sm:flex-1 max-sm:mx-3">
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(21,21,15,0.15)] bg-[rgba(255,255,255,0.6)] backdrop-blur-sm transition-all duration-200 focus-within:border-[rgba(21,21,15,0.4)] focus-within:shadow-[0_2px_12px_rgba(21,21,15,0.08)] hover:border-[rgba(21,21,15,0.25)]">
+            <svg class="w-[14px] h-[14px] opacity-40 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input type="text" id="search-input" placeholder="Search flavour..." autocomplete="off" aria-label="Search flavours"
+              class="bg-transparent outline-none border-none text-[0.78rem] max-sm:text-[0.72rem] font-medium w-[140px] max-md:w-[110px] max-sm:w-full placeholder:text-[rgba(21,21,15,0.35)] text-ink" />
+          </div>
+          <div id="search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_rgba(21,21,15,0.12)] border border-[rgba(21,21,15,0.08)] overflow-hidden z-50"></div>
+        </div>
+
+        <a class="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 flex-shrink-0"
+          href="https://wa.me/923044490480" target="_blank" rel="noreferrer">Order online</a>
       </nav>
 
-      <div class="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
-        <section class="copy relative z-[3] self-center max-md:text-center max-md:-translate-y-4 max-sm:-translate-y-6" aria-labelledby="hero-title">
-          <p class="kicker mb-[18px] max-md:mb-[6px] max-sm:mb-[4px] text-[0.72rem] max-md:text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.16em] uppercase">
-            <span class="inline-block w-[32px] h-[2px] mr-[10px] bg-current align-middle" aria-hidden="true"></span>12 signature flavours
+      <div
+        class="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
+        <section class="copy relative z-[3] self-center max-md:text-center max-md:-translate-y-4 max-sm:-translate-y-6"
+          aria-labelledby="hero-title">
+          <p
+            class="kicker mb-[18px] max-md:mb-[6px] max-sm:mb-[4px] text-[0.72rem] max-md:text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.16em] uppercase">
+            <span class="inline-block w-[32px] h-[2px] mr-[10px] bg-current align-middle" aria-hidden="true"></span>12
+            signature flavours
           </p>
-          <h1 id="hero-title" class="max-w-[590px] max-md:max-w-none m-0 font-display text-[clamp(4.4rem,7.8vw,8.4rem)] max-md:text-[clamp(2.3rem,9.5vw,3.4rem)] max-sm:text-[clamp(2.0rem,9vw,3.0rem)] leading-[0.9] max-md:leading-[0.88] tracking-[-0.085em]">
-            Scroll your <span class="outline block mt-[0.08em] pb-[0.06em] text-transparent leading-[0.9] text-stroke-ink">flavour.</span>
+          <h1 id="hero-title"
+            class="max-w-[590px] max-md:max-w-none m-0 font-display text-[clamp(4.4rem,7.8vw,8.4rem)] max-md:text-[clamp(2.3rem,9.5vw,3.4rem)] max-sm:text-[clamp(2.0rem,9vw,3.0rem)] leading-[0.9] max-md:leading-[0.88] tracking-[-0.085em]">
+            Scroll your <span
+              class="outline block mt-[0.08em] pb-[0.06em] text-transparent leading-[0.9] text-stroke-ink">flavour.</span>
           </h1>
-          <p class="lead max-w-[390px] max-md:max-w-[330px] max-sm:max-w-[300px] mt-[26px] max-md:mt-[4px] max-sm:mt-[2px] mx-0 max-md:mx-auto mb-0 text-[1rem] max-md:text-[0.84rem] max-sm:text-[0.78rem] leading-[1.6] max-md:leading-[1.32] max-sm:leading-[1.28]">
+          <p
+            class="lead max-w-[390px] max-md:max-w-[330px] max-sm:max-w-[300px] mt-[26px] max-md:mt-[4px] max-sm:mt-[2px] mx-0 max-md:mx-auto mb-0 text-[1rem] max-md:text-[0.84rem] max-sm:text-[0.78rem] leading-[1.6] max-md:leading-[1.32] max-sm:leading-[1.28]">
             From familiar favourites to something new, your next scoop is waiting.
           </p>
-          <div class="scroll-cue inline-flex max-md:hidden items-center gap-[10px] mt-[25px] text-[0.74rem] font-extrabold tracking-[0.12em] uppercase">
-            <span class="mouse w-[22px] h-[34px] border-[1.5px] border-current rounded-full grid place-items-start place-content-center pt-[7px] after:content-[''] after:w-[3px] after:h-[7px] after:rounded-full after:bg-current" aria-hidden="true"></span>Scroll to discover
+          <div
+            class="scroll-cue inline-flex max-md:hidden items-center gap-[10px] mt-[25px] text-[0.74rem] font-extrabold tracking-[0.12em] uppercase">
+            <span
+              class="mouse w-[22px] h-[34px] border-[1.5px] border-current rounded-full grid place-items-start place-content-center pt-[7px] after:content-[''] after:w-[3px] after:h-[7px] after:rounded-full after:bg-current"
+              aria-hidden="true"></span>Scroll to discover
           </div>
         </section>
 
-        <section class="stage relative h-[min(72svh,730px)] max-md:h-[clamp(210px,34svh,340px)] max-sm:h-[clamp(190px,30svh,270px)] max-md:mt-3 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center" aria-label="Scroll-controlled ice cream flavours">
-          <div class="stage-disc absolute w-[min(48vw,650px)] max-md:w-[min(72vw,min(34svh,320px))] max-sm:w-[min(68vw,min(32svh,270px))] aspect-square top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-panel shadow-[inset_0_0_0_1px_rgba(21,21,15,0.08),0_35px_90px_rgba(45,45,20,0.12)] before:content-[''] before:absolute before:inset-[8%] before:border before:border-dashed before:border-[rgba(21,21,15,0.16)] before:rounded-full" aria-hidden="true"></div>
+        <section
+          class="stage relative h-[min(72svh,730px)] max-md:h-[clamp(210px,34svh,340px)] max-sm:h-[clamp(190px,30svh,270px)] max-md:mt-3 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+          aria-label="Scroll-controlled ice cream flavours">
+          <div
+            class="stage-disc absolute w-[min(48vw,650px)] max-md:w-[min(72vw,min(34svh,320px))] max-sm:w-[min(68vw,min(32svh,270px))] aspect-square top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-panel shadow-[inset_0_0_0_1px_rgba(21,21,15,0.08),0_35px_90px_rgba(45,45,20,0.12)] before:content-[''] before:absolute before:inset-[8%] before:border before:border-dashed before:border-[rgba(21,21,15,0.16)] before:rounded-full"
+            aria-hidden="true"></div>
 
           <div class="cone-stack absolute inset-0 grid place-items-center">
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/mango.png" alt="Mango ice cream cone" data-color="#f1b844" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/kulfa.png" alt="Kulfa ice cream cone" data-color="#e8d3a6" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/chocolate.png" alt="Chocolate chip ice cream cone" data-color="#b97759" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/blueberry.png" alt="Black currant ice cream cone" data-color="#9b7bb2" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/caramel-crunch.png" alt="Caramel crunch ice cream cone" data-color="#c68a4e" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/tutti-frutti.png" alt="Tutti frutti ice cream cone" data-color="#efb5b2" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/coffee-chino.png" alt="Coffee chino ice cream cone" data-color="#b58a67" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/pistachio.png" alt="Pista ice cream cone" data-color="#b5b66d" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/vanilla.png" alt="Vanilla ice cream cone" data-color="#e5d2a9" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/strawberry.png" alt="Strawberry ice cream cone" data-color="#eca9aa" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/coconut-delight.png" alt="Coconut delight ice cream cone" data-color="#d9d8cd" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
-            <img class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center" src="./assets/cones/kit-kat.png" alt="Kit Kat ice cream cone" data-color="#b76a48" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/mango.png" alt="Mango ice cream cone" data-color="#f1b844"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/kulfa.png" alt="Kulfa ice cream cone" data-color="#e8d3a6"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/chocolate.png" alt="Chocolate chip ice cream cone" data-color="#b97759"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/blueberry.png" alt="Black currant ice cream cone" data-color="#9b7bb2"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/caramel-crunch.png" alt="Caramel crunch ice cream cone" data-color="#c68a4e"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/tutti-frutti.png" alt="Tutti frutti ice cream cone" data-color="#efb5b2"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/coffee-chino.png" alt="Coffee chino ice cream cone" data-color="#b58a67"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/pistachio.png" alt="Pista ice cream cone" data-color="#b5b66d"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/vanilla.png" alt="Vanilla ice cream cone" data-color="#e5d2a9"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/strawberry.png" alt="Strawberry ice cream cone" data-color="#eca9aa"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/coconut-delight.png" alt="Coconut delight ice cream cone" data-color="#d9d8cd"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
+            <img
+              class="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain opacity-0 translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
+              src="./assets/cones/kit-kat.png" alt="Kit Kat ice cream cone" data-color="#b76a48"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 400%27%3E%3Cpath fill=%27%23d9c7b0%27 d=%27M100 380 L40 180 L160 180 Z%27/%3E%3Ccircle cx=%27100%27 cy=%27140%27 r=%2760%27 fill=%27%23f3ece0%27/%3E%3C/svg%3E';" />
           </div>
 
-          <div class="flavour-stack absolute right-[6%] max-md:right-[4%] top-1/2 max-md:top-[68%] w-[180px] max-md:w-[140px] max-sm:w-[120px] -translate-y-1/2 z-[4]" aria-live="polite">
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">01 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Mango</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">02 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Kulfa</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">03 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Chocolate Chip</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">04 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Black Currant</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">05 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Caramel Crunch</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">06 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Tutti Frutti</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">07 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Coffee Chino</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">08 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Pista</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">09 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Vanilla</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">10 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Strawberry</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">11 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Coconut Delight</strong></div>
-            <div class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"><span class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">12 / 12</span><strong class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Kit Kat</strong></div>
+          <div
+            class="flavour-stack absolute right-[6%] max-md:right-[4%] top-1/2 max-md:top-[68%] w-[180px] max-md:w-[140px] max-sm:w-[120px] -translate-y-1/2 z-[4]"
+            aria-live="polite">
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">01
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Mango</strong>
+            </div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">02
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Kulfa</strong>
+            </div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">03
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Chocolate
+                Chip</strong></div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">04
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Black
+                Currant</strong></div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">05
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Caramel
+                Crunch</strong></div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">06
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Tutti
+                Frutti</strong></div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">07
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Coffee
+                Chino</strong></div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">08
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Pista</strong>
+            </div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">09
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Vanilla</strong>
+            </div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">10
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Strawberry</strong>
+            </div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">11
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Coconut
+                Delight</strong></div>
+            <div
+              class="flavour absolute top-1/2 right-0 w-full opacity-0 translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right">
+              <span
+                class="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">12
+                / 12</span><strong
+                class="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">Kit
+                Kat</strong></div>
           </div>
 
-          <div class="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 flex flex-col items-end gap-[6px] z-[10]">
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Mango</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="0" aria-label="Go to Mango flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Kulfa</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="1" aria-label="Go to Kulfa flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Chocolate Chip</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="2" aria-label="Go to Chocolate Chip flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Black Currant</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="3" aria-label="Go to Black Currant flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Caramel Crunch</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="4" aria-label="Go to Caramel Crunch flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Tutti Frutti</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="5" aria-label="Go to Tutti Frutti flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Coffee Chino</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="6" aria-label="Go to Coffee Chino flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Pista</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="7" aria-label="Go to Pista flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Vanilla</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="8" aria-label="Go to Vanilla flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Strawberry</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="9" aria-label="Go to Strawberry flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Coconut Delight</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="10" aria-label="Go to Coconut Delight flavour" tabindex="0"></button></div>
-            <div class="group relative flex items-center justify-end"><span class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Kit Kat</span><button type="button" class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4" data-index="11" aria-label="Go to Kit Kat flavour" tabindex="0"></button></div>
+          <div
+            class="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 flex flex-col items-end gap-[6px] z-[10]">
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Mango</span><button
+                type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="0" aria-label="Go to Mango flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Kulfa</span><button
+                type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="1" aria-label="Go to Kulfa flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Chocolate
+                Chip</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="2" aria-label="Go to Chocolate Chip flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Black
+                Currant</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="3" aria-label="Go to Black Currant flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Caramel
+                Crunch</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="4" aria-label="Go to Caramel Crunch flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Tutti
+                Frutti</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="5" aria-label="Go to Tutti Frutti flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Coffee
+                Chino</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="6" aria-label="Go to Coffee Chino flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Pista</span><button
+                type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="7" aria-label="Go to Pista flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Vanilla</span><button
+                type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="8" aria-label="Go to Vanilla flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Strawberry</span><button
+                type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="9" aria-label="Go to Strawberry flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Coconut
+                Delight</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="10" aria-label="Go to Coconut Delight flavour" tabindex="0"></button></div>
+            <div class="group relative flex items-center justify-end"><span
+                class="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">Kit
+                Kat</span><button type="button"
+                class="progress-dot appearance-none cursor-pointer w-[3.5px] h-[14px] border-0 p-0 bg-[rgba(21,21,15,0.22)] transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                data-index="11" aria-label="Go to Kit Kat flavour" tabindex="0"></button></div>
           </div>
         </section>
       </div>
 
-      <div class="footer-line w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto min-h-[72px] max-md:min-h-[52px] max-sm:min-h-[48px] border-t border-line flex items-center justify-between text-[0.72rem] max-md:text-[0.68rem] max-sm:text-[0.62rem] font-bold tracking-[0.08em] uppercase">
+      <div
+        class="footer-line w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto min-h-[72px] max-md:min-h-[52px] max-sm:min-h-[48px] border-t border-line flex items-center justify-between text-[0.72rem] max-md:text-[0.68rem] max-sm:text-[0.62rem] font-bold tracking-[0.08em] uppercase">
         <span class="footer-label max-md:hidden">Freshly scooped in Pakistan</span>
         <span class="counter tabular-nums">Flavour <b id="current">01</b> / 12</span>
-        <a class="button inline-flex items-center min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] text-panel bg-ink rounded-full text-[0.72rem] max-sm:text-[0.68rem] no-underline transition-transform duration-180 ease-custom hover:-translate-y-[2px] active:scale-[0.97] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4" href="https://wa.me/923044490480?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%20a%20cone." target="_blank" rel="noreferrer">Get this scoop</a>
+        <a class="button inline-flex items-center min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] text-panel bg-ink rounded-full text-[0.72rem] max-sm:text-[0.68rem] no-underline transition-transform duration-180 ease-custom hover:-translate-y-[2px] active:scale-[0.97] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4"
+          href="https://wa.me/923044490480?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%20a%20cone."
+          target="_blank" rel="noreferrer">Get this scoop</a>
       </div>
     </main>
   </div>
 
-  <noscript><div class="noscript fixed inset-x-[16px] bottom-[16px] p-[12px_16px] bg-ink text-white z-10">Enable JavaScript to explore the scroll-controlled flavours.</div></noscript>
+  <noscript>
+    <div class="noscript fixed inset-x-[16px] bottom-[16px] p-[12px_16px] bg-ink text-white z-10">Enable JavaScript to
+      explore the scroll-controlled flavours.</div>
+  </noscript>
   <script>
     (() => {
       const story = document.querySelector('.scroll-story');
@@ -254,7 +458,70 @@
       addEventListener('scroll', requestRender, { passive: true });
       addEventListener('resize', requestRender);
       render();
+
+      // ─── Live Search ───
+      const searchInput = document.getElementById('search-input');
+      const searchDropdown = document.getElementById('search-dropdown');
+      const searchWrapper = document.getElementById('search-wrapper');
+      const flavourNames = [
+        { name: 'Mango', index: 0, label: '01 / 12', color: '#f1b844' },
+        { name: 'Kulfa', index: 1, label: '02 / 12', color: '#e8d3a6' },
+        { name: 'Chocolate Chip', index: 2, label: '03 / 12', color: '#b97759' },
+        { name: 'Black Currant', index: 3, label: '04 / 12', color: '#9b7bb2' },
+        { name: 'Caramel Crunch', index: 4, label: '05 / 12', color: '#c68a4e' },
+        { name: 'Tutti Frutti', index: 5, label: '06 / 12', color: '#efb5b2' },
+        { name: 'Coffee Chino', index: 6, label: '07 / 12', color: '#b58a67' },
+        { name: 'Pista', index: 7, label: '08 / 12', color: '#b5b66d' },
+        { name: 'Vanilla', index: 8, label: '09 / 12', color: '#e5d2a9' },
+        { name: 'Strawberry', index: 9, label: '10 / 12', color: '#eca9aa' },
+        { name: 'Coconut Delight', index: 10, label: '11 / 12', color: '#d9d8cd' },
+        { name: 'Kit Kat', index: 11, label: '12 / 12', color: '#b76a48' },
+      ];
+
+      function scrollToFlavour(idx) {
+        const storyRect = story.getBoundingClientRect();
+        const storyTop = scrollY + storyRect.top;
+        const scrollRange = Math.max(1, story.offsetHeight - innerHeight);
+        const target = storyTop + (idx / (cones.length - 1)) * scrollRange;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+        searchInput.value = '';
+        searchDropdown.classList.add('hidden');
+      }
+
+      searchInput.addEventListener('input', function () {
+        const q = this.value.trim().toLowerCase();
+        if (!q) {
+          searchDropdown.classList.add('hidden');
+          searchDropdown.innerHTML = '';
+          return;
+        }
+        const matches = flavourNames.filter(f => f.name.toLowerCase().includes(q));
+        if (matches.length === 0) {
+          searchDropdown.innerHTML = '<div class="px-3.5 py-3 text-center"><span class="text-[0.75rem] font-medium opacity-50">No flavour found</span></div>';
+        } else {
+          searchDropdown.innerHTML = matches.map(f =>
+            `<button type="button" data-idx="${f.index}" class="search-result w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.04)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer bg-transparent">
+              <span class="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style="background-color:${f.color}"></span>
+              <span class="text-[0.78rem] font-bold tracking-tight text-ink">${f.name}</span>
+              <span class="ml-auto text-[0.6rem] font-extrabold tracking-[0.12em] opacity-40 uppercase">${f.label}</span>
+            </button>`
+          ).join('');
+        }
+        searchDropdown.classList.remove('hidden');
+      });
+
+      searchDropdown.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-idx]');
+        if (btn) scrollToFlavour(Number(btn.dataset.idx));
+      });
+
+      document.addEventListener('mousedown', function (e) {
+        if (searchWrapper && !searchWrapper.contains(e.target)) {
+          searchDropdown.classList.add('hidden');
+        }
+      });
     })();
   </script>
 </body>
+
 </html>

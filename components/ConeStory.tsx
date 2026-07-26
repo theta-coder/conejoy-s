@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FLAVOURS } from "@/data/flavours";
 
 export default function ConeStory() {
@@ -10,6 +10,7 @@ export default function ConeStory() {
   const flavourRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const badgeRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   
   const storyTopRef = useRef<number>(0);
   const scrollRangeRef = useRef<number>(1);
@@ -17,8 +18,40 @@ export default function ConeStory() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const activeIndexRef = useRef<number>(-1);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
+
+  // Search: filtered results
+  const filteredFlavours = searchQuery.trim()
+    ? FLAVOURS.map((f, i) => ({ ...f, originalIndex: i })).filter((f) =>
+        f.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  // Search: scroll to a flavour by index
+  const scrollToFlavour = useCallback((idx: number) => {
+    if (!storyRef.current) return;
+    const scrollRange = scrollRangeRef.current;
+    const storyTop = storyTopRef.current;
+    const targetScroll = storyTop + (idx / (FLAVOURS.length - 1)) * scrollRange;
+    window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    setSearchQuery("");
+    setSearchOpen(false);
+  }, []);
+
+  // Search: close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Progressive preloading of adjacent assets without duplicate allocations
   useEffect(() => {
@@ -293,8 +326,63 @@ export default function ConeStory() {
               />
             </picture>
           </a>
+
+          {/* Live Search Bar */}
+          <div ref={searchRef} className="relative max-sm:flex-1 max-sm:mx-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(21,21,15,0.15)] bg-[rgba(255,255,255,0.6)] backdrop-blur-sm transition-all duration-200 focus-within:border-[rgba(21,21,15,0.4)] focus-within:shadow-[0_2px_12px_rgba(21,21,15,0.08)] hover:border-[rgba(21,21,15,0.25)]">
+              <svg className="w-[14px] h-[14px] opacity-40 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setSearchOpen(true);
+                }}
+                onFocus={() => searchQuery.trim() && setSearchOpen(true)}
+                placeholder="Search flavour..."
+                className="bg-transparent outline-none border-none text-[0.78rem] max-sm:text-[0.72rem] font-medium w-[140px] max-md:w-[110px] max-sm:w-full placeholder:text-[rgba(21,21,15,0.35)] text-ink"
+                aria-label="Search flavours"
+                autoComplete="off"
+              />
+            </div>
+
+            {/* Search Results Dropdown */}
+            {searchOpen && filteredFlavours.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_rgba(21,21,15,0.12)] border border-[rgba(21,21,15,0.08)] overflow-hidden z-50 animate-badge-pop">
+                {filteredFlavours.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => scrollToFlavour(item.originalIndex)}
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.04)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0"
+                  >
+                    <span
+                      className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-[0.78rem] font-bold tracking-tight text-ink">
+                      {item.name}
+                    </span>
+                    <span className="ml-auto text-[0.6rem] font-extrabold tracking-[0.12em] opacity-40 uppercase">
+                      {item.indexLabel}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* No Results */}
+            {searchOpen && searchQuery.trim() && filteredFlavours.length === 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_rgba(21,21,15,0.12)] border border-[rgba(21,21,15,0.08)] z-50 px-3.5 py-3 text-center animate-badge-pop">
+                <span className="text-[0.75rem] font-medium opacity-50">No flavour found</span>
+              </div>
+            )}
+          </div>
+
           <a
-            className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4"
+            className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 flex-shrink-0"
             href="https://wa.me/923044490480"
             target="_blank"
             rel="noreferrer"
