@@ -99,7 +99,7 @@ export default function ConeStory() {
         const isMobile = window.innerWidth <= 820;
 
         const angleStepDeg = isCompactMobile ? 32 : isMobile ? 34 : 38;
-        const yRadiusPercent = isCompactMobile ? 56 : isMobile ? 64 : 100;
+        const yRadiusPercent = isCompactMobile ? 50 : isMobile ? 56 : 100;
         const xRadiusPercent = isCompactMobile ? 150 : isMobile ? 170 : 220;
         const maxRotationDeg = isCompactMobile ? 14 : 18;
 
@@ -300,7 +300,7 @@ export default function ConeStory() {
         <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
           {/* Copy section */}
           <section
-            className="copy relative z-[3] self-center max-md:text-center max-md:-translate-y-4 max-sm:-translate-y-6"
+            className="copy relative z-[3] self-center max-md:text-center max-md:-translate-y-6 max-sm:-translate-y-8"
             aria-labelledby="hero-title"
           >
             <p className="kicker mb-[18px] max-md:mb-[6px] max-sm:mb-[4px] text-[0.72rem] max-md:text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.16em] uppercase">
@@ -333,7 +333,7 @@ export default function ConeStory() {
 
           {/* Stage section */}
           <section
-            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-2 max-sm:mt-2 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-5 max-sm:mt-6 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
             aria-label="Scroll-controlled ice cream flavours"
           >
             {/* White circle disc */}
