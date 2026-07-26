@@ -5,16 +5,21 @@ import { FLAVOURS } from "@/data/flavours";
 
 export default function ConeStory() {
   const storyRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   const coneRefs = useRef<(HTMLImageElement | null)[]>([]);
   const flavourRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  
+  const storyTopRef = useRef<number>(0);
+  const scrollRangeRef = useRef<number>(1);
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const activeIndexRef = useRef<number>(-1);
 
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
 
-  // Progressive preloading of adjacent assets
+  // Progressive preloading of adjacent assets without duplicate allocations
   useEffect(() => {
     const nextIdx = Math.min(activeIndex + 1, FLAVOURS.length - 1);
     const prevIdx = Math.max(activeIndex - 1, 0);
@@ -29,15 +34,24 @@ export default function ConeStory() {
 
   useEffect(() => {
     let ticking = false;
+    let animFrameId: number | null = null;
+    let resizeTimeout: NodeJS.Timeout | null = null;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    function render() {
+    // Cache story measurements outside the per-frame animation loop
+    function measureStory() {
       if (!storyRef.current) return;
       const story = storyRef.current;
-      const scrollRange = story.offsetHeight - window.innerHeight;
+      const rect = story.getBoundingClientRect();
+      storyTopRef.current = window.scrollY + rect.top;
+      scrollRangeRef.current = Math.max(1, story.offsetHeight - window.innerHeight);
+    }
+
+    function render() {
+      const scrollY = window.scrollY;
       const rawProgress =
-        scrollRange > 0
-          ? clamp(-story.getBoundingClientRect().top / scrollRange, 0, 1)
+        scrollRangeRef.current > 0
+          ? clamp((scrollY - storyTopRef.current) / scrollRangeRef.current, 0, 1)
           : 0;
 
       const progressFloat = rawProgress * (FLAVOURS.length - 1);
@@ -54,6 +68,7 @@ export default function ConeStory() {
             cone.style.opacity = isActive ? "1" : "0";
             cone.style.visibility = isActive ? "visible" : "hidden";
             cone.style.transform = "translate3d(0, 0, 0) scale(1)";
+            cone.style.willChange = "auto";
             cone.style.zIndex = isActive ? "10" : "0";
             cone.setAttribute("aria-hidden", String(!isActive));
           });
@@ -75,7 +90,9 @@ export default function ConeStory() {
             dot.style.boxShadow = isCurrent ? "0 0 8px rgba(21, 21, 15, 0.4)" : "none";
           });
 
-          story.style.backgroundColor = FLAVOURS[nextActive].color;
+          if (heroRef.current) {
+            heroRef.current.style.backgroundColor = FLAVOURS[nextActive].color;
+          }
         }
       } else {
         const isCompactMobile = window.innerWidth <= 480;
@@ -94,6 +111,7 @@ export default function ConeStory() {
           if (absDist > 2.2) {
             cone.style.opacity = "0";
             cone.style.visibility = "hidden";
+            cone.style.willChange = "auto";
             cone.style.transform = "translate3d(-100%, 0, 0) scale(0.3)";
             cone.setAttribute("aria-hidden", "true");
           } else {
@@ -102,6 +120,21 @@ export default function ConeStory() {
               "aria-hidden",
               String(Math.round(progressFloat) !== idx)
             );
+
+            // Limit will-change strictly to active and immediately adjacent cones
+            const shouldPromoteLayer = absDist <= 1.2;
+            cone.style.willChange = shouldPromoteLayer ? "transform, opacity" : "auto";
+
+            // Optimize filter cost for mobile screens
+            if (isMobile) {
+              if (absDist <= 0.5) {
+                cone.style.filter = "drop-shadow(0 14px 12px rgba(52, 39, 22, 0.18))";
+              } else {
+                cone.style.filter = "none";
+              }
+            } else {
+              cone.style.filter = "drop-shadow(0 22px 18px rgba(52, 39, 22, 0.2))";
+            }
 
             const angleDeg = dist * angleStepDeg;
             const angleRad = (angleDeg * Math.PI) / 180;
@@ -124,6 +157,7 @@ export default function ConeStory() {
           }
         });
 
+        // Trigger React state and discrete text update strictly when active index changes
         if (nextActive !== activeIndexRef.current) {
           activeIndexRef.current = nextActive;
           setActiveIndex(nextActive);
@@ -156,7 +190,9 @@ export default function ConeStory() {
             );
           }
 
-          story.style.backgroundColor = FLAVOURS[nextActive].color;
+          if (heroRef.current) {
+            heroRef.current.style.backgroundColor = FLAVOURS[nextActive].color;
+          }
         }
       }
 
@@ -166,17 +202,32 @@ export default function ConeStory() {
     function requestRender() {
       if (!ticking) {
         ticking = true;
-        requestAnimationFrame(render);
+        animFrameId = requestAnimationFrame(render);
       }
     }
 
+    function handleResize() {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        measureStory();
+        requestRender();
+      }, 100);
+    }
+
+    // Initial measurement
+    measureStory();
+    requestRender();
+
     window.addEventListener("scroll", requestRender, { passive: true });
-    window.addEventListener("resize", requestRender);
-    render();
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
 
     return () => {
       window.removeEventListener("scroll", requestRender);
-      window.removeEventListener("resize", requestRender);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
     };
   }, []);
 
@@ -199,9 +250,13 @@ export default function ConeStory() {
     <div
       ref={storyRef}
       id="flavours"
-      className="scroll-story relative h-[1200svh] bg-bg transition-colors duration-500 ease-custom"
+      className="scroll-story relative h-[1200svh]"
     >
-      <main className="hero sticky top-0 min-h-[100svh] grid grid-rows-[auto_1fr_auto] overflow-hidden isolate">
+      <main
+        ref={heroRef}
+        style={{ backgroundColor: FLAVOURS[0].color }}
+        className="hero sticky top-0 min-h-[100svh] grid grid-rows-[auto_1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
+      >
         {/* Background Ring */}
         <div
           className="absolute w-[43vw] aspect-square -right-[11vw] -top-[15vw] border border-line rounded-full shadow-[0_0_0_7vw_rgba(255,255,255,0.11),0_0_0_14vw_rgba(255,255,255,0.07)] -z-10 pointer-events-none"
@@ -300,9 +355,12 @@ export default function ConeStory() {
                       opacity: idx === 0 ? 1 : 0,
                       visibility: idx === 0 ? "visible" : "hidden",
                     }}
-                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_22px_18px_rgba(52,39,22,0.2)] will-change-[transform,opacity] pointer-events-none select-none origin-center"
+                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 pointer-events-none select-none origin-center"
                     src={item.imageSrc}
                     alt={item.alt}
+                    width={540}
+                    height={1500}
+                    sizes="(max-width: 480px) 56vw, (max-width: 820px) 60vw, 34vw"
                     loading={idx <= 1 ? "eager" : "lazy"}
                     decoding={idx === 0 ? "sync" : "async"}
                     data-color={item.color}
