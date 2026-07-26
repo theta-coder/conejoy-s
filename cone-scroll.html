@@ -523,8 +523,28 @@
         const storyRect = story.getBoundingClientRect();
         const storyTop = scrollY + storyRect.top;
         const scrollRange = Math.max(1, story.offsetHeight - innerHeight);
-        const target = storyTop + (idx / (cones.length - 1)) * scrollRange;
-        window.scrollTo({ top: target, behavior: 'smooth' });
+        const targetScroll = Math.round(storyTop + (idx / (cones.length - 1)) * scrollRange);
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+
+        const snapToTarget = function () {
+          if (Math.abs(window.scrollY - targetScroll) > 1) {
+            window.scrollTo({ top: targetScroll, behavior: 'auto' });
+          }
+        };
+
+        let timer = null;
+        const handleScrollEnd = function () {
+          snapToTarget();
+          if (timer) clearTimeout(timer);
+          window.removeEventListener('scrollend', handleScrollEnd);
+        };
+
+        window.addEventListener('scrollend', handleScrollEnd, { once: true });
+        timer = setTimeout(function () {
+          snapToTarget();
+          window.removeEventListener('scrollend', handleScrollEnd);
+        }, 450);
+
         saveRecentFlavour(idx);
         searchInput.value = '';
         searchDropdown.classList.add('hidden');

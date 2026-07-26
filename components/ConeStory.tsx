@@ -101,7 +101,7 @@ export default function ConeStory() {
     setSearchSelectedIndex(-1);
   }, [searchQuery]);
 
-  // Search: scroll to a flavour by index
+  // Search: scroll to a flavour by index with exact snap-lock
   const scrollToFlavour = useCallback(
     (idx: number) => {
       if (!storyRef.current) return;
@@ -109,8 +109,33 @@ export default function ConeStory() {
       const rect = story.getBoundingClientRect();
       const storyTop = window.scrollY + rect.top;
       const scrollRange = Math.max(1, story.offsetHeight - window.innerHeight);
-      const targetScroll = storyTop + (idx / (FLAVOURS.length - 1)) * scrollRange;
+      const targetScroll = Math.round(
+        storyTop + (idx / (FLAVOURS.length - 1)) * scrollRange
+      );
+
+      // Smooth scroll first
       window.scrollTo({ top: targetScroll, behavior: "smooth" });
+
+      // Ensure exact snap landing on mobile when smooth scroll decelerates
+      const snapToTarget = () => {
+        if (Math.abs(window.scrollY - targetScroll) > 1) {
+          window.scrollTo({ top: targetScroll, behavior: "auto" });
+        }
+      };
+
+      let timer: NodeJS.Timeout | null = null;
+      const handleScrollEnd = () => {
+        snapToTarget();
+        if (timer) clearTimeout(timer);
+        window.removeEventListener("scrollend", handleScrollEnd);
+      };
+
+      window.addEventListener("scrollend", handleScrollEnd, { once: true });
+      timer = setTimeout(() => {
+        snapToTarget();
+        window.removeEventListener("scrollend", handleScrollEnd);
+      }, 450);
+
       setSearchQuery("");
       setSearchOpen(false);
       setSearchSelectedIndex(-1);
