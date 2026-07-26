@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { FLAVOURS } from "@/data/flavours";
+import { FLAVOURS, FlavourItem } from "@/data/flavours";
+import CategoryBar from "@/components/CategoryBar";
+import CupsSection from "@/components/CupsSection";
+import { useCart } from "@/context/CartContext";
 
 export default function ConeStory() {
+  const { totalCount, setIsCartOpen } = useCart();
   const storyRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const coneRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -432,13 +436,13 @@ export default function ConeStory() {
   return (
     <div
       ref={storyRef}
-      id="flavours"
+      id="cones"
       className="scroll-story relative h-[1200svh]"
     >
       <main
         ref={heroRef}
         style={{ backgroundColor: FLAVOURS[0].color }}
-        className="hero sticky top-0 min-h-[100svh] grid grid-rows-[auto_1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
+        className="hero sticky top-0 min-h-[100svh] grid grid-rows-[auto_auto_1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
       >
         {/* Background Ring */}
         <div
@@ -448,7 +452,7 @@ export default function ConeStory() {
 
         {/* Navigation */}
         <nav
-          className="nav w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-between min-h-[96px] max-md:min-h-[68px] max-sm:min-h-[60px] border-b border-line"
+          className="nav w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-between min-h-[80px] max-md:min-h-[64px] max-sm:min-h-[56px] border-b border-line"
           aria-label="Primary navigation"
         >
           <a
@@ -555,15 +559,35 @@ export default function ConeStory() {
             )}
           </div>
 
-          <a
-            className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 flex-shrink-0"
-            href="https://wa.me/923044490480"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Order online
-          </a>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <a
+              className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4"
+              href="https://wa.me/923044490480"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Order online
+            </a>
+            <button
+              type="button"
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2.5 rounded-full bg-[rgba(255,255,255,0.7)] hover:bg-white hover:shadow-md transition-all flex items-center justify-center border border-[rgba(21,21,15,0.12)] cursor-pointer"
+              aria-label={`View cart with ${totalCount} items`}
+            >
+              <svg className="w-4 h-4 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              {totalCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-ink text-panel text-[0.62rem] font-black flex items-center justify-center shadow-md animate-badge-pop">
+                  {totalCount}
+                </span>
+              )}
+            </button>
+          </div>
         </nav>
+
+        {/* Category Navigation Bar (Cones / Cups) */}
+        <CategoryBar />
 
         {/* Hero Grid */}
         <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
@@ -825,6 +849,9 @@ export default function ConeStory() {
           </a>
         </div>
       </main>
+
+      {/* Cups Collection Section */}
+      <CupsSection />
     </div>
   );
 }

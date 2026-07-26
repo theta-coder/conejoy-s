@@ -6,6 +6,8 @@ export interface FlavourItem {
   imageSrc: string;
   webpSrc: string;
   alt: string;
+  cupImageSrc: string;
+  cupAlt: string;
 }
 
 export const FLAVOURS: FlavourItem[] = [
@@ -17,6 +19,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/mango.png",
     webpSrc: "/assets/cones/mango.webp",
     alt: "Mango ice cream cone",
+    cupImageSrc: "/assets/cups/mango.png",
+    cupAlt: "Mango single-scoop ice cream cup",
   },
   {
     id: "kulfa",
@@ -26,6 +30,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/kulfa.png",
     webpSrc: "/assets/cones/kulfa.webp",
     alt: "Kulfa ice cream cone",
+    cupImageSrc: "/assets/cups/kulfa.png",
+    cupAlt: "Kulfa single-scoop ice cream cup",
   },
   {
     id: "chocolate",
@@ -35,6 +41,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/chocolate.png",
     webpSrc: "/assets/cones/chocolate.webp",
     alt: "Chocolate chip ice cream cone",
+    cupImageSrc: "/assets/cups/chocolate.png",
+    cupAlt: "Chocolate chip single-scoop ice cream cup",
   },
   {
     id: "blueberry",
@@ -44,6 +52,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/blueberry.png",
     webpSrc: "/assets/cones/blueberry.webp",
     alt: "Black currant ice cream cone",
+    cupImageSrc: "/assets/cups/blueberry.png",
+    cupAlt: "Black currant single-scoop ice cream cup",
   },
   {
     id: "caramel-crunch",
@@ -53,6 +63,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/caramel-crunch.png",
     webpSrc: "/assets/cones/caramel-crunch.webp",
     alt: "Caramel crunch ice cream cone",
+    cupImageSrc: "/assets/cups/caramel-crunch.png",
+    cupAlt: "Caramel crunch single-scoop ice cream cup",
   },
   {
     id: "tutti-frutti",
@@ -62,6 +74,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/tutti-frutti.png",
     webpSrc: "/assets/cones/tutti-frutti.webp",
     alt: "Tutti frutti ice cream cone",
+    cupImageSrc: "/assets/cups/tutti-frutti.png",
+    cupAlt: "Tutti frutti single-scoop ice cream cup",
   },
   {
     id: "coffee-chino",
@@ -71,6 +85,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/coffee-chino.png",
     webpSrc: "/assets/cones/coffee-chino.webp",
     alt: "Coffee chino ice cream cone",
+    cupImageSrc: "/assets/cups/coffee-chino.png",
+    cupAlt: "Coffee chino single-scoop ice cream cup",
   },
   {
     id: "pistachio",
@@ -80,6 +96,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/pistachio.png",
     webpSrc: "/assets/cones/pistachio.webp",
     alt: "Pista ice cream cone",
+    cupImageSrc: "/assets/cups/pistachio.png",
+    cupAlt: "Pista single-scoop ice cream cup",
   },
   {
     id: "vanilla",
@@ -89,6 +107,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/vanilla.png",
     webpSrc: "/assets/cones/vanilla.webp",
     alt: "Vanilla ice cream cone",
+    cupImageSrc: "/assets/cups/vanilla.png",
+    cupAlt: "Vanilla single-scoop ice cream cup",
   },
   {
     id: "strawberry",
@@ -98,6 +118,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/strawberry.png",
     webpSrc: "/assets/cones/strawberry.webp",
     alt: "Strawberry ice cream cone",
+    cupImageSrc: "/assets/cups/strawberry.png",
+    cupAlt: "Strawberry single-scoop ice cream cup",
   },
   {
     id: "coconut-delight",
@@ -107,6 +129,8 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/coconut-delight.png",
     webpSrc: "/assets/cones/coconut-delight.webp",
     alt: "Coconut delight ice cream cone",
+    cupImageSrc: "/assets/cups/coconut.png",
+    cupAlt: "Coconut delight single-scoop ice cream cup",
   },
   {
     id: "kit-kat",
@@ -116,5 +140,7 @@ export const FLAVOURS: FlavourItem[] = [
     imageSrc: "/assets/cones/kit-kat.png",
     webpSrc: "/assets/cones/kit-kat.webp",
     alt: "Kit Kat ice cream cone",
+    cupImageSrc: "/assets/cups/kitkat.png",
+    cupAlt: "Kit Kat single-scoop ice cream cup",
   },
 ];
