@@ -452,14 +452,14 @@ export default function ConeStory() {
           aria-label="Primary navigation"
         >
           <a
-            className="brand group inline-flex items-center gap-2 px-3 py-1.5 max-sm:px-2 max-sm:py-1 rounded-2xl bg-[rgba(255,255,255,0.85)] backdrop-blur-md border border-[rgba(21,21,15,0.12)] shadow-[0_4px_16px_rgba(21,21,15,0.06)] hover:bg-white hover:border-[rgba(21,21,15,0.25)] hover:shadow-[0_6px_20px_rgba(21,21,15,0.1)] transition-all duration-200 no-underline flex-shrink-0"
+            className="brand inline-flex items-center text-current no-underline"
             href="#flavours"
             aria-label="Cone Joy's Ice Cream home"
           >
-            <picture className="flex-shrink-0">
+            <picture>
               <source srcSet="/assets/conejoys-logo.webp" type="image/webp" />
               <img
-                className="brand-logo block h-[38px] max-md:h-[30px] max-sm:h-[24px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+                className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
                 src="/assets/conejoys-logo.png"
                 alt="Cone Joy's Ice Cream"
                 width={110}
