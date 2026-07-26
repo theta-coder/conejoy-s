@@ -24,12 +24,12 @@ export default function ConeStory() {
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
 
-  // Search: filtered results
+  // Search: filtered results (max 5 suggestions)
   const filteredFlavours = searchQuery.trim()
-    ? FLAVOURS.map((f, i) => ({ ...f, originalIndex: i })).filter((f) =>
-        f.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+    ? FLAVOURS.map((f, i) => ({ ...f, originalIndex: i }))
+        .filter((f) => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        .slice(0, 5)
+    : FLAVOURS.map((f, i) => ({ ...f, originalIndex: i })).slice(0, 5);
 
   // Search: scroll to a flavour by index
   const scrollToFlavour = useCallback((idx: number) => {
@@ -340,7 +340,7 @@ export default function ConeStory() {
                   setSearchQuery(e.target.value);
                   setSearchOpen(true);
                 }}
-                onFocus={() => searchQuery.trim() && setSearchOpen(true)}
+                onFocus={() => setSearchOpen(true)}
                 placeholder="Search flavour..."
                 className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.7rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
                 aria-label="Search flavours"
@@ -368,6 +368,11 @@ export default function ConeStory() {
             {/* Search Results Dropdown */}
             {searchOpen && filteredFlavours.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_12px_40px_rgba(21,21,15,0.16)] border border-[rgba(21,21,15,0.1)] overflow-hidden z-50 animate-badge-pop min-w-[200px]">
+                {!searchQuery.trim() && (
+                  <div className="px-3.5 pt-2.5 pb-1 text-[0.6rem] font-extrabold tracking-[0.14em] uppercase opacity-40 border-b border-[rgba(21,21,15,0.05)] bg-[rgba(21,21,15,0.02)]">
+                    Popular Suggestions
+                  </div>
+                )}
                 {filteredFlavours.map((item) => (
                   <button
                     key={item.id}

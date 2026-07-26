@@ -491,27 +491,30 @@
         searchDropdown.classList.add('hidden');
       }
 
-      searchInput.addEventListener('input', function () {
-        const q = this.value.trim().toLowerCase();
-        if (!q) {
-          searchDropdown.classList.add('hidden');
-          searchDropdown.innerHTML = '';
-          return;
-        }
-        const matches = flavourNames.filter(f => f.name.toLowerCase().includes(q));
-        if (matches.length === 0) {
+      function renderSuggestions() {
+        const q = searchInput.value.trim().toLowerCase();
+        const matches = q 
+          ? flavourNames.filter(f => f.name.toLowerCase().includes(q)).slice(0, 5)
+          : flavourNames.slice(0, 5);
+
+        if (q && matches.length === 0) {
           searchDropdown.innerHTML = '<div class="px-3.5 py-3 text-center"><span class="text-[0.75rem] font-medium opacity-50">No flavour found</span></div>';
         } else {
-          searchDropdown.innerHTML = matches.map(f =>
+          const headerHTML = !q ? '<div class="px-3.5 pt-2.5 pb-1 text-[0.6rem] font-extrabold tracking-[0.14em] uppercase opacity-40 border-b border-[rgba(21,21,15,0.05)] bg-[rgba(21,21,15,0.02)]">Popular Suggestions</div>' : '';
+          const itemsHTML = matches.map(f =>
             `<button type="button" data-idx="${f.index}" class="search-result w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.04)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer bg-transparent">
               <span class="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" style="background-color:${f.color}"></span>
               <span class="text-[0.78rem] font-bold tracking-tight text-ink">${f.name}</span>
               <span class="ml-auto text-[0.6rem] font-extrabold tracking-[0.12em] opacity-40 uppercase">${f.label}</span>
             </button>`
           ).join('');
+          searchDropdown.innerHTML = headerHTML + itemsHTML;
         }
         searchDropdown.classList.remove('hidden');
-      });
+      }
+
+      searchInput.addEventListener('input', renderSuggestions);
+      searchInput.addEventListener('focus', renderSuggestions);
 
       searchDropdown.addEventListener('click', function (e) {
         const btn = e.target.closest('[data-idx]');
