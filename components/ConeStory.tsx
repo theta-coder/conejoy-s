@@ -328,9 +328,9 @@ export default function ConeStory() {
           </a>
 
           {/* Live Search Bar */}
-          <div ref={searchRef} className="relative max-sm:flex-1 max-sm:mx-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(21,21,15,0.15)] bg-[rgba(255,255,255,0.6)] backdrop-blur-sm transition-all duration-200 focus-within:border-[rgba(21,21,15,0.4)] focus-within:shadow-[0_2px_12px_rgba(21,21,15,0.08)] hover:border-[rgba(21,21,15,0.25)]">
-              <svg className="w-[14px] h-[14px] opacity-40 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <div ref={searchRef} className="relative mx-4 flex-1 max-w-[420px] max-md:max-w-[260px] max-sm:max-w-none max-sm:mx-2">
+            <div className="flex items-center gap-2.5 px-4 py-2 max-md:px-3 max-md:py-1.5 rounded-full border border-[rgba(21,21,15,0.18)] bg-[rgba(255,255,255,0.75)] backdrop-blur-md transition-all duration-200 focus-within:border-ink focus-within:bg-white focus-within:shadow-[0_4px_20px_rgba(21,21,15,0.12)] hover:border-[rgba(21,21,15,0.3)]">
+              <svg className="w-[16px] h-[16px] max-md:w-[14px] max-md:h-[14px] opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
               <input
@@ -341,31 +341,48 @@ export default function ConeStory() {
                   setSearchOpen(true);
                 }}
                 onFocus={() => searchQuery.trim() && setSearchOpen(true)}
-                placeholder="Search flavour..."
-                className="bg-transparent outline-none border-none text-[0.78rem] max-sm:text-[0.72rem] font-medium w-[140px] max-md:w-[110px] max-sm:w-full placeholder:text-[rgba(21,21,15,0.35)] text-ink"
+                placeholder="Search 12 flavours (e.g. Mango, Kit Kat)..."
+                className="bg-transparent outline-none border-none text-[0.86rem] max-md:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink"
                 aria-label="Search flavours"
                 autoComplete="off"
               />
+              {searchQuery ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSearchOpen(false);
+                  }}
+                  className="p-0.5 rounded-full hover:bg-[rgba(21,21,15,0.08)] text-[0.75rem] font-bold opacity-60 hover:opacity-100 flex-shrink-0 transition-opacity"
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              ) : (
+                <span className="max-md:hidden text-[0.62rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase select-none pointer-events-none">
+                  SEARCH
+                </span>
+              )}
             </div>
 
             {/* Search Results Dropdown */}
             {searchOpen && filteredFlavours.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_rgba(21,21,15,0.12)] border border-[rgba(21,21,15,0.08)] overflow-hidden z-50 animate-badge-pop">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_12px_40px_rgba(21,21,15,0.16)] border border-[rgba(21,21,15,0.1)] overflow-hidden z-50 animate-badge-pop">
                 {filteredFlavours.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => scrollToFlavour(item.originalIndex)}
-                    className="w-full flex items-center gap-3 px-3.5 py-2.5 text-left hover:bg-[rgba(21,21,15,0.04)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0"
+                    className="w-full flex items-center gap-3.5 px-4 py-3 text-left hover:bg-[rgba(21,21,15,0.05)] active:bg-[rgba(21,21,15,0.08)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer"
                   >
                     <span
-                      className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
+                      className="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm border border-black/10"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-[0.78rem] font-bold tracking-tight text-ink">
+                    <span className="text-[0.84rem] max-md:text-[0.78rem] font-bold tracking-tight text-ink">
                       {item.name}
                     </span>
-                    <span className="ml-auto text-[0.6rem] font-extrabold tracking-[0.12em] opacity-40 uppercase">
+                    <span className="ml-auto text-[0.65rem] font-extrabold tracking-[0.14em] opacity-40 uppercase">
                       {item.indexLabel}
                     </span>
                   </button>
@@ -375,8 +392,8 @@ export default function ConeStory() {
 
             {/* No Results */}
             {searchOpen && searchQuery.trim() && filteredFlavours.length === 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_rgba(21,21,15,0.12)] border border-[rgba(21,21,15,0.08)] z-50 px-3.5 py-3 text-center animate-badge-pop">
-                <span className="text-[0.75rem] font-medium opacity-50">No flavour found</span>
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_12px_40px_rgba(21,21,15,0.16)] border border-[rgba(21,21,15,0.1)] z-50 px-4 py-3.5 text-center animate-badge-pop">
+                <span className="text-[0.8rem] font-semibold opacity-60">No flavour found for &quot;{searchQuery}&quot;</span>
               </div>
             )}
           </div>
