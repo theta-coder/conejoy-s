@@ -592,20 +592,63 @@ export default function ConeStory() {
               From familiar favourites to something new, your next scoop is waiting.
             </p>
 
-            {/* Mobile Active Flavour Name Display (where red line is drawn!) */}
-            <div
-              ref={badgeRef}
-              key={activeIndex}
-              className="mobile-flavour-badge hidden max-md:flex items-center justify-center gap-2.5 mt-3 max-sm:mt-2 mb-2 px-4 py-1.5 mx-auto w-fit rounded-full bg-ink text-panel shadow-md animate-badge-pop"
-              aria-live="polite"
-            >
-              <span className="text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.14em] opacity-80 uppercase">
-                {FLAVOURS[activeIndex].indexLabel}
-              </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-panel opacity-60" aria-hidden="true" />
-              <strong className="text-[0.95rem] max-sm:text-[0.88rem] font-black tracking-tight uppercase">
-                {FLAVOURS[activeIndex].name}
-              </strong>
+            {/* Mobile Active Flavour Display + Nav Controls (Prev / Active / Next) */}
+            <div className="hidden max-md:flex items-center justify-center gap-1.5 mt-3 max-sm:mt-2 mb-2 px-1 mx-auto w-full max-w-[360px] z-10">
+              {/* Previous Flavour Arrow Button */}
+              <button
+                type="button"
+                disabled={activeIndex === 0}
+                onClick={() => handleDotClick(activeIndex - 1)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.64rem] font-extrabold tracking-tight transition-all ${
+                  activeIndex === 0
+                    ? "opacity-20 pointer-events-none"
+                    : "bg-ink/10 text-ink hover:bg-ink hover:text-panel active:scale-95 cursor-pointer shadow-sm"
+                }`}
+                aria-label={activeIndex > 0 ? `Previous flavour: ${FLAVOURS[activeIndex - 1].name}` : "Previous flavour"}
+              >
+                <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span className="truncate max-w-[68px] max-sm:max-w-[56px]">
+                  {activeIndex > 0 ? FLAVOURS[activeIndex - 1].name : "Prev"}
+                </span>
+              </button>
+
+              {/* Active Badge */}
+              <div
+                ref={badgeRef}
+                key={activeIndex}
+                className="mobile-flavour-badge flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-ink text-panel shadow-md animate-badge-pop flex-shrink-0"
+                aria-live="polite"
+              >
+                <span className="text-[0.62rem] max-sm:text-[0.58rem] font-extrabold tracking-[0.14em] opacity-80 uppercase">
+                  {FLAVOURS[activeIndex].indexLabel}
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-panel opacity-60" aria-hidden="true" />
+                <strong className="text-[0.88rem] max-sm:text-[0.82rem] font-black tracking-tight uppercase">
+                  {FLAVOURS[activeIndex].name}
+                </strong>
+              </div>
+
+              {/* Next Flavour Arrow Button */}
+              <button
+                type="button"
+                disabled={activeIndex === FLAVOURS.length - 1}
+                onClick={() => handleDotClick(activeIndex + 1)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.64rem] font-extrabold tracking-tight transition-all ${
+                  activeIndex === FLAVOURS.length - 1
+                    ? "opacity-20 pointer-events-none"
+                    : "bg-ink/10 text-ink hover:bg-ink hover:text-panel active:scale-95 cursor-pointer shadow-sm"
+                }`}
+                aria-label={activeIndex < FLAVOURS.length - 1 ? `Next flavour: ${FLAVOURS[activeIndex + 1].name}` : "Next flavour"}
+              >
+                <span className="truncate max-w-[68px] max-sm:max-w-[56px]">
+                  {activeIndex < FLAVOURS.length - 1 ? FLAVOURS[activeIndex + 1].name : "Next"}
+                </span>
+                <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
 
             <div className="scroll-cue inline-flex max-md:hidden items-center gap-[10px] mt-[25px] text-[0.74rem] font-extrabold tracking-[0.12em] uppercase">
@@ -683,8 +726,32 @@ export default function ConeStory() {
               ))}
             </div>
 
-            {/* Progress Dot Rail */}
+            {/* Progress Dot Rail + Up/Down Arrows with Flavour Names */}
             <div className="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 flex flex-col items-end gap-[6px] z-[10]">
+              {/* Up Arrow (Previous Flavour) */}
+              <div className="group relative flex items-center justify-end mb-1">
+                <span className="pointer-events-none absolute right-full mr-2.5 px-2.5 py-1 rounded-lg bg-ink text-panel text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-custom shadow-lg flex items-center gap-1.5">
+                  <span className="opacity-60">{activeIndex > 0 ? FLAVOURS[activeIndex - 1].indexLabel : ""}</span>
+                  <span>{activeIndex > 0 ? FLAVOURS[activeIndex - 1].name : "Top"}</span>
+                </span>
+                <button
+                  type="button"
+                  disabled={activeIndex === 0}
+                  onClick={() => handleDotClick(activeIndex - 1)}
+                  aria-label={activeIndex > 0 ? `Previous flavour: ${FLAVOURS[activeIndex - 1].name}` : "First flavour reached"}
+                  className={`w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center border border-ink/20 transition-all duration-200 ${
+                    activeIndex === 0
+                      ? "opacity-20 pointer-events-none bg-panel/40"
+                      : "bg-panel text-ink hover:bg-ink hover:text-panel shadow-sm cursor-pointer active:scale-90"
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Progress Dots */}
               {FLAVOURS.map((item, idx) => (
                 <div key={item.id} className="group relative flex items-center justify-end">
                   {/* Hover Tooltip Label */}
@@ -709,6 +776,29 @@ export default function ConeStory() {
                   />
                 </div>
               ))}
+
+              {/* Down Arrow (Next Flavour) */}
+              <div className="group relative flex items-center justify-end mt-1">
+                <span className="pointer-events-none absolute right-full mr-2.5 px-2.5 py-1 rounded-lg bg-ink text-panel text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-custom shadow-lg flex items-center gap-1.5">
+                  <span className="opacity-60">{activeIndex < FLAVOURS.length - 1 ? FLAVOURS[activeIndex + 1].indexLabel : ""}</span>
+                  <span>{activeIndex < FLAVOURS.length - 1 ? FLAVOURS[activeIndex + 1].name : "End"}</span>
+                </span>
+                <button
+                  type="button"
+                  disabled={activeIndex === FLAVOURS.length - 1}
+                  onClick={() => handleDotClick(activeIndex + 1)}
+                  aria-label={activeIndex < FLAVOURS.length - 1 ? `Next flavour: ${FLAVOURS[activeIndex + 1].name}` : "Last flavour reached"}
+                  className={`w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center border border-ink/20 transition-all duration-200 ${
+                    activeIndex === FLAVOURS.length - 1
+                      ? "opacity-20 pointer-events-none bg-panel/40"
+                      : "bg-panel text-ink hover:bg-ink hover:text-panel shadow-sm cursor-pointer active:scale-90"
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </section>
         </div>
