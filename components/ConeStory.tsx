@@ -181,9 +181,15 @@ export default function ConeStory() {
           });
 
           if (flavourRefs.current[nextActive]) {
+            const isMobile = window.innerWidth <= 820;
             flavourRefs.current[nextActive]?.animate(
               [
-                { opacity: 0, transform: "translate3d(14px, -50%, 0)" },
+                {
+                  opacity: 0,
+                  transform: isMobile
+                    ? "translate3d(0, -75%, 0)"
+                    : "translate3d(14px, -50%, 0)",
+                },
                 { opacity: 1, transform: "translate3d(0, -50%, 0)" },
               ],
               { duration: 220, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
@@ -371,7 +377,7 @@ export default function ConeStory() {
 
             {/* Flavour Text Stack */}
             <div
-              className="flavour-stack absolute right-[6%] max-md:right-[4%] top-1/2 max-md:top-[68%] w-[180px] max-md:w-[140px] max-sm:w-[120px] -translate-y-1/2 z-[4]"
+              className="flavour-stack absolute right-[6%] max-md:right-auto max-md:left-1/2 max-md:-translate-x-1/2 top-1/2 max-md:top-[6%] max-sm:top-[5%] w-[180px] max-md:w-[calc(100%-32px)] -translate-y-1/2 z-[10] max-md:text-center"
               aria-live="polite"
             >
               {FLAVOURS.map((item, idx) => (
@@ -385,12 +391,12 @@ export default function ConeStory() {
                     visibility: idx === 0 ? "visible" : "hidden",
                     transform: "translate3d(0, -50%, 0)",
                   }}
-                  className="flavour absolute top-1/2 right-0 w-full translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right"
+                  className="flavour absolute top-1/2 right-0 max-md:right-auto max-md:left-1/2 max-md:-translate-x-1/2 w-full translate-x-[18px] max-md:translate-x-0 -translate-y-1/2 will-change-[opacity,transform] text-right max-md:text-center"
                 >
-                  <span className="flavour-index block mb-[9px] max-sm:mb-[3px] text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-[0.14em]">
+                  <span className="flavour-index inline-block px-2.5 py-0.5 max-md:bg-ink/10 rounded-full mb-[9px] max-sm:mb-[2px] text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.14em]">
                     {item.indexLabel}
                   </span>
-                  <strong className="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.15rem] max-sm:text-[1.05rem] font-extrabold leading-[0.95] tracking-[-0.06em]">
+                  <strong className="flavour-name block text-[clamp(1.35rem,2vw,2rem)] max-md:text-[1.4rem] max-sm:text-[1.25rem] font-extrabold leading-[0.95] tracking-[-0.06em]">
                     {item.name}
                   </strong>
                 </div>
