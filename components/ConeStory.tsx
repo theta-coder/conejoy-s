@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { FLAVOURS } from "@/data/flavours";
 
 export default function ConeStory() {
@@ -14,6 +13,19 @@ export default function ConeStory() {
 
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
+
+  // Progressive preloading of adjacent assets
+  useEffect(() => {
+    const nextIdx = Math.min(activeIndex + 1, FLAVOURS.length - 1);
+    const prevIdx = Math.max(activeIndex - 1, 0);
+
+    [nextIdx, prevIdx].forEach((idx) => {
+      if (typeof window !== "undefined") {
+        const img = new window.Image();
+        img.src = FLAVOURS[idx].webpSrc;
+      }
+    });
+  }, [activeIndex]);
 
   useEffect(() => {
     let ticking = false;
@@ -42,7 +54,6 @@ export default function ConeStory() {
             cone.style.opacity = isActive ? "1" : "0";
             cone.style.visibility = isActive ? "visible" : "hidden";
             cone.style.transform = "translate3d(0, 0, 0) scale(1)";
-            cone.style.filter = "drop-shadow(0 30px 22px rgba(52, 39, 22, 0.2))";
             cone.style.zIndex = isActive ? "10" : "0";
             cone.setAttribute("aria-hidden", String(!isActive));
           });
@@ -102,7 +113,6 @@ export default function ConeStory() {
             const scale = Math.max(0.32, 1 - absDist * 0.35);
             const opacity = clamp(1 - absDist * 0.45, 0, 1);
             const zIndex = Math.round(10 - absDist * 4);
-            const blurPx = absDist > 0.05 ? Math.min(absDist * 2.0, 3) : 0;
 
             cone.style.opacity = opacity.toFixed(3);
             cone.style.transform = `translate3d(${xOffset.toFixed(
@@ -111,13 +121,6 @@ export default function ConeStory() {
               2
             )}deg) scale(${scale.toFixed(3)})`;
             cone.style.zIndex = String(zIndex);
-            if (blurPx > 0) {
-              cone.style.filter = `drop-shadow(0 20px 18px rgba(52, 39, 22, 0.2)) blur(${blurPx.toFixed(
-                1
-              )}px)`;
-            } else {
-              cone.style.filter = `drop-shadow(0 30px 22px rgba(52, 39, 22, 0.2))`;
-            }
           }
         });
 
@@ -215,14 +218,18 @@ export default function ConeStory() {
             href="#flavours"
             aria-label="Cone Joy's Ice Cream home"
           >
-            <Image
-              className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
-              src="/assets/conejoys-logo.png"
-              alt="Cone Joy's Ice Cream"
-              width={110}
-              height={40}
-              priority
-            />
+            <picture>
+              <source srcSet="/assets/conejoys-logo.webp" type="image/webp" />
+              <img
+                className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
+                src="/assets/conejoys-logo.png"
+                alt="Cone Joy's Ice Cream"
+                width={110}
+                height={85}
+                loading="eager"
+                decoding="sync"
+              />
+            </picture>
           </a>
           <a
             className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4"
@@ -283,20 +290,24 @@ export default function ConeStory() {
             {/* Cone Stack */}
             <div className="cone-stack absolute inset-0 grid place-items-center">
               {FLAVOURS.map((item, idx) => (
-                <img
-                  key={item.id}
-                  ref={(el) => {
-                    coneRefs.current[idx] = el;
-                  }}
-                  style={{
-                    opacity: idx === 0 ? 1 : 0,
-                    visibility: idx === 0 ? "visible" : "hidden",
-                  }}
-                  className="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_30px_22px_rgba(52,39,22,0.2)] will-change-[transform,opacity,filter] pointer-events-none select-none origin-center"
-                  src={item.imageSrc}
-                  alt={item.alt}
-                  data-color={item.color}
-                />
+                <picture key={item.id} className="contents">
+                  <source srcSet={item.webpSrc} type="image/webp" />
+                  <img
+                    ref={(el) => {
+                      coneRefs.current[idx] = el;
+                    }}
+                    style={{
+                      opacity: idx === 0 ? 1 : 0,
+                      visibility: idx === 0 ? "visible" : "hidden",
+                    }}
+                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(60vw,min(32svh,270px))] max-sm:w-[min(56vw,min(30svh,230px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 filter drop-shadow-[0_22px_18px_rgba(52,39,22,0.2)] will-change-[transform,opacity] pointer-events-none select-none origin-center"
+                    src={item.imageSrc}
+                    alt={item.alt}
+                    loading={idx <= 1 ? "eager" : "lazy"}
+                    decoding={idx === 0 ? "sync" : "async"}
+                    data-color={item.color}
+                  />
+                </picture>
               ))}
             </div>
 
