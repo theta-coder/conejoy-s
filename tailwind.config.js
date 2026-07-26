@@ -2,7 +2,10 @@
 module.exports = {
   content: [
     "./cone-scroll.html",
-    "./src/**/*.{html,js}"
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{html,js,ts,jsx,tsx,mdx}"
   ],
   theme: {
     extend: {
@@ -13,8 +16,8 @@ module.exports = {
         bg: "#e6f23c"
       },
       fontFamily: {
-        sans: ["DM Sans", "sans-serif"],
-        display: ["Manrope", "sans-serif"]
+        sans: ["var(--font-dm-sans)", "DM Sans", "sans-serif"],
+        display: ["var(--font-manrope)", "Manrope", "sans-serif"]
       },
       transitionTimingFunction: {
         custom: "cubic-bezier(0.22, 1, 0.36, 1)"
