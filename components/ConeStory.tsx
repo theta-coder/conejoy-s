@@ -434,11 +434,12 @@ export default function ConeStory() {
   };
 
   return (
-    <div
-      ref={storyRef}
-      id="cones"
-      className="scroll-story relative h-[1200svh]"
-    >
+    <>
+      <div
+        ref={storyRef}
+        id="cones"
+        className="scroll-story relative h-[1200svh]"
+      >
       <main
         ref={heroRef}
         style={{ backgroundColor: FLAVOURS[0].color }}
@@ -849,9 +850,10 @@ export default function ConeStory() {
           </a>
         </div>
       </main>
-
-      {/* Cups Collection Section */}
-      <CupsSection />
     </div>
+
+    {/* Cups Collection Section (Positioned cleanly below the 1200svh cone scroll track) */}
+    <CupsSection />
+    </>
   );
 }
