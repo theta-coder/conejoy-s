@@ -105,8 +105,10 @@ export default function ConeStory() {
   const scrollToFlavour = useCallback(
     (idx: number) => {
       if (!storyRef.current) return;
-      const scrollRange = scrollRangeRef.current;
-      const storyTop = storyTopRef.current;
+      const story = storyRef.current;
+      const rect = story.getBoundingClientRect();
+      const storyTop = window.scrollY + rect.top;
+      const scrollRange = Math.max(1, story.offsetHeight - window.innerHeight);
       const targetScroll = storyTop + (idx / (FLAVOURS.length - 1)) * scrollRange;
       window.scrollTo({ top: targetScroll, behavior: "smooth" });
       setSearchQuery("");
@@ -243,36 +245,35 @@ export default function ConeStory() {
         const isCompactMobile = window.innerWidth <= 480;
         const isMobile = window.innerWidth <= 820;
 
-        const angleStepDeg = isCompactMobile ? 32 : isMobile ? 34 : 38;
-        const yRadiusPercent = isCompactMobile ? 50 : isMobile ? 56 : 100;
-        const xRadiusPercent = isCompactMobile ? 150 : isMobile ? 170 : 220;
-        const maxRotationDeg = isCompactMobile ? 14 : 18;
+        const angleStepDeg = isCompactMobile ? 48 : isMobile ? 44 : 38;
+        const yRadiusPercent = isCompactMobile ? 88 : isMobile ? 92 : 100;
+        const xRadiusPercent = isCompactMobile ? 120 : isMobile ? 140 : 220;
+        const maxRotationDeg = isCompactMobile ? 12 : 18;
 
         coneRefs.current.forEach((cone, idx) => {
           if (!cone) return;
           const dist = idx - progressFloat;
           const absDist = Math.abs(dist);
 
-          if (absDist > 2.2) {
+          if (absDist > 1.3) {
             cone.style.opacity = "0";
             cone.style.visibility = "hidden";
             cone.style.willChange = "auto";
             cone.style.transform = "translate3d(-100%, 0, 0) scale(0.3)";
             cone.setAttribute("aria-hidden", "true");
           } else {
-            cone.style.visibility = "visible";
             cone.setAttribute(
               "aria-hidden",
               String(Math.round(progressFloat) !== idx)
             );
 
             // Limit will-change strictly to active and immediately adjacent cones
-            const shouldPromoteLayer = absDist <= 1.2;
+            const shouldPromoteLayer = absDist <= 1.0;
             cone.style.willChange = shouldPromoteLayer ? "transform, opacity" : "auto";
 
             // Optimize filter cost for mobile screens
             if (isMobile) {
-              if (absDist <= 0.5) {
+              if (absDist <= 0.4) {
                 cone.style.filter = "drop-shadow(0 14px 12px rgba(52, 39, 22, 0.18))";
               } else {
                 cone.style.filter = "none";
@@ -288,11 +289,17 @@ export default function ConeStory() {
             const xOffset = -(1 - Math.cos(angleRad)) * xRadiusPercent;
 
             const rotation = clamp(dist * maxRotationDeg, -35, 35);
-            const scale = Math.max(0.32, 1 - absDist * 0.35);
-            const opacity = clamp(1 - absDist * 0.45, 0, 1);
+            const scale = Math.max(0.35, 1 - absDist * 0.35);
+            const opacity = clamp(1 - Math.pow(absDist, 1.3) * 1.45, 0, 1);
             const zIndex = Math.round(10 - absDist * 4);
 
-            cone.style.opacity = opacity.toFixed(3);
+            if (opacity <= 0.01) {
+              cone.style.opacity = "0";
+              cone.style.visibility = "hidden";
+            } else {
+              cone.style.opacity = opacity.toFixed(3);
+              cone.style.visibility = "visible";
+            }
             cone.style.transform = `translate3d(${xOffset.toFixed(
               2
             )}%, ${yOffset.toFixed(2)}%, 0) rotate(${rotation.toFixed(
