@@ -9,6 +9,7 @@ export default function ConeStory() {
   const coneRefs = useRef<(HTMLImageElement | null)[]>([]);
   const flavourRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const badgeRef = useRef<HTMLDivElement>(null);
   
   const storyTopRef = useRef<number>(0);
   const scrollRangeRef = useRef<number>(1);
@@ -331,7 +332,9 @@ export default function ConeStory() {
 
             {/* Mobile Active Flavour Name Display (where red line is drawn!) */}
             <div
-              className="mobile-flavour-badge hidden max-md:flex items-center justify-center gap-2.5 mt-3 max-sm:mt-2 mb-2 px-4 py-1.5 mx-auto w-fit rounded-full bg-ink text-panel shadow-md transition-all duration-300 ease-custom"
+              ref={badgeRef}
+              key={activeIndex}
+              className="mobile-flavour-badge hidden max-md:flex items-center justify-center gap-2.5 mt-3 max-sm:mt-2 mb-2 px-4 py-1.5 mx-auto w-fit rounded-full bg-ink text-panel shadow-md animate-badge-pop"
               aria-live="polite"
             >
               <span className="text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.14em] opacity-80 uppercase">
