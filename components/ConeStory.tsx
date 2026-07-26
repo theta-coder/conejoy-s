@@ -331,7 +331,7 @@ export default function ConeStory() {
 
             {/* Mobile Active Flavour Name Display (where red line is drawn!) */}
             <div
-              className="mobile-flavour-badge hidden max-md:flex items-center justify-center gap-2.5 mt-3 max-sm:mt-2 px-4 py-1.5 mx-auto w-fit rounded-full bg-ink text-panel shadow-md transition-all duration-300 ease-custom"
+              className="mobile-flavour-badge hidden max-md:flex items-center justify-center gap-2.5 mt-3 max-sm:mt-2 mb-2 px-4 py-1.5 mx-auto w-fit rounded-full bg-ink text-panel shadow-md transition-all duration-300 ease-custom"
               aria-live="polite"
             >
               <span className="text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.14em] opacity-80 uppercase">
@@ -354,7 +354,7 @@ export default function ConeStory() {
 
           {/* Stage section */}
           <section
-            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-3 max-sm:mt-3 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-5 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
             aria-label="Scroll-controlled ice cream flavours"
           >
             {/* White circle disc */}
