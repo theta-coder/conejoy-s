@@ -398,25 +398,30 @@ export default function ConeStory() {
             </div>
 
             {/* Progress Dot Rail */}
-            <div className="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 grid gap-[6px]">
+            <div className="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 flex flex-col items-end gap-[6px] z-[10]">
               {FLAVOURS.map((item, idx) => (
-                <button
-                  key={item.id}
-                  ref={(el) => {
-                    dotRefs.current[idx] = el;
-                  }}
-                  type="button"
-                  onClick={() => handleDotClick(idx)}
-                  aria-label={`Go to ${item.name} flavour`}
-                  tabIndex={0}
-                  style={{
-                    height: idx === activeIndex ? "34px" : "14px",
-                    backgroundColor: "#15150f",
-                    opacity: idx === activeIndex ? 1 : 0.25,
-                    boxShadow: idx === activeIndex ? "0 0 8px rgba(21,21,15,0.4)" : "none",
-                  }}
-                  className="progress-dot appearance-none cursor-pointer w-[3.5px] border-0 p-0 transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
-                />
+                <div key={item.id} className="group relative flex items-center justify-end">
+                  {/* Hover Tooltip Label */}
+                  <span className="pointer-events-none absolute right-full mr-2.5 px-2 py-0.5 rounded bg-ink text-panel text-[0.65rem] max-sm:text-[0.58rem] font-bold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-200 ease-custom shadow-md">
+                    {item.name}
+                  </span>
+                  <button
+                    ref={(el) => {
+                      dotRefs.current[idx] = el;
+                    }}
+                    type="button"
+                    onClick={() => handleDotClick(idx)}
+                    aria-label={`Go to ${item.name} flavour`}
+                    tabIndex={0}
+                    style={{
+                      height: idx === activeIndex ? "34px" : "14px",
+                      backgroundColor: "#15150f",
+                      opacity: idx === activeIndex ? 1 : 0.25,
+                      boxShadow: idx === activeIndex ? "0 0 8px rgba(21,21,15,0.4)" : "none",
+                    }}
+                    className="progress-dot appearance-none cursor-pointer w-[3.5px] border-0 p-0 transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                  />
+                </div>
               ))}
             </div>
           </section>
