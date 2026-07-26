@@ -327,10 +327,10 @@ export default function ConeStory() {
             </picture>
           </a>
 
-          {/* Live Search Bar */}
-          <div ref={searchRef} className="relative mx-4 flex-1 max-w-[420px] max-md:max-w-[260px] max-sm:max-w-none max-sm:mx-2">
-            <div className="flex items-center gap-2.5 px-4 py-2 max-md:px-3 max-md:py-1.5 rounded-full border border-[rgba(21,21,15,0.18)] bg-[rgba(255,255,255,0.75)] backdrop-blur-md transition-all duration-200 focus-within:border-ink focus-within:bg-white focus-within:shadow-[0_4px_20px_rgba(21,21,15,0.12)] hover:border-[rgba(21,21,15,0.3)]">
-              <svg className="w-[16px] h-[16px] max-md:w-[14px] max-md:h-[14px] opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          {/* Live Search Bar (Responsive: Large on Desktop, Small on Mobile) */}
+          <div ref={searchRef} className="relative z-20 flex-shrink mx-3 max-sm:mx-1.5">
+            <div className="flex items-center gap-2 xl:w-[480px] lg:w-[380px] md:w-[280px] sm:w-[200px] w-[140px] px-3.5 py-2 max-lg:py-1.5 max-sm:px-2.5 max-sm:py-1 rounded-full border border-[rgba(21,21,15,0.18)] bg-[rgba(255,255,255,0.75)] backdrop-blur-md transition-all duration-200 focus-within:border-ink focus-within:bg-white focus-within:shadow-[0_4px_20px_rgba(21,21,15,0.12)] hover:border-[rgba(21,21,15,0.3)]">
+              <svg className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-sm:w-3 max-sm:h-3 opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
               <input
@@ -341,8 +341,8 @@ export default function ConeStory() {
                   setSearchOpen(true);
                 }}
                 onFocus={() => searchQuery.trim() && setSearchOpen(true)}
-                placeholder="Search 12 flavours (e.g. Mango, Kit Kat)..."
-                className="bg-transparent outline-none border-none text-[0.86rem] max-md:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink"
+                placeholder="Search flavour..."
+                className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.7rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
                 aria-label="Search flavours"
                 autoComplete="off"
               />
@@ -359,7 +359,7 @@ export default function ConeStory() {
                   ✕
                 </button>
               ) : (
-                <span className="max-md:hidden text-[0.62rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase select-none pointer-events-none">
+                <span className="max-lg:hidden text-[0.6rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase select-none pointer-events-none flex-shrink-0">
                   SEARCH
                 </span>
               )}
@@ -367,22 +367,22 @@ export default function ConeStory() {
 
             {/* Search Results Dropdown */}
             {searchOpen && filteredFlavours.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_12px_40px_rgba(21,21,15,0.16)] border border-[rgba(21,21,15,0.1)] overflow-hidden z-50 animate-badge-pop">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_12px_40px_rgba(21,21,15,0.16)] border border-[rgba(21,21,15,0.1)] overflow-hidden z-50 animate-badge-pop min-w-[200px]">
                 {filteredFlavours.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => scrollToFlavour(item.originalIndex)}
-                    className="w-full flex items-center gap-3.5 px-4 py-3 text-left hover:bg-[rgba(21,21,15,0.05)] active:bg-[rgba(21,21,15,0.08)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 max-sm:py-2 text-left hover:bg-[rgba(21,21,15,0.05)] active:bg-[rgba(21,21,15,0.08)] transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer"
                   >
                     <span
-                      className="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm border border-black/10"
+                      className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3 rounded-full flex-shrink-0 shadow-sm border border-black/10"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-[0.84rem] max-md:text-[0.78rem] font-bold tracking-tight text-ink">
+                    <span className="text-[0.84rem] max-lg:text-[0.78rem] max-sm:text-[0.72rem] font-bold tracking-tight text-ink">
                       {item.name}
                     </span>
-                    <span className="ml-auto text-[0.65rem] font-extrabold tracking-[0.14em] opacity-40 uppercase">
+                    <span className="ml-auto text-[0.65rem] max-sm:text-[0.58rem] font-extrabold tracking-[0.14em] opacity-40 uppercase">
                       {item.indexLabel}
                     </span>
                   </button>
