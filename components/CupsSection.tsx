@@ -8,7 +8,7 @@ export default function CupsSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [isAdded, setIsAdded] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, totalCount, setIsCartOpen } = useCart();
 
   // Touch and drag refs
   const touchStartXRef = useRef<number | null>(null);
@@ -131,9 +131,32 @@ export default function CupsSection() {
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[100svh] py-16 max-md:py-10 flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
+      className="relative min-h-[100svh] flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
       aria-label="Cups Collection"
     >
+      <header className="relative z-40 w-full bg-white/70 backdrop-blur-md border-b border-ink/10">
+        <nav className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto min-h-[76px] max-md:min-h-[64px] flex items-center justify-between gap-4" aria-label="Cups navigation">
+          <a href="#cones" className="shrink-0" aria-label="Cone Joy's home and cones">
+            <picture>
+              <source srcSet="/assets/conejoys-logo.webp" type="image/webp" />
+              <img src="/assets/conejoys-logo.png" alt="Cone Joy's Ice Cream" width={110} height={85} className="block h-auto w-[92px] max-sm:w-[72px]" />
+            </picture>
+          </a>
+
+          <div className="flex items-center gap-2 max-sm:gap-1.5">
+            <a href="#cones" className="min-h-9 px-4 max-sm:px-3 rounded-full border border-ink/20 inline-flex items-center text-[0.75rem] max-sm:text-[0.68rem] font-black no-underline text-ink hover:bg-white/70 transition-colors">Cones</a>
+            <a href="#cups" aria-current="page" className="min-h-9 px-4 max-sm:px-3 rounded-full bg-ink text-panel inline-flex items-center text-[0.75rem] max-sm:text-[0.68rem] font-black no-underline">Cups</a>
+          </div>
+
+          <div className="flex items-center gap-3 max-sm:gap-2 shrink-0">
+            <a href="https://wa.me/923044490480" target="_blank" rel="noreferrer" className="text-[0.78rem] font-black text-ink underline underline-offset-4 max-md:hidden">Order online</a>
+            <button type="button" onClick={() => setIsCartOpen(true)} className="relative min-h-9 px-3 rounded-full bg-white/80 border border-ink/15 text-[0.72rem] max-sm:text-[0.66rem] font-black cursor-pointer" aria-label={`Open cart with ${totalCount} items`}>
+              Cart {totalCount > 0 ? `(${totalCount})` : ""}
+            </button>
+          </div>
+        </nav>
+      </header>
+
       {/* Background Subtle Accent Pattern */}
       <div
         className="absolute w-[60vw] aspect-square left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 shadow-[0_0_120px_rgba(255,255,255,0.15)] pointer-events-none -z-10"
@@ -141,7 +164,7 @@ export default function CupsSection() {
       />
 
       {/* Header Info */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10">
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-8 max-md:pt-5 text-center z-10">
         <p className="kicker mb-2 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           CUPS COLLECTION
@@ -252,7 +275,7 @@ export default function CupsSection() {
       </div>
 
       {/* Bottom Info & Action Panel */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex flex-col items-center gap-4 z-10">
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pb-10 max-md:pb-6 flex flex-col items-center gap-4 z-10">
         {/* Flavour Title & Details */}
         <div className="text-center">
           <span className="inline-block px-3 py-1 rounded-full bg-ink/10 text-[0.7rem] font-extrabold tracking-wider uppercase mb-1">
