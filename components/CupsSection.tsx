@@ -158,16 +158,28 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       {/* Header Info */}
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-3 max-sm:pt-2 text-center z-10">
-        <p className="kicker mb-1.5 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
+        <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           CUPS COLLECTION
         </p>
-        <h2 className="font-display text-[clamp(2rem,4.2vw,3.75rem)] max-sm:text-[clamp(1.75rem,8vw,2.3rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
+        <h2 className="font-display text-[clamp(1.8rem,3.6vw,3.2rem)] max-sm:text-[clamp(1.5rem,6.5vw,2rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
           Your flavour, served your way.
         </h2>
-        <p className="mt-1.5 text-[0.95rem] max-md:text-[0.8rem] max-sm:text-[0.74rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
+        <p className="mt-1 text-[0.9rem] max-md:text-[0.78rem] max-sm:text-[0.72rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
           Explore all 12 signature flavours in a perfectly chilled cup.
         </p>
+
+        {/* Prominent Active Flavour Title Above Cups */}
+        <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center transition-all duration-300">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
+            <span>{activeFlavour.indexLabel}</span>
+            <span className="w-1 h-1 rounded-full bg-current opacity-60" aria-hidden="true" />
+            <span>Single Scoop</span>
+          </div>
+          <h3 className="font-display text-[clamp(2.2rem,5.5vw,4.5rem)] max-sm:text-[clamp(1.8rem,7.5vw,2.8rem)] font-black uppercase tracking-tight m-0 mt-0.5 text-ink leading-tight">
+            {activeFlavour.name}
+          </h3>
+        </div>
       </div>
 
       {/* Product Carousel Area */}
@@ -277,17 +289,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
       </div>
 
-      {/* Bottom Info & Action Panel */}
+      {/* Bottom Action Panel */}
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pb-4 max-sm:pb-3 flex flex-col items-center gap-2.5 max-sm:gap-2 z-10">
-        {/* Flavour Title & Details */}
-        <div className="text-center">
-          <span className="inline-block px-3 py-1 rounded-full bg-ink/10 text-[0.7rem] font-extrabold tracking-wider uppercase mb-1">
-            {activeFlavour.indexLabel}
-          </span>
-          <h3 className="text-2xl max-md:text-xl font-black uppercase tracking-tight m-0">{activeFlavour.name}</h3>
-          <p className="text-xs opacity-70 font-bold uppercase tracking-widest mt-0.5">Single Scoop</p>
-        </div>
-
         {/* Quantity Controls + Add to Cart Button */}
         <div className="flex max-sm:flex-col items-center gap-3 w-full max-w-[380px]">
           {/* Quantity Modifier */}
