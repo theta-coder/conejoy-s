@@ -147,7 +147,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[100svh] flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
+      className="relative min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
       aria-label="Cups Collection"
     >
       {/* Background Subtle Accent Pattern */}
@@ -157,22 +157,22 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       />
 
       {/* Header Info */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-8 max-md:pt-5 text-center z-10">
-        <p className="kicker mb-2 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-3 max-sm:pt-2 text-center z-10">
+        <p className="kicker mb-1.5 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           CUPS COLLECTION
         </p>
-        <h2 className="font-display text-[clamp(2.2rem,5vw,4.5rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
+        <h2 className="font-display text-[clamp(2rem,4.2vw,3.75rem)] max-sm:text-[clamp(1.75rem,8vw,2.3rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
           Your flavour, served your way.
         </h2>
-        <p className="mt-2 text-[0.95rem] max-md:text-[0.84rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
+        <p className="mt-1.5 text-[0.95rem] max-md:text-[0.8rem] max-sm:text-[0.74rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
           Explore all 12 signature flavours in a perfectly chilled cup.
         </p>
       </div>
 
       {/* Product Carousel Area */}
       <div
-        className="relative my-8 max-md:my-4 w-full flex items-center justify-center min-h-[360px] max-md:min-h-[280px] select-none"
+        className="relative my-2 w-full flex items-center justify-center min-h-[clamp(260px,38svh,340px)] max-md:min-h-[clamp(240px,36svh,300px)] max-sm:min-h-[clamp(220px,32svh,270px)] select-none"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -195,7 +195,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
 
         {/* Carousel Items Container */}
-        <div className="relative w-full max-w-[900px] h-[340px] max-md:h-[260px] flex items-center justify-center">
+        <div className="relative w-full max-w-[900px] h-[clamp(260px,38svh,340px)] max-md:h-[clamp(240px,36svh,300px)] max-sm:h-[clamp(220px,32svh,270px)] flex items-center justify-center">
           {FLAVOURS.map((item, idx) => {
             const isCurrent = idx === activeIdx;
             const isPrev = idx === prevIdx;
@@ -278,7 +278,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       </div>
 
       {/* Bottom Info & Action Panel */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pb-10 max-md:pb-6 flex flex-col items-center gap-4 z-10">
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pb-4 max-sm:pb-3 flex flex-col items-center gap-2.5 max-sm:gap-2 z-10">
         {/* Flavour Title & Details */}
         <div className="text-center">
           <span className="inline-block px-3 py-1 rounded-full bg-ink/10 text-[0.7rem] font-extrabold tracking-wider uppercase mb-1">
