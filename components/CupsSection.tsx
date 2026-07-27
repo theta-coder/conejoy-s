@@ -18,16 +18,16 @@ export default function CupsSection() {
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
   const currentQuantity = quantities[activeFlavour.id] || 1;
 
-  // Next and Previous Index (Looping)
-  const prevIdx = (activeIdx - 1 + FLAVOURS.length) % FLAVOURS.length;
-  const nextIdx = (activeIdx + 1) % FLAVOURS.length;
+  // Next and Previous Index (Bounded, non-looping)
+  const prevIdx = activeIdx > 0 ? activeIdx - 1 : null;
+  const nextIdx = activeIdx < FLAVOURS.length - 1 ? activeIdx + 1 : null;
 
   const goToPrev = useCallback(() => {
-    setActiveIdx((prev) => (prev - 1 + FLAVOURS.length) % FLAVOURS.length);
+    setActiveIdx((prev) => Math.max(0, prev - 1));
   }, []);
 
   const goToNext = useCallback(() => {
-    setActiveIdx((prev) => (prev + 1) % FLAVOURS.length);
+    setActiveIdx((prev) => Math.min(FLAVOURS.length - 1, prev + 1));
   }, []);
 
   const handleQuantityChange = (delta: number) => {
@@ -76,7 +76,7 @@ export default function CupsSection() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrev, goToNext]);
 
-  // Wheel Scroll Handler (throttled 650ms cooldown)
+  // Wheel Scroll Handler (throttled 650ms cooldown, bounded at ends)
   const lastScrollTimeRef = useRef<number>(0);
 
   useEffect(() => {
@@ -89,10 +89,10 @@ export default function CupsSection() {
       const now = Date.now();
       if (now - lastScrollTimeRef.current < 650) return;
 
-      if (e.deltaY > 40) {
+      if (e.deltaY > 40 && activeIdx < FLAVOURS.length - 1) {
         lastScrollTimeRef.current = now;
         goToNext();
-      } else if (e.deltaY < -40) {
+      } else if (e.deltaY < -40 && activeIdx > 0) {
         lastScrollTimeRef.current = now;
         goToPrev();
       }
@@ -100,7 +100,7 @@ export default function CupsSection() {
 
     window.addEventListener("wheel", handleWheel, { passive: true });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [goToNext, goToPrev]);
+  }, [goToNext, goToPrev, activeIdx]);
 
   // Touch Swipe Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -116,9 +116,9 @@ export default function CupsSection() {
 
   const handleTouchEnd = () => {
     if (Math.abs(touchDeltaXRef.current) > 40) {
-      if (touchDeltaXRef.current > 0) {
+      if (touchDeltaXRef.current > 0 && activeIdx > 0) {
         goToPrev();
-      } else {
+      } else if (touchDeltaXRef.current < 0 && activeIdx < FLAVOURS.length - 1) {
         goToNext();
       }
     }
@@ -188,8 +188,13 @@ export default function CupsSection() {
         <button
           type="button"
           onClick={goToPrev}
-          aria-label={`Previous cup: ${FLAVOURS[prevIdx].name}`}
-          className="absolute left-[6%] max-md:left-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink hover:bg-white active:scale-95 transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink"
+          disabled={activeIdx === 0}
+          aria-label={prevIdx !== null ? `Previous cup: ${FLAVOURS[prevIdx].name}` : "First cup reached"}
+          className={`absolute left-[6%] max-md:left-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+            activeIdx === 0
+              ? "opacity-25 pointer-events-none"
+              : "hover:bg-white active:scale-95 cursor-pointer"
+          }`}
         >
           <svg className="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -265,8 +270,13 @@ export default function CupsSection() {
         <button
           type="button"
           onClick={goToNext}
-          aria-label={`Next cup: ${FLAVOURS[nextIdx].name}`}
-          className="absolute right-[6%] max-md:right-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink hover:bg-white active:scale-95 transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink"
+          disabled={activeIdx === FLAVOURS.length - 1}
+          aria-label={nextIdx !== null ? `Next cup: ${FLAVOURS[nextIdx].name}` : "Last cup reached"}
+          className={`absolute right-[6%] max-md:right-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+            activeIdx === FLAVOURS.length - 1
+              ? "opacity-25 pointer-events-none"
+              : "hover:bg-white active:scale-95 cursor-pointer"
+          }`}
         >
           <svg className="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

@@ -796,8 +796,25 @@
         if (cupNameLabel) cupNameLabel.textContent = current.name;
         if (cupQtyVal) cupQtyVal.textContent = String(cupQty);
 
-        const prevIdx = (currentCupIdx - 1 + cupData.length) % cupData.length;
-        const nextIdx = (currentCupIdx + 1) % cupData.length;
+        const prevIdx = currentCupIdx > 0 ? currentCupIdx - 1 : null;
+        const nextIdx = currentCupIdx < cupData.length - 1 ? currentCupIdx + 1 : null;
+
+        const prevBtn = document.getElementById('cup-prev-btn');
+        const nextBtn = document.getElementById('cup-next-btn');
+        if (prevBtn) {
+          if (currentCupIdx === 0) {
+            prevBtn.classList.add('opacity-25', 'pointer-events-none');
+          } else {
+            prevBtn.classList.remove('opacity-25', 'pointer-events-none');
+          }
+        }
+        if (nextBtn) {
+          if (currentCupIdx === cupData.length - 1) {
+            nextBtn.classList.add('opacity-25', 'pointer-events-none');
+          } else {
+            nextBtn.classList.remove('opacity-25', 'pointer-events-none');
+          }
+        }
 
         cupCarouselContainer.innerHTML = '';
 
@@ -838,8 +855,8 @@
             <img src="${item.src}" alt="${item.name} single-scoop ice cream cup" class="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)]" />
           `;
 
-          if (isPrev) wrapper.addEventListener('click', () => { currentCupIdx = prevIdx; renderCupCarousel(); });
-          if (isNext) wrapper.addEventListener('click', () => { currentCupIdx = nextIdx; renderCupCarousel(); });
+          if (isPrev && prevIdx !== null) wrapper.addEventListener('click', () => { currentCupIdx = prevIdx; renderCupCarousel(); });
+          if (isNext && nextIdx !== null) wrapper.addEventListener('click', () => { currentCupIdx = nextIdx; renderCupCarousel(); });
 
           cupCarouselContainer.appendChild(wrapper);
         });
@@ -860,13 +877,17 @@
       }
 
       document.getElementById('cup-prev-btn')?.addEventListener('click', () => {
-        currentCupIdx = (currentCupIdx - 1 + cupData.length) % cupData.length;
-        renderCupCarousel();
+        if (currentCupIdx > 0) {
+          currentCupIdx--;
+          renderCupCarousel();
+        }
       });
 
       document.getElementById('cup-next-btn')?.addEventListener('click', () => {
-        currentCupIdx = (currentCupIdx + 1) % cupData.length;
-        renderCupCarousel();
+        if (currentCupIdx < cupData.length - 1) {
+          currentCupIdx++;
+          renderCupCarousel();
+        }
       });
 
       cupQtyMinus?.addEventListener('click', () => {
