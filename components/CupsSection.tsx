@@ -150,12 +150,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       className="relative min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
       aria-label="Cups Collection"
     >
-      {/* Background Subtle Accent Pattern */}
-      <div
-        className="absolute w-[60vw] aspect-square left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 shadow-[0_0_120px_rgba(255,255,255,0.15)] pointer-events-none -z-10"
-        aria-hidden="true"
-      />
-
       {/* Header Info */}
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-3 max-sm:pt-2 text-center z-10">
         <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
@@ -195,7 +189,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           onClick={goToPrev}
           disabled={activeIdx === 0}
           aria-label={prevIdx !== null ? `Previous cup: ${FLAVOURS[prevIdx].name}` : "First cup reached"}
-          className={`absolute left-[6%] max-md:left-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute left-[4%] max-md:left-1 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === 0
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -208,6 +202,12 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
         {/* Carousel Items Container */}
         <div className="relative w-full max-w-[900px] h-[clamp(260px,38svh,340px)] max-md:h-[clamp(240px,36svh,300px)] max-sm:h-[clamp(220px,32svh,270px)] flex items-center justify-center">
+          {/* White Disc Backdrop Centered EXACTLY behind the Active Center Cup */}
+          <div
+            className="absolute w-[250px] max-md:w-[195px] max-sm:w-[175px] aspect-square rounded-full bg-white/70 backdrop-blur-sm border border-white/80 shadow-[0_20px_60px_rgba(21,21,15,0.12)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+            aria-hidden="true"
+          />
+
           {FLAVOURS.map((item, idx) => {
             const isCurrent = idx === activeIdx;
             const isPrev = idx === prevIdx;
@@ -227,14 +227,14 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
               transformStyle = "translate3d(0, 0, 0) scale(1) rotate(0deg)";
               positionClasses = "left-1/2 -translate-x-1/2";
             } else if (isPrev) {
-              opacity = 0.4;
+              opacity = 0.35;
               zIndex = 10;
-              transformStyle = "translate3d(-65%, 0, 0) scale(0.68) rotate(-4deg)";
+              transformStyle = "translate3d(-55%, 0, 0) scale(0.62) rotate(-4deg)";
               positionClasses = "left-1/2 -translate-x-1/2 cursor-pointer";
             } else if (isNext) {
-              opacity = 0.4;
+              opacity = 0.35;
               zIndex = 10;
-              transformStyle = "translate3d(65%, 0, 0) scale(0.68) rotate(4deg)";
+              transformStyle = "translate3d(55%, 0, 0) scale(0.62) rotate(4deg)";
               positionClasses = "left-1/2 -translate-x-1/2 cursor-pointer";
             }
 
@@ -251,13 +251,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   transform: transformStyle,
                   transition: "all 650ms cubic-bezier(0.22, 1, 0.36, 1)",
                 }}
-                className={`absolute top-0 h-full w-[280px] max-md:w-[200px] flex items-center justify-center ${positionClasses}`}
+                className={`absolute top-0 h-full w-[280px] max-md:w-[190px] max-sm:w-[160px] flex items-center justify-center ${positionClasses}`}
               >
-                {/* White Disc Backdrop for Cup */}
-                <div
-                  className="absolute w-[240px] max-md:w-[180px] aspect-square rounded-full bg-white/70 backdrop-blur-sm border border-white/80 shadow-[0_20px_60px_rgba(21,21,15,0.12)] -z-10"
-                  aria-hidden="true"
-                />
                 <img
                   src={item.cupImageSrc}
                   alt={item.cupAlt}
@@ -277,7 +272,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           onClick={goToNext}
           disabled={activeIdx === FLAVOURS.length - 1}
           aria-label={nextIdx !== null ? `Next cup: ${FLAVOURS[nextIdx].name}` : "Last cup reached"}
-          className={`absolute right-[6%] max-md:right-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute right-[4%] max-md:right-1 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === FLAVOURS.length - 1
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"

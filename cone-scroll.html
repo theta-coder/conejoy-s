@@ -342,7 +342,6 @@
 
   <!-- Cups Collection Section -->
   <section id="cups" class="relative min-h-[100svh] py-16 max-md:py-10 flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink bg-[#f1b844]" aria-label="Cups Collection">
-    <div class="absolute w-[60vw] aspect-square left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 shadow-[0_0_120px_rgba(255,255,255,0.15)] pointer-events-none -z-10" aria-hidden="true"></div>
 
     <div class="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-3 max-sm:pt-2 text-center z-10">
       <p class="kicker mb-1 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
@@ -371,15 +370,17 @@
 
     <!-- Product Carousel Area -->
     <div class="relative my-2 w-full flex items-center justify-center min-h-[clamp(260px,38svh,340px)] max-md:min-h-[clamp(240px,36svh,300px)] max-sm:min-h-[clamp(220px,32svh,270px)] select-none">
-      <button type="button" id="cup-prev-btn" aria-label="Previous cup" class="absolute left-[6%] max-md:left-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink hover:bg-white active:scale-95 transition-all cursor-pointer">
+      <button type="button" id="cup-prev-btn" aria-label="Previous cup" class="absolute left-[4%] max-md:left-1 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink hover:bg-white active:scale-95 transition-all cursor-pointer">
         <svg class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
-      <div id="cup-carousel-container" class="relative w-full max-w-[900px] h-[clamp(260px,38svh,340px)] max-md:h-[clamp(240px,36svh,300px)] max-sm:h-[clamp(220px,32svh,270px)] flex items-center justify-center"></div>
+      <div id="cup-carousel-container" class="relative w-full max-w-[900px] h-[clamp(260px,38svh,340px)] max-md:h-[clamp(240px,36svh,300px)] max-sm:h-[clamp(220px,32svh,270px)] flex items-center justify-center">
+        <div class="absolute w-[250px] max-md:w-[195px] max-sm:w-[175px] aspect-square rounded-full bg-white/70 backdrop-blur-sm border border-white/80 shadow-[0_20px_60px_rgba(21,21,15,0.12)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" aria-hidden="true"></div>
+      </div>
 
-      <button type="button" id="cup-next-btn" aria-label="Next cup" class="absolute right-[6%] max-md:right-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink hover:bg-white active:scale-95 transition-all cursor-pointer">
+      <button type="button" id="cup-next-btn" aria-label="Next cup" class="absolute right-[4%] max-md:right-1 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink hover:bg-white active:scale-95 transition-all cursor-pointer">
         <svg class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
         </svg>
@@ -823,7 +824,7 @@
           }
         }
 
-        cupCarouselContainer.innerHTML = '';
+        cupCarouselContainer.innerHTML = '<div class="absolute w-[250px] max-md:w-[195px] max-sm:w-[175px] aspect-square rounded-full bg-white/70 backdrop-blur-sm border border-white/80 shadow-[0_20px_60px_rgba(21,21,15,0.12)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" aria-hidden="true"></div>';
 
         cupData.forEach((item, idx) => {
           if (idx !== currentCupIdx && idx !== prevIdx && idx !== nextIdx) return;
@@ -841,24 +842,23 @@
             zIndex = 20;
             transformStyle = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
           } else if (isPrev) {
-            opacity = 0.4;
+            opacity = 0.35;
             zIndex = 10;
-            transformStyle = 'translate3d(-65%, 0, 0) scale(0.68) rotate(-4deg)';
+            transformStyle = 'translate3d(-55%, 0, 0) scale(0.62) rotate(-4deg)';
           } else if (isNext) {
-            opacity = 0.4;
+            opacity = 0.35;
             zIndex = 10;
-            transformStyle = 'translate3d(65%, 0, 0) scale(0.68) rotate(4deg)';
+            transformStyle = 'translate3d(55%, 0, 0) scale(0.62) rotate(4deg)';
           }
 
           const wrapper = document.createElement('div');
-          wrapper.className = `absolute top-0 h-full w-[280px] max-md:w-[200px] flex items-center justify-center left-1/2 -translate-x-1/2 ${!isCurrent ? 'cursor-pointer' : ''}`;
+          wrapper.className = `absolute top-0 h-full w-[280px] max-md:w-[190px] max-sm:w-[160px] flex items-center justify-center left-1/2 -translate-x-1/2 ${!isCurrent ? 'cursor-pointer' : ''}`;
           wrapper.style.opacity = opacity;
           wrapper.style.zIndex = zIndex;
           wrapper.style.transform = transformStyle;
           wrapper.style.transition = 'all 650ms cubic-bezier(0.22, 1, 0.36, 1)';
 
           wrapper.innerHTML = `
-            <div class="absolute w-[240px] max-md:w-[180px] aspect-square rounded-full bg-white/70 backdrop-blur-sm border border-white/80 shadow-[0_20px_60px_rgba(21,21,15,0.12)] -z-10" aria-hidden="true"></div>
             <img src="${item.src}" alt="${item.name} single-scoop ice cream cup" class="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)]" />
           `;
 
