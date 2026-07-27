@@ -62,14 +62,14 @@
         <!-- Category Navigation Bar -->
         <nav class="category-bar sticky top-0 z-40 w-full bg-[rgba(255,255,255,0.7)] backdrop-blur-md border-b border-[rgba(21,21,15,0.08)] py-2 transition-colors duration-300">
           <div class="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-center gap-2">
-            <a href="#cones" class="flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-ink text-panel shadow-md no-underline">
+            <button type="button" id="cat-btn-cones" class="flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-ink text-panel shadow-md cursor-pointer border-none">
               <span class="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true"></span>
               <span>Cones</span>
-            </a>
-            <a href="#cups" class="flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5 no-underline">
+            </button>
+            <button type="button" id="cat-btn-cups" class="flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5 cursor-pointer border-none">
               <span class="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true"></span>
               <span>Cups</span>
-            </a>
+            </button>
           </div>
         </nav>
 
@@ -894,6 +894,35 @@
 
         const waMsg = encodeURIComponent(`Hi Cone Joys, I would like to order ${cupQty}x ${item.name} Cup (Single Scoop).`);
         window.open(`https://wa.me/923044490480?text=${waMsg}`, '_blank');
+      });
+
+      // Category Bar Instant Jumps & Scroll-Spy
+      const catBtnCones = document.getElementById('cat-btn-cones');
+      const catBtnCups = document.getElementById('cat-btn-cups');
+
+      function updateCategoryActiveState() {
+        if (!cupsSection || !catBtnCones || !catBtnCups) return;
+        const cupsRect = cupsSection.getBoundingClientRect();
+        if (cupsRect.top <= window.innerHeight * 0.5) {
+          catBtnCups.className = 'flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-ink text-panel shadow-md cursor-pointer border-none';
+          catBtnCones.className = 'flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5 cursor-pointer border-none';
+        } else {
+          catBtnCones.className = 'flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-ink text-panel shadow-md cursor-pointer border-none';
+          catBtnCups.className = 'flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5 cursor-pointer border-none';
+        }
+      }
+
+      window.addEventListener('scroll', updateCategoryActiveState, { passive: true });
+
+      catBtnCones?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      });
+
+      catBtnCups?.addEventListener('click', () => {
+        if (cupsSection) {
+          const targetTop = window.scrollY + cupsSection.getBoundingClientRect().top;
+          window.scrollTo({ top: targetTop, behavior: 'instant' });
+        }
       });
 
       // Initial render of cup carousel

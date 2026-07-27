@@ -25,9 +25,14 @@ export default function CategoryBar() {
 
   const scrollToSection = (id: "cones" | "cups") => {
     setActiveCategory(id);
-    const target = document.getElementById(id);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+    if (id === "cones") {
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    } else if (id === "cups") {
+      const cupsEl = document.getElementById("cups");
+      if (cupsEl) {
+        const targetTop = window.scrollY + cupsEl.getBoundingClientRect().top;
+        window.scrollTo({ top: targetTop, behavior: "instant" as ScrollBehavior });
+      }
     }
   };
 

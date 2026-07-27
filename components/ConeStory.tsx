@@ -438,7 +438,8 @@ export default function ConeStory() {
       <div
         ref={storyRef}
         id="cones"
-        className="scroll-story relative h-[1200svh]"
+        style={{ height: "1200vh" }}
+        className="scroll-story relative z-10"
       >
       <main
         ref={heroRef}

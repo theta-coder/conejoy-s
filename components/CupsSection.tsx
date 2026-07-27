@@ -76,6 +76,32 @@ export default function CupsSection() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrev, goToNext]);
 
+  // Wheel Scroll Handler (throttled 650ms cooldown)
+  const lastScrollTimeRef = useRef<number>(0);
+
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const isCentered = rect.top >= -80 && rect.bottom <= window.innerHeight + 80;
+      if (!isCentered) return;
+
+      const now = Date.now();
+      if (now - lastScrollTimeRef.current < 650) return;
+
+      if (e.deltaY > 40) {
+        lastScrollTimeRef.current = now;
+        goToNext();
+      } else if (e.deltaY < -40) {
+        lastScrollTimeRef.current = now;
+        goToPrev();
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, [goToNext, goToPrev]);
+
   // Touch Swipe Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartXRef.current = e.touches[0].clientX;

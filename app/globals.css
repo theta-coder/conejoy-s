@@ -8,6 +8,10 @@
   }
 }
 
+.scroll-story {
+  height: 1200vh !important;
+}
+
 @keyframes badge-pop {
   0% {
     opacity: 0;
