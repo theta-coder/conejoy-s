@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 
-export default function CategoryBar() {
+interface CategoryBarProps {
+  onCategoryChange?: (category: "cones" | "cups") => void;
+}
+
+export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
   const [activeCategory, setActiveCategory] = useState<"cones" | "cups">("cones");
 
   useEffect(() => {
@@ -13,18 +17,21 @@ export default function CategoryBar() {
       // If top of cups section is in upper half of viewport, activate cups
       if (cupsRect.top <= window.innerHeight * 0.45) {
         setActiveCategory("cups");
+        onCategoryChange?.("cups");
       } else {
         setActiveCategory("cones");
+        onCategoryChange?.("cones");
       }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [onCategoryChange]);
 
   const scrollToSection = (id: "cones" | "cups") => {
     setActiveCategory(id);
+    onCategoryChange?.(id);
     if (id === "cones") {
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     } else if (id === "cups") {
@@ -38,7 +45,7 @@ export default function CategoryBar() {
 
   return (
     <nav
-      className="category-bar sticky top-0 z-40 w-full bg-[rgba(255,255,255,0.7)] backdrop-blur-md border-b border-[rgba(21,21,15,0.08)] py-2 transition-colors duration-300"
+      className="category-bar fixed top-[80px] max-md:top-[64px] max-sm:top-[56px] left-0 z-40 w-full bg-[rgba(255,255,255,0.82)] backdrop-blur-md border-b border-[rgba(21,21,15,0.08)] py-2 transition-colors duration-300"
       aria-label="Category navigation"
     >
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-center gap-2">

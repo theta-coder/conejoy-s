@@ -946,6 +946,35 @@
         }
       });
 
+      // Wheel Scroll Handler (Pin wheel in Cups until 1st cup is reached scrolling UP)
+      let lastCupScrollTime = 0;
+      window.addEventListener('wheel', (e) => {
+        if (!cupsSection) return;
+        const rect = cupsSection.getBoundingClientRect();
+        const isVisible = rect.top <= 120 && rect.bottom >= window.innerHeight - 120;
+        if (!isVisible) return;
+
+        const delta = e.deltaY;
+
+        if (delta < -20 && currentCupIdx > 0) {
+          e.preventDefault();
+          const now = Date.now();
+          if (now - lastCupScrollTime >= 450) {
+            lastCupScrollTime = now;
+            currentCupIdx--;
+            renderCupCarousel();
+          }
+        } else if (delta > 20 && currentCupIdx < cupData.length - 1) {
+          e.preventDefault();
+          const now = Date.now();
+          if (now - lastCupScrollTime >= 450) {
+            lastCupScrollTime = now;
+            currentCupIdx++;
+            renderCupCarousel();
+          }
+        }
+      }, { passive: false });
+
       // Initial render of cup carousel
       renderCupCarousel();
     })();

@@ -25,6 +25,8 @@ export default function ConeStory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
+  const [searchCategory, setSearchCategory] = useState<"cones" | "cups">("cones");
+  const [cupSearchIndex, setCupSearchIndex] = useState<number>(0);
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const [randomIndices, setRandomIndices] = useState<number[]>([0, 1, 2, 3, 4]);
 
@@ -150,6 +152,28 @@ export default function ConeStory() {
     [saveRecent]
   );
 
+  const selectSearchResult = useCallback(
+    (idx: number) => {
+      if (searchCategory === "cups") {
+        setCupSearchIndex(idx);
+        const cups = document.getElementById("cups");
+        if (cups) {
+          const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 820 ? 110 : 126;
+          const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset;
+          window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+        }
+        setSearchQuery("");
+        setSearchOpen(false);
+        setSearchSelectedIndex(-1);
+        if (FLAVOURS[idx]) saveRecent(FLAVOURS[idx].id);
+        return;
+      }
+
+      scrollToFlavour(idx);
+    },
+    [searchCategory, saveRecent, scrollToFlavour]
+  );
+
   // Keyboard navigation for search (ArrowDown, ArrowUp, Enter, Escape)
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!searchOpen || filteredFlavours.length === 0) {
@@ -175,7 +199,7 @@ export default function ConeStory() {
       const targetItemIndex =
         searchSelectedIndex >= 0 ? searchSelectedIndex : 0;
       if (filteredFlavours[targetItemIndex]) {
-        scrollToFlavour(filteredFlavours[targetItemIndex].originalIndex);
+        selectSearchResult(filteredFlavours[targetItemIndex].originalIndex);
       }
     } else if (e.key === "Escape") {
       e.preventDefault();
@@ -444,7 +468,7 @@ export default function ConeStory() {
       <main
         ref={heroRef}
         style={{ backgroundColor: FLAVOURS[0].color }}
-        className="hero sticky top-0 min-h-[100svh] grid grid-rows-[auto_auto_1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
+        className="hero sticky top-0 min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] grid grid-rows-[1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
       >
         {/* Background Ring */}
         <div
@@ -454,7 +478,7 @@ export default function ConeStory() {
 
         {/* Navigation */}
         <nav
-          className="nav w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-between min-h-[80px] max-md:min-h-[64px] max-sm:min-h-[56px] border-b border-line"
+          className="nav fixed top-0 left-0 z-50 w-full px-[clamp(12px,4vw,64px)] flex items-center justify-between min-h-[80px] max-md:min-h-[64px] max-sm:min-h-[56px] border-b border-line bg-[rgba(255,255,255,0.82)] backdrop-blur-md"
           aria-label="Primary navigation"
         >
           <a
@@ -482,6 +506,9 @@ export default function ConeStory() {
               <svg className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-sm:w-3 max-sm:h-3 opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
+              <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.58rem] font-black uppercase tracking-wide">
+                {searchCategory === "cups" ? "Cups" : "Cones"}
+              </span>
               <input
                 type="text"
                 value={searchQuery}
@@ -529,7 +556,7 @@ export default function ConeStory() {
                     <button
                       key={item.id}
                       type="button"
-                      onClick={() => scrollToFlavour(item.originalIndex)}
+                      onClick={() => selectSearchResult(item.originalIndex)}
                       onMouseEnter={() => setSearchSelectedIndex(idx)}
                       className={`w-full flex items-center gap-3 px-3.5 py-2.5 max-sm:py-2 text-left transition-colors duration-150 border-b border-[rgba(21,21,15,0.04)] last:border-b-0 cursor-pointer ${
                         isSelected
@@ -563,7 +590,7 @@ export default function ConeStory() {
 
           <div className="flex items-center gap-3 flex-shrink-0">
             <a
-              className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4"
+              className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 max-md:hidden"
               href="https://wa.me/923044490480"
               target="_blank"
               rel="noreferrer"
@@ -589,7 +616,7 @@ export default function ConeStory() {
         </nav>
 
         {/* Category Navigation Bar (Cones / Cups) */}
-        <CategoryBar />
+        <CategoryBar onCategoryChange={setSearchCategory} />
 
         {/* Hero Grid */}
         <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
@@ -854,7 +881,7 @@ export default function ConeStory() {
     </div>
 
     {/* Cups Collection Section (Positioned cleanly below the 1200svh cone scroll track) */}
-    <CupsSection />
+    <CupsSection selectedIndex={cupSearchIndex} />
     </>
   );
 }

@@ -4,11 +4,15 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
 
-export default function CupsSection() {
+interface CupsSectionProps {
+  selectedIndex?: number;
+}
+
+export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [isAdded, setIsAdded] = useState(false);
-  const { addToCart, totalCount, setIsCartOpen } = useCart();
+  const { addToCart } = useCart();
 
   // Touch and drag refs
   const touchStartXRef = useRef<number | null>(null);
@@ -17,6 +21,11 @@ export default function CupsSection() {
 
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
   const currentQuantity = quantities[activeFlavour.id] || 1;
+
+  useEffect(() => {
+    if (selectedIndex === undefined) return;
+    setActiveIdx(Math.max(0, Math.min(FLAVOURS.length - 1, selectedIndex)));
+  }, [selectedIndex]);
 
   // Next and Previous Index (Bounded, non-looping)
   const prevIdx = activeIdx > 0 ? activeIdx - 1 : null;
@@ -76,29 +85,36 @@ export default function CupsSection() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrev, goToNext]);
 
-  // Wheel Scroll Handler (throttled 650ms cooldown, bounded at ends)
+  // Wheel Scroll Handler (Pin wheel in Cups until 1st cup is reached scrolling UP, or last cup scrolling DOWN)
   const lastScrollTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      const isCentered = rect.top >= -80 && rect.bottom <= window.innerHeight + 80;
-      if (!isCentered) return;
+      const isVisible = rect.top <= 120 && rect.bottom >= window.innerHeight - 120;
+      if (!isVisible) return;
 
-      const now = Date.now();
-      if (now - lastScrollTimeRef.current < 650) return;
+      const delta = e.deltaY;
 
-      if (e.deltaY > 40 && activeIdx < FLAVOURS.length - 1) {
-        lastScrollTimeRef.current = now;
-        goToNext();
-      } else if (e.deltaY < -40 && activeIdx > 0) {
-        lastScrollTimeRef.current = now;
-        goToPrev();
+      if (delta < -20 && activeIdx > 0) {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastScrollTimeRef.current >= 450) {
+          lastScrollTimeRef.current = now;
+          goToPrev();
+        }
+      } else if (delta > 20 && activeIdx < FLAVOURS.length - 1) {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastScrollTimeRef.current >= 450) {
+          lastScrollTimeRef.current = now;
+          goToNext();
+        }
       }
     };
 
-    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
   }, [goToNext, goToPrev, activeIdx]);
 
@@ -134,29 +150,6 @@ export default function CupsSection() {
       className="relative min-h-[100svh] flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
       aria-label="Cups Collection"
     >
-      <header className="relative z-40 w-full bg-white/70 backdrop-blur-md border-b border-ink/10">
-        <nav className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto min-h-[76px] max-md:min-h-[64px] flex items-center justify-between gap-4" aria-label="Cups navigation">
-          <a href="#cones" className="shrink-0" aria-label="Cone Joy's home and cones">
-            <picture>
-              <source srcSet="/assets/conejoys-logo.webp" type="image/webp" />
-              <img src="/assets/conejoys-logo.png" alt="Cone Joy's Ice Cream" width={110} height={85} className="block h-auto w-[92px] max-sm:w-[72px]" />
-            </picture>
-          </a>
-
-          <div className="flex items-center gap-2 max-sm:gap-1.5">
-            <a href="#cones" className="min-h-9 px-4 max-sm:px-3 rounded-full border border-ink/20 inline-flex items-center text-[0.75rem] max-sm:text-[0.68rem] font-black no-underline text-ink hover:bg-white/70 transition-colors">Cones</a>
-            <a href="#cups" aria-current="page" className="min-h-9 px-4 max-sm:px-3 rounded-full bg-ink text-panel inline-flex items-center text-[0.75rem] max-sm:text-[0.68rem] font-black no-underline">Cups</a>
-          </div>
-
-          <div className="flex items-center gap-3 max-sm:gap-2 shrink-0">
-            <a href="https://wa.me/923044490480" target="_blank" rel="noreferrer" className="text-[0.78rem] font-black text-ink underline underline-offset-4 max-md:hidden">Order online</a>
-            <button type="button" onClick={() => setIsCartOpen(true)} className="relative min-h-9 px-3 rounded-full bg-white/80 border border-ink/15 text-[0.72rem] max-sm:text-[0.66rem] font-black cursor-pointer" aria-label={`Open cart with ${totalCount} items`}>
-              Cart {totalCount > 0 ? `(${totalCount})` : ""}
-            </button>
-          </div>
-        </nav>
-      </header>
-
       {/* Background Subtle Accent Pattern */}
       <div
         className="absolute w-[60vw] aspect-square left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 shadow-[0_0_120px_rgba(255,255,255,0.15)] pointer-events-none -z-10"
