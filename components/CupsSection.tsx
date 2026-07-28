@@ -278,10 +278,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       {/* 2. Flavour Counter & Flavour Name */}
       <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center text-center z-10 transition-all duration-200">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
+        <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
           <span>{activeFlavour.indexLabel}</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" aria-hidden="true" />
-          <span>Single Scoop</span>
         </div>
         <h3 className="font-display text-[clamp(1.8rem,4vw,3.2rem)] max-sm:text-[clamp(1.5rem,5.8vw,2.3rem)] font-black uppercase tracking-tight m-0 mt-2 max-sm:mt-1.5 text-ink leading-tight whitespace-nowrap">
           {activeFlavour.name}
