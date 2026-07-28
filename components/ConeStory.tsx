@@ -493,6 +493,40 @@ export default function ConeStory() {
     });
   }, []);
 
+  const scrollToCupsSection = useCallback(() => {
+    const cups = document.getElementById("cups");
+    if (!cups) return;
+
+    (window as any).__BYPASS_CUPS_LOCK__ = true;
+    window.dispatchEvent(new CustomEvent("conejoys:select-cup", { detail: 0 }));
+    setCupSearchIndex(0);
+
+    const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
+    const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset + 2;
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+
+    window.setTimeout(() => {
+      (window as any).__BYPASS_CUPS_LOCK__ = false;
+    }, 1200);
+  }, []);
+
+  // Wheel scroll down handler when at 12th Cone (Kit Kat)
+  useEffect(() => {
+    if (activeIndex !== FLAVOURS.length - 1) return;
+    let lastWheelTime = 0;
+
+    const handleWheelKitKat = (e: WheelEvent) => {
+      if (e.deltaY <= 15) return;
+      const now = Date.now();
+      if (now - lastWheelTime < 1000) return;
+      lastWheelTime = now;
+      scrollToCupsSection();
+    };
+
+    window.addEventListener("wheel", handleWheelKitKat, { passive: true });
+    return () => window.removeEventListener("wheel", handleWheelKitKat);
+  }, [activeIndex, scrollToCupsSection]);
+
   // Auto-discover flavours for visitors who do not swipe or scroll. The timer
   // resets after every index change, and only runs while the Cones story is active.
   useEffect(() => {
@@ -501,7 +535,7 @@ export default function ConeStory() {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
       const storyRect = storyRef.current.getBoundingClientRect();
-      const conesAreActive = storyRect.top <= 1 && storyRect.bottom > window.innerHeight;
+      const conesAreActive = storyRect.top <= 100 && storyRect.bottom >= window.innerHeight - 100;
       if (!conesAreActive) return;
 
       const focusedElement = document.activeElement;
@@ -518,24 +552,11 @@ export default function ConeStory() {
         return;
       }
 
-      const cups = document.getElementById("cups");
-      if (!cups) return;
-
-      (window as any).__BYPASS_CUPS_LOCK__ = true;
-      window.dispatchEvent(new CustomEvent("conejoys:select-cup", { detail: 0 }));
-      setCupSearchIndex(0);
-
-      const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
-      const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset + 2;
-      window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
-
-      window.setTimeout(() => {
-        (window as any).__BYPASS_CUPS_LOCK__ = false;
-      }, 1200);
+      scrollToCupsSection();
     }, CONE_AUTO_ADVANCE_MS);
 
     return () => window.clearTimeout(timer);
-  }, [activeIndex, handleDotClick, searchOpen]);
+  }, [activeIndex, handleDotClick, searchOpen, scrollToCupsSection]);
 
   return (
     <>
