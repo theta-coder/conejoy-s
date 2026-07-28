@@ -53,23 +53,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     setActiveIdx((prev) => Math.min(FLAVOURS.length - 1, prev + 1));
   }, []);
 
-  // Auto-advance cups motion when section is active in viewport (every 3.5 seconds)
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      if (document.hidden || !sectionRef.current) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const rect = sectionRef.current.getBoundingClientRect();
-      const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > window.innerHeight * 0.2;
-      if (!isVisible) return;
-
-      if (activeIdx < FLAVOURS.length - 1) {
-        goToNext();
-      }
-    }, 3500);
-
-    return () => window.clearTimeout(timer);
-  }, [activeIdx, goToNext]);
 
   const handleQuantityChange = (delta: number) => {
     setQuantities((prev) => {
