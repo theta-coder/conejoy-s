@@ -189,12 +189,20 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
 
 
-  // Mobile / Tablet Horizontal Touch Swipe Handler
+  // Mobile / Tablet Horizontal Touch Swipe Handler (Only on Cup Carousel Stage)
   useEffect(() => {
     const sectionEl = sectionRef.current;
     if (!sectionEl) return;
 
     const handleTouchStart = (e: TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      // Do not trigger cup swipe if user is interacting with "Choose your serving" panel, buttons, or inputs
+      if (target && target.closest("aside, button, input, a, [role='radiogroup']")) {
+        touchStartXRef.current = null;
+        touchStartYRef.current = null;
+        return;
+      }
+
       touchStartXRef.current = e.touches[0].clientX;
       touchStartYRef.current = e.touches[0].clientY;
       touchDeltaXRef.current = 0;
@@ -202,21 +210,22 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (touchStartXRef.current !== null && touchStartYRef.current !== null) {
-        touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
-        touchDeltaYRef.current = e.touches[0].clientY - touchStartYRef.current;
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
 
-        const absX = Math.abs(touchDeltaXRef.current);
-        const absY = Math.abs(touchDeltaYRef.current);
+      touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
+      touchDeltaYRef.current = e.touches[0].clientY - touchStartYRef.current;
 
-        // Prevent page scroll when user is intentionally swiping horizontally left/right across cups
-        if (absX > absY && absX > 12) {
-          if (e.cancelable) e.preventDefault();
-        }
+      const absX = Math.abs(touchDeltaXRef.current);
+      const absY = Math.abs(touchDeltaYRef.current);
+
+      if (absX > absY && absX > 20) {
+        if (e.cancelable) e.preventDefault();
       }
     };
 
     const handleTouchEnd = () => {
+      if (touchStartXRef.current === null) return;
+
       const absX = Math.abs(touchDeltaXRef.current);
       const absY = Math.abs(touchDeltaYRef.current);
 
