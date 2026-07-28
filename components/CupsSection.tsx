@@ -147,11 +147,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] flex flex-col justify-between overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
+      className="relative min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] pb-12 max-md:pb-8 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
       aria-label="Cups Collection"
     >
-      {/* Header Info */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pt-3 max-sm:pt-2 text-center z-10">
+      {/* 1. Header Info (Heading + Description) */}
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10">
         <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           CUPS COLLECTION
@@ -159,26 +159,26 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         <h2 className="font-display text-[clamp(1.8rem,3.6vw,3.2rem)] max-sm:text-[clamp(1.5rem,6.5vw,2rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
           Your flavour, served your way.
         </h2>
-        <p className="mt-1 text-[0.9rem] max-md:text-[0.78rem] max-sm:text-[0.72rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
+        <p className="mt-3.5 max-sm:mt-3 text-[0.9rem] max-md:text-[0.78rem] max-sm:text-[0.72rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
           Explore all 12 signature flavours in a perfectly chilled cup.
         </p>
-
-        {/* Prominent Active Flavour Title Above Cups */}
-        <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center transition-all duration-300">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
-            <span>{activeFlavour.indexLabel}</span>
-            <span className="w-1 h-1 rounded-full bg-current opacity-60" aria-hidden="true" />
-            <span>Single Scoop</span>
-          </div>
-          <h3 className="font-display text-[clamp(2.2rem,5.5vw,4.5rem)] max-sm:text-[clamp(1.8rem,7.5vw,2.8rem)] font-black uppercase tracking-tight m-0 mt-0.5 text-ink leading-tight">
-            {activeFlavour.name}
-          </h3>
-        </div>
       </div>
 
-      {/* Product Carousel Area */}
+      {/* 2. Flavour Counter & Prominent Flavour Name */}
+      <div className="mt-4 max-sm:mt-3 flex flex-col items-center justify-center text-center z-10 transition-all duration-300">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
+          <span>{activeFlavour.indexLabel}</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" aria-hidden="true" />
+          <span>Single Scoop</span>
+        </div>
+        <h3 className="font-display text-[clamp(2.2rem,5.5vw,4.5rem)] max-sm:text-[clamp(1.8rem,7.5vw,2.8rem)] font-black uppercase tracking-tight m-0 mt-3.5 max-sm:mt-2.5 text-ink leading-tight">
+          {activeFlavour.name}
+        </h3>
+      </div>
+
+      {/* 3. Carousel Stage Container */}
       <div
-        className="relative my-2 w-full flex items-center justify-center min-h-[clamp(260px,38svh,340px)] max-md:min-h-[clamp(240px,36svh,300px)] max-sm:min-h-[clamp(220px,32svh,270px)] select-none"
+        className="relative my-6 max-sm:my-4 w-full max-w-[1100px] mx-auto flex items-center justify-center min-h-[clamp(330px,42svh,480px)] max-md:min-h-[clamp(250px,36svh,320px)] select-none"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -189,7 +189,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           onClick={goToPrev}
           disabled={activeIdx === 0}
           aria-label={prevIdx !== null ? `Previous cup: ${FLAVOURS[prevIdx].name}` : "First cup reached"}
-          className={`absolute left-[4%] max-md:left-1 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute left-4 max-md:left-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === 0
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -200,11 +200,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </svg>
         </button>
 
-        {/* Carousel Items Container */}
-        <div className="relative w-full max-w-[900px] h-[clamp(260px,38svh,340px)] max-md:h-[clamp(240px,36svh,300px)] max-sm:h-[clamp(220px,32svh,270px)] flex items-center justify-center">
-          {/* White Disc Backdrop Centered EXACTLY behind the Active Center Cup */}
+        {/* Carousel Items Viewport Stage */}
+        <div className="relative w-full h-[clamp(330px,42svh,480px)] max-md:h-[clamp(250px,36svh,320px)] flex items-center justify-center">
+          {/* White Halo Centered EXACTLY behind the Active Center Cup */}
           <div
-            className="absolute w-[250px] max-md:w-[195px] max-sm:w-[175px] aspect-square rounded-full bg-white/70 backdrop-blur-sm border border-white/80 shadow-[0_20px_60px_rgba(21,21,15,0.12)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+            className="absolute w-[clamp(280px,24vw,390px)] max-md:w-[clamp(200px,60vw,270px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
             aria-hidden="true"
           />
 
@@ -216,7 +216,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
             // Render only current, prev, and next for max performance
             if (!isCurrent && !isPrev && !isNext) return null;
 
-            let positionClasses = "";
             let transformStyle = "";
             let opacity = 0;
             let zIndex = 0;
@@ -224,18 +223,24 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
             if (isCurrent) {
               opacity = 1;
               zIndex = 20;
-              transformStyle = "translate3d(0, 0, 0) scale(1) rotate(0deg)";
-              positionClasses = "left-1/2 -translate-x-1/2";
+              // Exact center anchor: left: 50%, top: 50%, translate(-50%, -50%) scale(1)
+              transformStyle = "translate(-50%, -50%) scale(1) rotate(0deg)";
             } else if (isPrev) {
-              opacity = 0.35;
+              opacity = 0.32;
               zIndex = 10;
-              transformStyle = "translate3d(-55%, 0, 0) scale(0.62) rotate(-4deg)";
-              positionClasses = "left-1/2 -translate-x-1/2 cursor-pointer";
+              // Pixel/viewport-based horizontal offset from true center
+              transformStyle =
+                typeof window !== "undefined" && window.innerWidth <= 640
+                  ? "translate(-50%, -50%) translateX(clamp(-260px, -62vw, -180px)) scale(0.58) rotate(-3deg)"
+                  : "translate(-50%, -50%) translateX(clamp(-420px, -28vw, -280px)) scale(0.62) rotate(-3deg)";
             } else if (isNext) {
-              opacity = 0.35;
+              opacity = 0.32;
               zIndex = 10;
-              transformStyle = "translate3d(55%, 0, 0) scale(0.62) rotate(4deg)";
-              positionClasses = "left-1/2 -translate-x-1/2 cursor-pointer";
+              // Pixel/viewport-based horizontal offset from true center
+              transformStyle =
+                typeof window !== "undefined" && window.innerWidth <= 640
+                  ? "translate(-50%, -50%) translateX(clamp(180px, 62vw, 260px)) scale(0.58) rotate(3deg)"
+                  : "translate(-50%, -50%) translateX(clamp(280px, 28vw, 420px)) scale(0.62) rotate(3deg)";
             }
 
             return (
@@ -246,12 +251,18 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   if (isNext) goToNext();
                 }}
                 style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
                   opacity,
                   zIndex,
                   transform: transformStyle,
+                  transformOrigin: "center center",
                   transition: "all 650ms cubic-bezier(0.22, 1, 0.36, 1)",
                 }}
-                className={`absolute top-0 h-full w-[280px] max-md:w-[190px] max-sm:w-[160px] flex items-center justify-center ${positionClasses}`}
+                className={`w-[clamp(340px,26vw,460px)] max-md:w-[clamp(230px,72vw,310px)] h-full flex items-center justify-center ${
+                  !isCurrent ? "cursor-pointer" : ""
+                }`}
               >
                 <img
                   src={item.cupImageSrc}
@@ -272,7 +283,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           onClick={goToNext}
           disabled={activeIdx === FLAVOURS.length - 1}
           aria-label={nextIdx !== null ? `Next cup: ${FLAVOURS[nextIdx].name}` : "Last cup reached"}
-          className={`absolute right-[4%] max-md:right-1 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute right-4 max-md:right-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === FLAVOURS.length - 1
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -284,10 +295,10 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
       </div>
 
-      {/* Bottom Action Panel */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pb-4 max-sm:pb-3 flex flex-col items-center gap-2.5 max-sm:gap-2 z-10">
-        {/* Quantity Controls + Add to Cart Button */}
-        <div className="flex max-sm:flex-col items-center gap-3 w-full max-w-[380px]">
+      {/* 4. Bottom Action Panel (Quantity Control + Add to Cart + Progress Dots) */}
+      <div className="mt-5 max-sm:mt-4 w-[min(1100px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex flex-col items-center justify-center gap-4 max-sm:gap-3 z-10">
+        {/* Quantity Controls + Add to Cart Button Row */}
+        <div className="flex max-sm:flex-col items-center justify-center gap-3 w-full max-w-[380px]">
           {/* Quantity Modifier */}
           <div className="flex items-center justify-between px-3 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[rgba(21,21,15,0.18)] shadow-sm w-[130px] max-sm:w-full">
             <button
@@ -340,7 +351,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </div>
 
         {/* Carousel Dots Indicator */}
-        <div className="flex items-center gap-1.5 mt-2">
+        <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-1.5">
           {FLAVOURS.map((item, idx) => (
             <button
               key={item.id}
