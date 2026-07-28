@@ -187,53 +187,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrev, goToNext]);
 
-  // Desktop Wheel Scroll Handler
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if ((window as any).__BYPASS_CUPS_LOCK__) return;
 
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      
-      // Active when the section covers the screen middle or at least 30% of viewport
-      const visibleTop = Math.max(0, rect.top);
-      const visibleBottom = Math.min(window.innerHeight, rect.bottom);
-      const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-      const isCentered = rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.5;
-      
-      if (!isCentered && visibleHeight < window.innerHeight * 0.35) return;
-
-      const currentIndex = activeIdxRef.current;
-      if (Math.abs(e.deltaY) < 0.5) return;
-      const direction: -1 | 1 = e.deltaY > 0 ? 1 : -1;
-      const leavingAtFirstCup = direction === -1 && currentIndex === 0;
-      const leavingAtLastCup = direction === 1 && currentIndex === FLAVOURS.length - 1;
-      const now = performance.now();
-
-      // Briefly absorb momentum after arriving at a boundary, then release page scrolling.
-      if (leavingAtFirstCup || leavingAtLastCup) {
-        if (now - lastWheelNavigationRef.current < 240 && e.cancelable) {
-          e.preventDefault();
-        }
-        return;
-      }
-
-      // Prevent default page scroll so we step through cups 1 to 12
-      if (e.cancelable) e.preventDefault();
-
-      // Time throttle for smooth step navigation
-      if (now - lastWheelNavigationRef.current < 120) return;
-      lastWheelNavigationRef.current = now;
-
-      if (direction === 1) goToNext();
-      else goToPrev();
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, [goToNext, goToPrev]);
 
   // Mobile / Tablet Horizontal Touch Swipe Handler
   useEffect(() => {
