@@ -21,9 +21,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const touchDeltaYRef = useRef<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
   const activeIdxRef = useRef(0);
-  const wheelDeltaRef = useRef(0);
-  const wheelGestureLockedRef = useRef(false);
-  const wheelUnlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wheelGestureActiveRef = useRef(false);
+  const wheelGestureEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
   const currentQuantity = quantities[activeFlavour.id] || 1;
@@ -37,27 +36,24 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     activeIdxRef.current = activeIdx;
   }, [activeIdx]);
 
-  useEffect(() => {
-    const handleExternalCupSelection = (event: Event) => {
-      const requestedIndex = (event as CustomEvent<number>).detail;
-      if (!Number.isFinite(requestedIndex)) return;
-      setActiveIdx(Math.max(0, Math.min(FLAVOURS.length - 1, requestedIndex)));
-    };
-
-    window.addEventListener("conejoys:select-cup", handleExternalCupSelection);
-    return () => window.removeEventListener("conejoys:select-cup", handleExternalCupSelection);
-  }, []);
-
   // Next and Previous Index (Bounded, non-looping)
   const prevIdx = activeIdx > 0 ? activeIdx - 1 : null;
   const nextIdx = activeIdx < FLAVOURS.length - 1 ? activeIdx + 1 : null;
 
   const goToPrev = useCallback(() => {
-    setActiveIdx((prev) => Math.max(0, prev - 1));
+    setActiveIdx((prev) => {
+      const next = Math.max(0, prev - 1);
+      activeIdxRef.current = next;
+      return next;
+    });
   }, []);
 
   const goToNext = useCallback(() => {
-    setActiveIdx((prev) => Math.min(FLAVOURS.length - 1, prev + 1));
+    setActiveIdx((prev) => {
+      const next = Math.min(FLAVOURS.length - 1, prev + 1);
+      activeIdxRef.current = next;
+      return next;
+    });
   }, []);
 
 
@@ -109,90 +105,65 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
   // Desktop Wheel Scroll Handler
   useEffect(() => {
-    const finishWheelGestureAfterPause = () => {
-      if (wheelUnlockTimerRef.current) {
-        clearTimeout(wheelUnlockTimerRef.current);
+    const scheduleGestureEnd = () => {
+      if (wheelGestureEndTimerRef.current) {
+        clearTimeout(wheelGestureEndTimerRef.current);
       }
 
-      wheelUnlockTimerRef.current = setTimeout(() => {
-        wheelGestureLockedRef.current = false;
-        wheelDeltaRef.current = 0;
-        wheelUnlockTimerRef.current = null;
-      }, 220);
+      wheelGestureEndTimerRef.current = setTimeout(() => {
+        wheelGestureActiveRef.current = false;
+        wheelGestureEndTimerRef.current = null;
+      }, 180);
     };
 
     const handleWheel = (e: WheelEvent) => {
-      if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
-        return;
-      }
+      if ((window as any).__BYPASS_CUPS_LOCK__) return;
 
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      // Section is "active" when at least 40% of it is visible in viewport
+      // Only take over the wheel while the Cups product stage is the active screen.
       const visibleTop = Math.max(0, rect.top);
       const visibleBottom = Math.min(window.innerHeight, rect.bottom);
-      const visibleHeight = visibleBottom - visibleTop;
-      const isVisible = visibleHeight > rect.height * 0.4;
-      if (!isVisible) return;
+      const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+      if (visibleHeight < Math.min(rect.height, window.innerHeight) * 0.55) return;
 
       const currentIndex = activeIdxRef.current;
-      const normalizedDelta =
-        e.deltaMode === WheelEvent.DOM_DELTA_LINE
-          ? e.deltaY * 16
-          : e.deltaMode === WheelEvent.DOM_DELTA_PAGE
-            ? e.deltaY * window.innerHeight
-            : e.deltaY;
+      if (Math.abs(e.deltaY) < 0.5) return;
+      const direction: -1 | 1 = e.deltaY > 0 ? 1 : -1;
 
-      if (normalizedDelta === 0) return;
-
-      const movingForward = normalizedDelta > 0;
-      const leavingAtFirstCup = !movingForward && currentIndex === 0;
-      const leavingAtLastCup = movingForward && currentIndex === FLAVOURS.length - 1;
-
-      // Only release normal page scrolling at the two true section boundaries.
-      if (leavingAtFirstCup || leavingAtLastCup) {
-        wheelDeltaRef.current = 0;
-        wheelGestureLockedRef.current = false;
-        if (wheelUnlockTimerRef.current) {
-          clearTimeout(wheelUnlockTimerRef.current);
-          wheelUnlockTimerRef.current = null;
-        }
+      // Momentum from a gesture that already changed a cup must never move the page.
+      if (wheelGestureActiveRef.current) {
+        if (e.cancelable) e.preventDefault();
+        scheduleGestureEnd();
         return;
       }
 
-      // Keep every residual event inside the section, including small trackpad deltas.
+      const leavingAtFirstCup = direction === -1 && currentIndex === 0;
+      const leavingAtLastCup = direction === 1 && currentIndex === FLAVOURS.length - 1;
+
+      // Normal page scrolling is released only when a fresh gesture starts at a boundary.
+      if (leavingAtFirstCup || leavingAtLastCup) {
+        scheduleGestureEnd();
+        return;
+      }
+
+      // Prevent the page itself from moving while there are more cups in this direction.
       if (e.cancelable) e.preventDefault();
-      finishWheelGestureAfterPause();
+      scheduleGestureEnd();
 
-      if (wheelGestureLockedRef.current) return;
+      // A burst of wheel/trackpad events is one gesture and may change only one cup.
+      wheelGestureActiveRef.current = true;
 
-      // Ignore momentum left over from the opposite direction before accumulating.
-      if (
-        wheelDeltaRef.current !== 0 &&
-        Math.sign(wheelDeltaRef.current) !== Math.sign(normalizedDelta)
-      ) {
-        wheelDeltaRef.current = 0;
-      }
-
-      wheelDeltaRef.current += normalizedDelta;
-      if (Math.abs(wheelDeltaRef.current) < 28) return;
-
-      wheelGestureLockedRef.current = true;
-      wheelDeltaRef.current = 0;
-
-      if (movingForward) {
-        goToNext();
-      } else {
-        goToPrev();
-      }
+      if (direction === 1) goToNext();
+      else goToPrev();
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
       window.removeEventListener("wheel", handleWheel);
-      if (wheelUnlockTimerRef.current) {
-        clearTimeout(wheelUnlockTimerRef.current);
-        wheelUnlockTimerRef.current = null;
+      if (wheelGestureEndTimerRef.current) {
+        clearTimeout(wheelGestureEndTimerRef.current);
+        wheelGestureEndTimerRef.current = null;
       }
     };
   }, [goToNext, goToPrev]);

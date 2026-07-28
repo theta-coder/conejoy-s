@@ -494,12 +494,11 @@ export default function ConeStory() {
   }, []);
 
   const scrollToCupsSection = useCallback(() => {
-    const cups = document.getElementById("cups");
-    if (!cups) return;
+      const cups = document.getElementById("cups");
+      if (!cups) return;
 
-    (window as any).__BYPASS_CUPS_LOCK__ = true;
-    window.dispatchEvent(new CustomEvent("conejoys:select-cup", { detail: 0 }));
-    setCupSearchIndex(0);
+      (window as any).__BYPASS_CUPS_LOCK__ = true;
+      setCupSearchIndex(0);
 
     const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
     const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset + 2;
