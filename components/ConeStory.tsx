@@ -527,6 +527,37 @@ export default function ConeStory() {
     return () => window.removeEventListener("wheel", handleWheelKitKat);
   }, [activeIndex, scrollToCupsSection]);
 
+  // Auto-discover flavours for visitors who do not swipe or scroll. The timer
+  // resets after every index change, and only runs while the Cones story is active.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (document.hidden || !storyRef.current || !heroRef.current || searchOpen) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const storyRect = storyRef.current.getBoundingClientRect();
+      const conesAreActive = storyRect.top <= 100 && storyRect.bottom >= window.innerHeight - 100;
+      if (!conesAreActive) return;
+
+      const focusedElement = document.activeElement;
+      if (
+        focusedElement instanceof HTMLElement &&
+        focusedElement !== document.body &&
+        heroRef.current.contains(focusedElement)
+      ) {
+        return;
+      }
+
+      if (activeIndex < FLAVOURS.length - 1) {
+        handleDotClick(activeIndex + 1);
+        return;
+      }
+
+      scrollToCupsSection();
+    }, CONE_AUTO_ADVANCE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, handleDotClick, searchOpen, scrollToCupsSection]);
+
 
 
   return (
