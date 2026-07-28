@@ -424,8 +424,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                 aria-label={`Go to ${item.name} cup`}
                 className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                   idx === activeIdx
-                    ? "w-9 bg-ink opacity-100 shadow-sm scale-105"
-                    : "w-4.5 bg-ink/30 hover:bg-ink/75 hover:scale-110"
+                    ? "w-[36px] bg-ink opacity-100 shadow-sm scale-105"
+                    : "w-[18px] bg-ink/30 hover:bg-ink/75 hover:scale-110"
                 }`}
               />
             </div>
