@@ -276,7 +276,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </p>
       </div>
 
-      <div className="my-4 max-sm:my-2.5 w-[min(1480px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-[minmax(0,1fr)_360px] max-xl:grid-cols-1 items-center gap-5 max-xl:gap-3">
+      <div className="my-4 max-sm:my-2.5 w-[min(1100px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-1 items-center gap-3">
       {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
       <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(190px,29svh,270px)] max-sm:min-h-[clamp(170px,28svh,230px)] select-none">
         {/* Left Arrow Button */}
@@ -400,7 +400,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </div>
       </div>
 
-      <aside className="relative z-30 w-full max-w-[360px] max-xl:max-w-[900px] max-xl:w-[calc(100%-24px)] max-xl:mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
+      <aside className="relative z-30 w-[min(760px,calc(100%-24px))] mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
         <div className="flex items-center justify-between gap-3 mb-3">
           <div>
             <h4 id="serving-heading" className="text-sm font-black uppercase tracking-wide">Choose your serving</h4>
