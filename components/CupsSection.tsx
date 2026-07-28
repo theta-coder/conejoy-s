@@ -470,9 +470,9 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       {/* 4. Temporary order summary */}
       <div className="w-[min(1100px,calc(100%-48px))] max-sm:w-[calc(100%-24px)] mx-auto z-10 rounded-2xl border border-ink/15 bg-white/70 backdrop-blur-md p-4 max-sm:p-3 shadow-sm">
-        <div className="flex max-sm:flex-col max-sm:items-start items-center justify-between gap-1.5 sm:gap-3 mb-2.5">
-          <h4 className="text-sm font-black uppercase tracking-wide">Your Order <span className="text-ink/50">· {temporaryOrder.length} {temporaryOrder.length === 1 ? "item" : "items"}</span></h4>
-          <strong className="text-sm tabular-nums">Total: {formatRupees(temporaryTotal)}</strong>
+        <div className="flex items-center justify-between gap-2 sm:gap-3 mb-2.5">
+          <h4 className="text-sm max-sm:text-[0.72rem] font-black uppercase tracking-wide whitespace-nowrap">Your Order <span className="text-ink/50">· {temporaryOrder.length} {temporaryOrder.length === 1 ? "item" : "items"}</span></h4>
+          <strong className="text-sm max-sm:text-[0.72rem] tabular-nums whitespace-nowrap">Total: {formatRupees(temporaryTotal)}</strong>
         </div>
 
         {temporaryOrder.length === 0 ? (
@@ -480,18 +480,31 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         ) : (
           <div className="max-h-[190px] overflow-y-auto divide-y divide-ink/10 pr-1">
             {temporaryOrder.map((entry) => (
-              <div key={entry.entryId} className="py-2.5 flex max-sm:flex-wrap items-center gap-3 max-sm:gap-2">
-                <div className="min-w-0 flex-1 max-sm:basis-full">
-                  <p className="text-xs font-black truncate">{entry.flavourName} · {entry.name}</p>
-                  <p className="text-[0.68rem] font-semibold text-ink/55">{entry.scoops} scoop{entry.scoops === 1 ? "" : "s"} · {formatRupees(entry.price)} each</p>
+              <div key={entry.entryId} className="py-2.5 flex items-center gap-3 max-sm:block">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-black truncate">{entry.flavourName} · {entry.name}</p>
+                    <div className="hidden max-sm:flex items-center gap-2 flex-shrink-0">
+                      <strong className="text-[0.68rem] tabular-nums">{formatRupees(entry.price * entry.quantity)}</strong>
+                      <button type="button" onClick={() => removeTemporaryEntry(entry.entryId)} className="text-[0.62rem] font-black text-red-700 hover:underline" aria-label={`Remove ${entry.flavourName} ${entry.name}`}>Remove</button>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mt-0.5">
+                    <p className="text-[0.68rem] max-sm:text-[0.63rem] font-semibold text-ink/55 whitespace-nowrap">{entry.scoops} scoop{entry.scoops === 1 ? "" : "s"} · {formatRupees(entry.price)} each</p>
+                    <div className="hidden max-sm:flex items-center rounded-full border border-ink/15 bg-white/75 p-0.5 flex-shrink-0">
+                      <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, -1)} disabled={entry.quantity <= 1} className="w-6 h-6 rounded-full text-[0.68rem] font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Decrease ${entry.flavourName} ${entry.name} quantity`}>−</button>
+                      <span className="w-6 text-center text-[0.68rem] font-black tabular-nums">{entry.quantity}</span>
+                      <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, 1)} disabled={entry.quantity >= 20} className="w-6 h-6 rounded-full text-[0.68rem] font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Increase ${entry.flavourName} ${entry.name} quantity`}>+</button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center rounded-full border border-ink/15 bg-white/75 p-0.5">
+                <div className="flex max-sm:hidden items-center rounded-full border border-ink/15 bg-white/75 p-0.5">
                   <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, -1)} disabled={entry.quantity <= 1} className="w-7 h-7 rounded-full text-xs font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Decrease ${entry.flavourName} ${entry.name} quantity`}>−</button>
                   <span className="w-7 text-center text-xs font-black tabular-nums">{entry.quantity}</span>
                   <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, 1)} disabled={entry.quantity >= 20} className="w-7 h-7 rounded-full text-xs font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Increase ${entry.flavourName} ${entry.name} quantity`}>+</button>
                 </div>
-                <strong className="w-[82px] text-right text-xs tabular-nums">{formatRupees(entry.price * entry.quantity)}</strong>
-                <button type="button" onClick={() => removeTemporaryEntry(entry.entryId)} className="text-[0.68rem] font-black text-red-700 hover:underline" aria-label={`Remove ${entry.flavourName} ${entry.name}`}>Remove</button>
+                <strong className="max-sm:hidden w-[82px] text-right text-xs tabular-nums">{formatRupees(entry.price * entry.quantity)}</strong>
+                <button type="button" onClick={() => removeTemporaryEntry(entry.entryId)} className="max-sm:hidden text-[0.68rem] font-black text-red-700 hover:underline" aria-label={`Remove ${entry.flavourName} ${entry.name}`}>Remove</button>
               </div>
             ))}
           </div>
