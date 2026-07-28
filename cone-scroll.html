@@ -859,7 +859,7 @@
           }
 
           const wrapper = document.createElement('div');
-          wrapper.className = `w-[clamp(340px,26vw,460px)] max-md:w-[clamp(230px,72vw,310px)] h-full flex items-center justify-center ${!isCurrent ? 'cursor-pointer' : ''}`;
+          wrapper.className = `w-[clamp(280px,21vw,380px)] max-md:w-[clamp(210px,50vw,290px)] max-sm:w-[clamp(160px,52vw,220px)] h-full flex items-center justify-center ${!isCurrent ? 'cursor-pointer' : ''}`;
           wrapper.style.position = 'absolute';
           wrapper.style.left = '50%';
           wrapper.style.top = '50%';
@@ -870,7 +870,7 @@
           wrapper.style.transition = 'all 650ms cubic-bezier(0.22, 1, 0.36, 1)';
 
           wrapper.innerHTML = `
-            <img src="${item.src}" alt="${item.name} single-scoop ice cream cup" class="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)]" />
+            <img src="${item.src}" alt="${item.name} single-scoop ice cream cup" class="w-full h-full object-contain filter drop-shadow-[0_22px_22px_rgba(40,30,15,0.22)]" />
           `;
 
           if (isPrev && prevIdx !== null) wrapper.addEventListener('click', () => { currentCupIdx = prevIdx; renderCupCarousel(); });

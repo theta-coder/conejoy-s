@@ -32,6 +32,15 @@ export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
   const scrollToSection = (id: "cones" | "cups") => {
     setActiveCategory(id);
     onCategoryChange?.(id);
+
+    // Bypass Cups scroll lock during direct navbar navigation
+    if (typeof window !== "undefined") {
+      (window as any).__BYPASS_CUPS_LOCK__ = true;
+      setTimeout(() => {
+        (window as any).__BYPASS_CUPS_LOCK__ = false;
+      }, 1000);
+    }
+
     if (id === "cones") {
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     } else if (id === "cups") {

@@ -16,8 +16,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
   // Touch and drag refs
   const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
   const touchDeltaXRef = useRef<number>(0);
+  const touchDeltaYRef = useRef<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const lastScrollTimeRef = useRef<number>(0);
 
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
   const currentQuantity = quantities[activeFlavour.id] || 1;
@@ -66,7 +69,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   // Keyboard Navigation (Left / Right Arrows) when in Section
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Check if section is visible in viewport
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
@@ -85,32 +87,44 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrev, goToNext]);
 
-  // Wheel Scroll Handler (Pin wheel in Cups until 1st cup is reached scrolling UP, or last cup scrolling DOWN)
-  const lastScrollTimeRef = useRef<number>(0);
-
+  // Desktop Mouse Wheel / Trackpad Scroll Locking with Boundary Escape & Navbar Bypass
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      // Check for direct navbar navigation bypass flag
+      if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
+        return;
+      }
+
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      const isVisible = rect.top <= 120 && rect.bottom >= window.innerHeight - 120;
+      const isVisible = rect.top <= 140 && rect.bottom >= window.innerHeight - 140;
       if (!isVisible) return;
 
       const delta = e.deltaY;
 
-      if (delta < -20 && activeIdx > 0) {
-        e.preventDefault();
-        const now = Date.now();
-        if (now - lastScrollTimeRef.current >= 450) {
-          lastScrollTimeRef.current = now;
-          goToPrev();
+      // Scrolling UP inside Cups
+      if (delta < -20) {
+        if (activeIdx > 0) {
+          e.preventDefault();
+          const now = Date.now();
+          if (now - lastScrollTimeRef.current >= 450) {
+            lastScrollTimeRef.current = now;
+            goToPrev();
+          }
         }
-      } else if (delta > 20 && activeIdx < FLAVOURS.length - 1) {
-        e.preventDefault();
-        const now = Date.now();
-        if (now - lastScrollTimeRef.current >= 450) {
-          lastScrollTimeRef.current = now;
-          goToNext();
+        // If activeIdx === 0 (first cup), do NOT preventDefault -> allow natural scroll up to Cones
+      }
+      // Scrolling DOWN inside Cups
+      else if (delta > 20) {
+        if (activeIdx < FLAVOURS.length - 1) {
+          e.preventDefault();
+          const now = Date.now();
+          if (now - lastScrollTimeRef.current >= 450) {
+            lastScrollTimeRef.current = now;
+            goToNext();
+          }
         }
+        // If activeIdx === 11 (last cup), do NOT preventDefault -> allow natural scroll down past Cups
       }
     };
 
@@ -118,78 +132,127 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [goToNext, goToPrev, activeIdx]);
 
-  // Touch Swipe Handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartXRef.current = e.touches[0].clientX;
-    touchDeltaXRef.current = 0;
-  };
+  // Mobile / Tablet Touch Drag Scroll Locking
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartXRef.current !== null) {
-      touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
-    }
-  };
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartXRef.current = e.touches[0].clientX;
+      touchStartYRef.current = e.touches[0].clientY;
+      touchDeltaXRef.current = 0;
+      touchDeltaYRef.current = 0;
+    };
 
-  const handleTouchEnd = () => {
-    if (Math.abs(touchDeltaXRef.current) > 40) {
-      if (touchDeltaXRef.current > 0 && activeIdx > 0) {
-        goToPrev();
-      } else if (touchDeltaXRef.current < 0 && activeIdx < FLAVOURS.length - 1) {
-        goToNext();
+    const handleTouchMove = (e: TouchEvent) => {
+      if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
+        return;
       }
-    }
-    touchStartXRef.current = null;
-    touchDeltaXRef.current = 0;
-  };
+
+      if (touchStartXRef.current !== null && touchStartYRef.current !== null) {
+        touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
+        touchDeltaYRef.current = e.touches[0].clientY - touchStartYRef.current;
+
+        const absX = Math.abs(touchDeltaXRef.current);
+        const absY = Math.abs(touchDeltaYRef.current);
+
+        // If vertical swipe dominates inside Cups section
+        if (absY > absX && absY > 15) {
+          // Swiping UP (scrolling DOWN)
+          if (touchDeltaYRef.current < 0) {
+            if (activeIdx < FLAVOURS.length - 1) {
+              if (e.cancelable) e.preventDefault();
+              const now = Date.now();
+              if (now - lastScrollTimeRef.current >= 450) {
+                lastScrollTimeRef.current = now;
+                goToNext();
+              }
+            }
+          }
+          // Swiping DOWN (scrolling UP)
+          else if (touchDeltaYRef.current > 0) {
+            if (activeIdx > 0) {
+              if (e.cancelable) e.preventDefault();
+              const now = Date.now();
+              if (now - lastScrollTimeRef.current >= 450) {
+                lastScrollTimeRef.current = now;
+                goToPrev();
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      // Horizontal swipe fallback
+      if (Math.abs(touchDeltaXRef.current) > 40 && Math.abs(touchDeltaXRef.current) > Math.abs(touchDeltaYRef.current)) {
+        if (touchDeltaXRef.current > 0 && activeIdx > 0) {
+          goToPrev();
+        } else if (touchDeltaXRef.current < 0 && activeIdx < FLAVOURS.length - 1) {
+          goToNext();
+        }
+      }
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      touchDeltaXRef.current = 0;
+      touchDeltaYRef.current = 0;
+    };
+
+    sectionEl.addEventListener("touchstart", handleTouchStart, { passive: true });
+    sectionEl.addEventListener("touchmove", handleTouchMove, { passive: false });
+    sectionEl.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      sectionEl.removeEventListener("touchstart", handleTouchStart);
+      sectionEl.removeEventListener("touchmove", handleTouchMove);
+      sectionEl.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [activeIdx, goToNext, goToPrev]);
 
   return (
     <section
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] pb-12 max-md:pb-8 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
+      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
       aria-label="Cups Collection"
     >
-      {/* 1. Header Info (Heading + Description) */}
+      {/* 1. Collection Heading & Short Description */}
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10">
         <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           CUPS COLLECTION
         </p>
-        <h2 className="font-display text-[clamp(1.8rem,3.6vw,3.2rem)] max-sm:text-[clamp(1.5rem,6.5vw,2rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
+        <h2 className="font-display text-[clamp(1.7rem,3.4vw,3rem)] max-sm:text-[clamp(1.4rem,6vw,1.9rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
           Your flavour, served your way.
         </h2>
-        <p className="mt-3.5 max-sm:mt-3 text-[0.9rem] max-md:text-[0.78rem] max-sm:text-[0.72rem] opacity-75 max-w-[480px] mx-auto leading-relaxed">
+        <p className="mt-2.5 max-sm:mt-2 text-[0.86rem] max-md:text-[0.76rem] max-sm:text-[0.7rem] opacity-75 max-w-[460px] mx-auto leading-relaxed">
           Explore all 12 signature flavours in a perfectly chilled cup.
         </p>
       </div>
 
-      {/* 2. Flavour Counter & Prominent Flavour Name */}
-      <div className="mt-4 max-sm:mt-3 flex flex-col items-center justify-center text-center z-10 transition-all duration-300">
+      {/* 2. Flavour Counter & Flavour Name (DIRECTLY ABOVE THE CUP) */}
+      <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center text-center z-10 transition-all duration-300">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
           <span>{activeFlavour.indexLabel}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" aria-hidden="true" />
           <span>Single Scoop</span>
         </div>
-        <h3 className="font-display text-[clamp(2.2rem,5.5vw,4.5rem)] max-sm:text-[clamp(1.8rem,7.5vw,2.8rem)] font-black uppercase tracking-tight m-0 mt-3.5 max-sm:mt-2.5 text-ink leading-tight">
+        <h3 className="font-display text-[clamp(1.8rem,4vw,3.2rem)] max-sm:text-[clamp(1.5rem,5.8vw,2.3rem)] font-black uppercase tracking-tight m-0 mt-2 max-sm:mt-1.5 text-ink leading-tight whitespace-nowrap">
           {activeFlavour.name}
         </h3>
       </div>
 
-      {/* 3. Carousel Stage Container */}
-      <div
-        className="relative my-6 max-sm:my-4 w-full max-w-[1100px] mx-auto flex items-center justify-center min-h-[clamp(330px,42svh,480px)] max-md:min-h-[clamp(250px,36svh,320px)] select-none"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      {/* 3. Cup Carousel Stage (ACTIVE CUP DEAD-CENTER) */}
+      <div className="relative my-4 max-sm:my-3 w-full max-w-[1100px] mx-auto flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(210px,32svh,290px)] select-none">
         {/* Left Arrow Button */}
         <button
           type="button"
           onClick={goToPrev}
           disabled={activeIdx === 0}
           aria-label={prevIdx !== null ? `Previous cup: ${FLAVOURS[prevIdx].name}` : "First cup reached"}
-          className={`absolute left-4 max-md:left-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute left-4 max-md:left-2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === 0
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -200,11 +263,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </svg>
         </button>
 
-        {/* Carousel Items Viewport Stage */}
-        <div className="relative w-full h-[clamp(330px,42svh,480px)] max-md:h-[clamp(250px,36svh,320px)] flex items-center justify-center">
-          {/* White Halo Centered EXACTLY behind the Active Center Cup */}
+        {/* Cup Viewport Stage Container */}
+        <div className="relative w-full h-[clamp(280px,36svh,400px)] max-md:h-[clamp(210px,32svh,290px)] flex items-center justify-center">
+          {/* White Backdrop Circle Centered Dead-Center behind Active Cup */}
           <div
-            className="absolute w-[clamp(280px,24vw,390px)] max-md:w-[clamp(200px,60vw,270px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+            className="absolute w-[clamp(240px,19vw,320px)] max-md:w-[clamp(170px,44vw,230px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
             aria-hidden="true"
           />
 
@@ -223,12 +286,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
             if (isCurrent) {
               opacity = 1;
               zIndex = 20;
-              // Exact center anchor: left: 50%, top: 50%, translate(-50%, -50%) scale(1)
+              // Active cup exact center anchor
               transformStyle = "translate(-50%, -50%) scale(1) rotate(0deg)";
             } else if (isPrev) {
               opacity = 0.32;
               zIndex = 10;
-              // Pixel/viewport-based horizontal offset from true center
               transformStyle =
                 typeof window !== "undefined" && window.innerWidth <= 640
                   ? "translate(-50%, -50%) translateX(clamp(-260px, -62vw, -180px)) scale(0.58) rotate(-3deg)"
@@ -236,7 +298,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
             } else if (isNext) {
               opacity = 0.32;
               zIndex = 10;
-              // Pixel/viewport-based horizontal offset from true center
               transformStyle =
                 typeof window !== "undefined" && window.innerWidth <= 640
                   ? "translate(-50%, -50%) translateX(clamp(180px, 62vw, 260px)) scale(0.58) rotate(3deg)"
@@ -260,7 +321,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   transformOrigin: "center center",
                   transition: "all 650ms cubic-bezier(0.22, 1, 0.36, 1)",
                 }}
-                className={`w-[clamp(340px,26vw,460px)] max-md:w-[clamp(230px,72vw,310px)] h-full flex items-center justify-center ${
+                className={`w-[clamp(280px,21vw,380px)] max-md:w-[clamp(210px,50vw,290px)] max-sm:w-[clamp(160px,52vw,220px)] h-full flex items-center justify-center ${
                   !isCurrent ? "cursor-pointer" : ""
                 }`}
               >
@@ -270,7 +331,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   width={500}
                   height={500}
                   loading={isCurrent ? "eager" : "lazy"}
-                  className="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)] transition-transform duration-300"
+                  className="w-full h-full object-contain filter drop-shadow-[0_22px_22px_rgba(40,30,15,0.22)] transition-transform duration-300"
                 />
               </div>
             );
@@ -283,7 +344,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           onClick={goToNext}
           disabled={activeIdx === FLAVOURS.length - 1}
           aria-label={nextIdx !== null ? `Next cup: ${FLAVOURS[nextIdx].name}` : "Last cup reached"}
-          className={`absolute right-4 max-md:right-2 z-30 w-12 h-12 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute right-4 max-md:right-2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === FLAVOURS.length - 1
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -295,18 +356,17 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
       </div>
 
-      {/* 4. Bottom Action Panel (Quantity Control + Add to Cart + Progress Dots) */}
-      <div className="mt-5 max-sm:mt-4 w-[min(1100px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex flex-col items-center justify-center gap-4 max-sm:gap-3 z-10">
-        {/* Quantity Controls + Add to Cart Button Row */}
+      {/* 4. Quantity Selector and Add to Cart Button */}
+      <div className="mt-3 max-sm:mt-2 w-[min(1100px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex flex-col items-center justify-center gap-3 max-sm:gap-2.5 z-10">
         <div className="flex max-sm:flex-col items-center justify-center gap-3 w-full max-w-[380px]">
           {/* Quantity Modifier */}
-          <div className="flex items-center justify-between px-3 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[rgba(21,21,15,0.18)] shadow-sm w-[130px] max-sm:w-full">
+          <div className="flex items-center justify-between px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-[rgba(21,21,15,0.18)] shadow-sm w-[130px] max-sm:w-full">
             <button
               type="button"
               onClick={() => handleQuantityChange(-1)}
               disabled={currentQuantity <= 1}
               aria-label={`Decrease ${activeFlavour.name} quantity`}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-base font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
+              className="w-7 h-7 rounded-full flex items-center justify-center text-base font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
             >
               −
             </button>
@@ -316,7 +376,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
               onClick={() => handleQuantityChange(1)}
               disabled={currentQuantity >= 10}
               aria-label={`Increase ${activeFlavour.name} quantity`}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-base font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
+              className="w-7 h-7 rounded-full flex items-center justify-center text-base font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
             >
               +
             </button>
@@ -326,7 +386,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           <button
             type="button"
             onClick={handleAddToCart}
-            className={`flex-1 w-full min-h-[48px] px-6 rounded-full font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2 shadow-lg transition-all duration-200 cursor-pointer active:scale-[0.98] ${
+            className={`flex-1 w-full min-h-[46px] px-6 rounded-full font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2 shadow-lg transition-all duration-200 cursor-pointer active:scale-[0.98] ${
               isAdded
                 ? "bg-green-700 text-white shadow-green-700/30 scale-[1.02]"
                 : "bg-ink text-panel hover:opacity-95"
@@ -350,8 +410,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </button>
         </div>
 
-        {/* Carousel Dots Indicator */}
-        <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-1.5">
+        {/* 5. Carousel Progress Indicator (Dots) */}
+        <div className="mt-2.5 max-sm:mt-2 flex items-center justify-center gap-1.5">
           {FLAVOURS.map((item, idx) => (
             <button
               key={item.id}

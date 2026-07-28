@@ -155,6 +155,12 @@ export default function ConeStory() {
   const selectSearchResult = useCallback(
     (idx: number) => {
       if (searchCategory === "cups") {
+        if (typeof window !== "undefined") {
+          (window as any).__BYPASS_CUPS_LOCK__ = true;
+          setTimeout(() => {
+            (window as any).__BYPASS_CUPS_LOCK__ = false;
+          }, 1000);
+        }
         setCupSearchIndex(idx);
         const cups = document.getElementById("cups");
         if (cups) {
