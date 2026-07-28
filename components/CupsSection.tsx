@@ -276,23 +276,16 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </p>
       </div>
 
-      {/* 2. Flavour Name */}
-      <div className="mt-3 max-sm:mt-2 flex items-center justify-center text-center z-10 transition-all duration-200">
-        <h3 className="font-display text-[clamp(1.8rem,4vw,3.2rem)] max-sm:text-[clamp(1.4rem,5.5vw,2.1rem)] font-black uppercase tracking-tight m-0 text-ink leading-tight whitespace-nowrap">
-          {activeFlavour.name}
-        </h3>
-      </div>
-
       <div className="my-4 max-sm:my-2.5 w-[min(1480px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-[minmax(0,1fr)_360px] max-xl:grid-cols-1 items-center gap-5 max-xl:gap-3">
       {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
-      <div className="relative w-full flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(190px,29svh,270px)] max-sm:min-h-[clamp(170px,28svh,230px)] select-none">
+      <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(190px,29svh,270px)] max-sm:min-h-[clamp(170px,28svh,230px)] select-none">
         {/* Left Arrow Button */}
         <button
           type="button"
           onClick={goToPrev}
           disabled={activeIdx === 0}
           aria-label={prevIdx !== null ? `Previous cup: ${FLAVOURS[prevIdx].name}` : "First cup reached"}
-          className={`absolute left-4 max-md:left-2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute left-4 max-md:left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === 0
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -388,7 +381,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           onClick={goToNext}
           disabled={activeIdx === FLAVOURS.length - 1}
           aria-label={nextIdx !== null ? `Next cup: ${FLAVOURS[nextIdx].name}` : "Last cup reached"}
-          className={`absolute right-4 max-md:right-2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute right-4 max-md:right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === FLAVOURS.length - 1
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -398,6 +391,13 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
+
+        {/* Active Flavour Name directly below Cup */}
+        <div className="mt-3 max-sm:mt-2 text-center z-10 transition-all duration-200">
+          <h3 className="font-display text-[clamp(1.3rem,2.8vw,2.1rem)] max-sm:text-[clamp(1.1rem,4.8vw,1.6rem)] font-black uppercase tracking-tight m-0 text-ink leading-tight">
+            {activeFlavour.name}
+          </h3>
+        </div>
       </div>
 
       <aside className="relative z-30 w-full max-w-[360px] max-xl:max-w-[900px] max-xl:w-[calc(100%-24px)] max-xl:mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
@@ -500,28 +500,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         <button type="button" onClick={handleAddAllToCart} disabled={temporaryOrder.length === 0} className="mt-3 ml-auto w-full max-w-[300px] max-sm:max-w-none min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 flex items-center justify-center">
           Add All to Cart
         </button>
-      </div>
-
-      {/* 6. Right-side Vertical Progress Scrollbar — syncs with cup index */}
-      <div
-        className="absolute right-3 max-sm:hidden top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-1"
-        aria-hidden="true"
-      >
-        {/* Track */}
-        <div className="relative w-[5px] max-sm:w-[4px] h-[120px] max-sm:h-[90px] rounded-full bg-ink/10 overflow-hidden">
-          {/* Thumb — slides down as activeIdx increases */}
-          <div
-            className="absolute left-0 w-full rounded-full bg-ink/70 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            style={{
-              height: `${Math.max(18, 100 / FLAVOURS.length)}%`,
-              top: `${(activeIdx / (FLAVOURS.length - 1)) * (100 - Math.max(18, 100 / FLAVOURS.length))}%`,
-            }}
-          />
-        </div>
-        {/* Counter label */}
-        <span className="mt-1 text-[0.58rem] max-sm:text-[0.5rem] font-black tracking-wider text-ink/50 tabular-nums">
-          {String(activeIdx + 1).padStart(2, "0")}/{FLAVOURS.length}
-        </span>
       </div>
     </section>
   );
