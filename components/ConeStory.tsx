@@ -32,6 +32,7 @@ export default function ConeStory() {
   const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
   const [searchCategory, setSearchCategory] = useState<"cones" | "cups">("cones");
   const [cupSearchIndex, setCupSearchIndex] = useState<number>(0);
+  const [cupSearchRequestKey, setCupSearchRequestKey] = useState(0);
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const [randomIndices, setRandomIndices] = useState<number[]>([0, 1, 2, 3, 4]);
 
@@ -185,6 +186,9 @@ export default function ConeStory() {
   const selectSearchResult = useCallback(
     (idx: number) => {
       if (searchCategory === "cups") {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
         if (typeof window !== "undefined") {
           (window as any).__BYPASS_CUPS_LOCK__ = true;
           setTimeout(() => {
@@ -192,6 +196,7 @@ export default function ConeStory() {
           }, 1000);
         }
         setCupSearchIndex(idx);
+        setCupSearchRequestKey((current) => current + 1);
         const cups = document.getElementById("cups");
         if (cups) {
           const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 820 ? 110 : 126;
@@ -1018,7 +1023,7 @@ export default function ConeStory() {
     </div>
 
     {/* Cups Collection Section (Positioned cleanly below the 1200svh cone scroll track) */}
-    <CupsSection selectedIndex={cupSearchIndex} />
+    <CupsSection selectedIndex={cupSearchIndex} selectionRequestKey={cupSearchRequestKey} />
     </>
   );
 }

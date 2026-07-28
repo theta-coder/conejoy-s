@@ -6,6 +6,7 @@ import { useCart } from "@/context/CartContext";
 
 interface CupsSectionProps {
   selectedIndex?: number;
+  selectionRequestKey?: number;
 }
 
 interface ServingOption {
@@ -28,7 +29,7 @@ const SERVING_OPTIONS: ServingOption[] = [
 
 const formatRupees = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 
-export default function CupsSection({ selectedIndex }: CupsSectionProps) {
+export default function CupsSection({ selectedIndex, selectionRequestKey }: CupsSectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [selectedServingId, setSelectedServingId] = useState<string | null>(null);
   const [servingQuantity, setServingQuantity] = useState(1);
@@ -52,8 +53,10 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
   useEffect(() => {
     if (selectedIndex === undefined) return;
-    setActiveIdx(Math.max(0, Math.min(FLAVOURS.length - 1, selectedIndex)));
-  }, [selectedIndex]);
+    const nextIndex = Math.max(0, Math.min(FLAVOURS.length - 1, selectedIndex));
+    activeIdxRef.current = nextIndex;
+    setActiveIdx(nextIndex);
+  }, [selectedIndex, selectionRequestKey]);
 
   useEffect(() => {
     activeIdxRef.current = activeIdx;
