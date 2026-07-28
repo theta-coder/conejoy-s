@@ -400,7 +400,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </div>
       </div>
 
-      <aside className="relative z-30 w-[min(760px,calc(100%-24px))] mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
+      <aside className="relative z-30 w-[min(1200px,calc(100%-24px))] mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
         <div className="flex items-center justify-between gap-3 mb-3">
           <div>
             <h4 id="serving-heading" className="text-sm font-black uppercase tracking-wide">Choose your serving</h4>
@@ -413,7 +413,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 max-xl:flex max-xl:overflow-x-auto max-xl:snap-x max-xl:snap-mandatory max-xl:pb-2 max-xl:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
+        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-2 max-xl:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
           {SERVING_OPTIONS.map((option) => {
             const isSelected = selectedServingId === option.id;
             return (
@@ -423,7 +423,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => setSelectedServingId(option.id)}
-                className={`relative min-h-[92px] rounded-xl border p-2.5 text-left transition-all active:scale-[0.98] max-xl:min-w-[155px] max-xl:snap-start ${
+                className={`relative min-h-[100px] min-w-[155px] xl:min-w-0 xl:flex-1 snap-start rounded-xl border p-2.5 text-left transition-all active:scale-[0.98] ${
                   isSelected
                     ? "border-ink bg-ink text-panel shadow-md"
                     : "border-ink/15 bg-white/65 text-ink hover:border-ink/45"
