@@ -577,13 +577,13 @@ export default function ConeStory() {
             />
           </a>
 
-          {/* Live Search Bar (Responsive: Large on Desktop, Small on Mobile) */}
-          <div ref={searchRef} className="relative z-20 flex-shrink mx-3 max-sm:mx-1.5">
-            <div className="flex items-center gap-2 xl:w-[480px] lg:w-[380px] md:w-[280px] sm:w-[200px] w-[140px] px-3.5 py-2 max-lg:py-1.5 max-sm:px-2.5 max-sm:py-1 rounded-full border border-[rgba(21,21,15,0.18)] bg-[rgba(255,255,255,0.75)] backdrop-blur-md transition-all duration-200 focus-within:border-ink focus-within:bg-white focus-within:shadow-[0_4px_20px_rgba(21,21,15,0.12)] hover:border-[rgba(21,21,15,0.3)]">
-              <svg className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-sm:w-3 max-sm:h-3 opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          {/* Live Search Bar (Responsive: Large on Desktop, Slightly Larger on Mobile) */}
+          <div ref={searchRef} className="relative z-20 flex-shrink mx-2.5 max-sm:mx-1">
+            <div className="flex items-center gap-2 xl:w-[480px] lg:w-[380px] md:w-[280px] sm:w-[220px] w-[180px] max-xs:w-[155px] px-3.5 py-2 max-lg:py-1.5 max-sm:px-3 max-sm:py-1.5 rounded-full border border-[rgba(21,21,15,0.18)] bg-[rgba(255,255,255,0.75)] backdrop-blur-md transition-all duration-200 focus-within:border-ink focus-within:bg-white focus-within:shadow-[0_4px_20px_rgba(21,21,15,0.12)] hover:border-[rgba(21,21,15,0.3)]">
+              <svg className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-sm:w-3.5 max-sm:h-3.5 opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
-              <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.58rem] font-black uppercase tracking-wide">
+              <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.62rem] font-black uppercase tracking-wide">
                 {searchCategory === "cups" ? "Cups" : "Cones"}
               </span>
               <input
@@ -596,7 +596,7 @@ export default function ConeStory() {
                 onFocus={() => setSearchOpen(true)}
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search flavour..."
-                className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.7rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
+                className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
                 aria-label="Search flavours"
                 autoComplete="off"
               />
