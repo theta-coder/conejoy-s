@@ -194,11 +194,14 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      // Only take over the wheel while the Cups product stage is the active screen.
+      
+      // Active when the section covers the screen middle or at least 30% of viewport
       const visibleTop = Math.max(0, rect.top);
       const visibleBottom = Math.min(window.innerHeight, rect.bottom);
       const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-      if (visibleHeight < Math.min(rect.height, window.innerHeight) * 0.55) return;
+      const isCentered = rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.5;
+      
+      if (!isCentered && visibleHeight < window.innerHeight * 0.35) return;
 
       const currentIndex = activeIdxRef.current;
       if (Math.abs(e.deltaY) < 0.5) return;
@@ -215,11 +218,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         return;
       }
 
-      // Prevent the page itself from moving while there are more cups in this direction.
+      // Prevent default page scroll so we step through cups 1 to 12
       if (e.cancelable) e.preventDefault();
 
-      // Time-based stepping keeps continuous mouse/trackpad scrolling fluid.
-      if (now - lastWheelNavigationRef.current < 140) return;
+      // Time throttle for smooth step navigation
+      if (now - lastWheelNavigationRef.current < 120) return;
       lastWheelNavigationRef.current = now;
 
       if (direction === 1) goToNext();
