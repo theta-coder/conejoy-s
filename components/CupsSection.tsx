@@ -443,6 +443,16 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
             </div>
           ))}
         </div>
+
+        {/* Completion Badge on 12th Cup */}
+        {activeIdx === FLAVOURS.length - 1 && (
+          <div className="mt-2 text-[0.7rem] max-sm:text-[0.64rem] font-black tracking-widest uppercase opacity-80 animate-badge-pop flex items-center gap-1.5 bg-ink/10 text-ink px-4 py-1 rounded-full shadow-sm">
+            <svg className="w-3.5 h-3.5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>All 12 Cups Explored</span>
+          </div>
+        )}
       </div>
     </section>
   );
