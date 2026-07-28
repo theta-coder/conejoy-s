@@ -72,7 +72,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       quantity: currentQuantity,
       size: "Single Scoop",
       image: activeFlavour.cupImageSrc,
-      color: activeFlavour.cupColor ?? activeFlavour.color,
+      color: activeFlavour.color,
     });
 
     setIsAdded(true);
@@ -207,7 +207,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     <section
       ref={sectionRef}
       id="cups"
-      style={{ backgroundColor: activeFlavour.cupColor ?? activeFlavour.color }}
+      style={{ backgroundColor: activeFlavour.color }}
       className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-6 max-sm:pt-5 pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
       aria-label="Cups Collection"
     >

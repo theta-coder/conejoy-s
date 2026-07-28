@@ -3,7 +3,6 @@ export interface FlavourItem {
   name: string;
   indexLabel: string;
   color: string;
-  cupColor?: string;
   imageSrc: string;
   webpSrc: string;
   alt: string;
@@ -28,7 +27,6 @@ export const FLAVOURS: FlavourItem[] = [
     name: "Kulfa",
     indexLabel: "02 / 12",
     color: "#e8d3a6",
-    cupColor: "#d9b765",
     imageSrc: "/assets/cones/kulfa.png",
     webpSrc: "/assets/cones/kulfa.webp",
     alt: "Kulfa ice cream cone",
@@ -106,7 +104,6 @@ export const FLAVOURS: FlavourItem[] = [
     name: "Vanilla",
     indexLabel: "09 / 12",
     color: "#e5d2a9",
-    cupColor: "#dce8e4",
     imageSrc: "/assets/cones/vanilla.png",
     webpSrc: "/assets/cones/vanilla.webp",
     alt: "Vanilla ice cream cone",
