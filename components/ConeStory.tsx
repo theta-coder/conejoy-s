@@ -377,7 +377,7 @@ export default function ConeStory() {
 
             const rotation = clamp(dist * maxRotationDeg, -35, 35);
             const scale = Math.max(0.35, 1 - absDist * 0.35);
-            const opacity = clamp(1 - Math.pow(absDist, 1.3) * 1.45, 0, 1);
+            const opacity = clamp(1 - Math.pow(absDist, 1.25) * 0.82, 0, 1);
             const zIndex = Math.round(10 - absDist * 4);
 
             if (opacity <= 0.01) {
@@ -735,12 +735,27 @@ export default function ConeStory() {
               </button>
             </div>
 
-            <div className="scroll-cue inline-flex max-md:hidden items-center gap-[10px] mt-[25px] text-[0.74rem] font-extrabold tracking-[0.12em] uppercase">
-              <span
-                className="mouse w-[22px] h-[34px] border-[1.5px] border-current rounded-full grid place-items-start place-content-center pt-[7px] after:content-[''] after:w-[3px] after:h-[7px] after:rounded-full after:bg-current"
-                aria-hidden="true"
-              />
-              Scroll to discover
+            {/* Motion Cue Prompt between 1st Cone and 2nd Cone */}
+            <div className="mt-6 max-md:mt-3 flex items-center max-md:justify-center">
+              <button
+                type="button"
+                onClick={() => handleDotClick(1)}
+                className={`group inline-flex items-center gap-2.5 px-4 py-2 max-sm:px-3.5 max-sm:py-1.5 rounded-full bg-ink text-panel text-[0.74rem] max-sm:text-[0.66rem] font-black tracking-wider uppercase shadow-xl transition-all duration-500 animate-scroll-bounce hover:scale-105 active:scale-95 cursor-pointer z-30 border border-panel/20 ${
+                  activeIndex === 0
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-40 hover:opacity-100"
+                }`}
+                aria-label="Swipe or scroll down for next flavour: Kulfa"
+              >
+                <svg className="w-4 h-4 max-sm:w-3.5 max-sm:h-3.5 text-panel animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                <span>
+                  {activeIndex === 0 ? "Swipe / Scroll down for 02 Kulfa" : "Scroll to discover"}
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-panel/70" aria-hidden="true" />
+                <span className="text-[0.68rem] font-bold tracking-widest text-panel/90">↓</span>
+              </button>
             </div>
           </section>
 
