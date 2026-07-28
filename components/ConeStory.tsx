@@ -713,7 +713,8 @@ export default function ConeStory() {
               id="hero-title"
               className="max-w-[590px] max-md:max-w-none m-0 font-display text-[clamp(4.4rem,7.8vw,8.4rem)] max-md:text-[clamp(2.3rem,9.5vw,3.4rem)] max-sm:text-[clamp(2.0rem,9vw,3.0rem)] leading-[0.9] max-md:leading-[0.88] tracking-[-0.085em]"
             >
-              Scroll your{" "}
+              <span className="hidden lg:inline">Scroll</span>
+              <span className="inline lg:hidden">Swipe</span> your{" "}
               <span className="outline block mt-[0.08em] pb-[0.06em] text-transparent leading-[0.9] text-stroke-ink">
                 flavour.
               </span>
