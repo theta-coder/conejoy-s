@@ -6,6 +6,8 @@ import CategoryBar from "@/components/CategoryBar";
 import CupsSection from "@/components/CupsSection";
 import { useCart } from "@/context/CartContext";
 
+const CONE_AUTO_ADVANCE_MS = 5000;
+
 export default function ConeStory() {
   const { totalCount, setIsCartOpen, addToCart } = useCart();
 
@@ -476,7 +478,7 @@ export default function ConeStory() {
     };
   }, []);
 
-  const handleDotClick = (index: number) => {
+  const handleDotClick = useCallback((index: number) => {
     if (!storyRef.current) return;
     const story = storyRef.current;
     const scrollRange = story.offsetHeight - window.innerHeight;
@@ -489,7 +491,51 @@ export default function ConeStory() {
       top: targetY,
       behavior: reduceMotion ? "auto" : "smooth",
     });
-  };
+  }, []);
+
+  // Auto-discover flavours for visitors who do not swipe or scroll. The timer
+  // resets after every index change, and only runs while the Cones story is active.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (document.hidden || !storyRef.current || !heroRef.current || searchOpen) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const storyRect = storyRef.current.getBoundingClientRect();
+      const conesAreActive = storyRect.top <= 1 && storyRect.bottom > window.innerHeight;
+      if (!conesAreActive) return;
+
+      const focusedElement = document.activeElement;
+      if (
+        focusedElement instanceof HTMLElement &&
+        focusedElement !== document.body &&
+        heroRef.current.contains(focusedElement)
+      ) {
+        return;
+      }
+
+      if (activeIndex < FLAVOURS.length - 1) {
+        handleDotClick(activeIndex + 1);
+        return;
+      }
+
+      const cups = document.getElementById("cups");
+      if (!cups) return;
+
+      (window as any).__BYPASS_CUPS_LOCK__ = true;
+      window.dispatchEvent(new CustomEvent("conejoys:select-cup", { detail: 0 }));
+      setCupSearchIndex(0);
+
+      const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
+      const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset + 2;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+
+      window.setTimeout(() => {
+        (window as any).__BYPASS_CUPS_LOCK__ = false;
+      }, 1200);
+    }, CONE_AUTO_ADVANCE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, handleDotClick, searchOpen]);
 
   return (
     <>

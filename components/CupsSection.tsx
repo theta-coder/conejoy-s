@@ -30,6 +30,17 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     setActiveIdx(Math.max(0, Math.min(FLAVOURS.length - 1, selectedIndex)));
   }, [selectedIndex]);
 
+  useEffect(() => {
+    const handleExternalCupSelection = (event: Event) => {
+      const requestedIndex = (event as CustomEvent<number>).detail;
+      if (!Number.isFinite(requestedIndex)) return;
+      setActiveIdx(Math.max(0, Math.min(FLAVOURS.length - 1, requestedIndex)));
+    };
+
+    window.addEventListener("conejoys:select-cup", handleExternalCupSelection);
+    return () => window.removeEventListener("conejoys:select-cup", handleExternalCupSelection);
+  }, []);
+
   // Next and Previous Index (Bounded, non-looping)
   const prevIdx = activeIdx > 0 ? activeIdx - 1 : null;
   const nextIdx = activeIdx < FLAVOURS.length - 1 ? activeIdx + 1 : null;
