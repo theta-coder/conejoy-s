@@ -520,18 +520,15 @@ export default function ConeStory() {
             href="#flavours"
             aria-label="Cone Joy's Ice Cream home"
           >
-            <picture>
-              <source srcSet="/assets/conejoys-logo.webp" type="image/webp" />
-              <img
-                className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
-                src="/assets/conejoys-logo.png"
-                alt="Cone Joy's Ice Cream"
-                width={110}
-                height={85}
-                loading="eager"
-                decoding="sync"
-              />
-            </picture>
+            <img
+              className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
+              src="/assets/conejoys-logo-new.png"
+              alt="Cone Joy's Ice Cream"
+              width={500}
+              height={311}
+              loading="eager"
+              decoding="sync"
+            />
           </a>
 
           {/* Live Search Bar (Responsive: Large on Desktop, Small on Mobile) */}
