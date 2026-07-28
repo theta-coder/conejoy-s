@@ -109,7 +109,11 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      const isVisible = rect.top <= 140 && rect.bottom >= window.innerHeight - 140;
+      // Section is "active" when at least 40% of it is visible in viewport
+      const visibleTop = Math.max(0, rect.top);
+      const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+      const visibleHeight = visibleBottom - visibleTop;
+      const isVisible = visibleHeight > rect.height * 0.4;
       if (!isVisible) return;
 
       const delta = e.deltaY;
