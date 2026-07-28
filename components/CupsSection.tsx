@@ -21,8 +21,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const touchDeltaYRef = useRef<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
   const activeIdxRef = useRef(0);
-  const wheelGestureActiveRef = useRef(false);
-  const wheelGestureEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastWheelNavigationRef = useRef(0);
 
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
   const currentQuantity = quantities[activeFlavour.id] || 1;
@@ -105,17 +104,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
   // Desktop Wheel Scroll Handler
   useEffect(() => {
-    const scheduleGestureEnd = () => {
-      if (wheelGestureEndTimerRef.current) {
-        clearTimeout(wheelGestureEndTimerRef.current);
-      }
-
-      wheelGestureEndTimerRef.current = setTimeout(() => {
-        wheelGestureActiveRef.current = false;
-        wheelGestureEndTimerRef.current = null;
-      }, 110);
-    };
-
     const handleWheel = (e: WheelEvent) => {
       if ((window as any).__BYPASS_CUPS_LOCK__) return;
 
@@ -130,29 +118,24 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       const currentIndex = activeIdxRef.current;
       if (Math.abs(e.deltaY) < 0.5) return;
       const direction: -1 | 1 = e.deltaY > 0 ? 1 : -1;
-
-      // Momentum from a gesture that already changed a cup must never move the page.
-      if (wheelGestureActiveRef.current) {
-        if (e.cancelable) e.preventDefault();
-        scheduleGestureEnd();
-        return;
-      }
-
       const leavingAtFirstCup = direction === -1 && currentIndex === 0;
       const leavingAtLastCup = direction === 1 && currentIndex === FLAVOURS.length - 1;
+      const now = performance.now();
 
-      // Normal page scrolling is released only when a fresh gesture starts at a boundary.
+      // Briefly absorb momentum after arriving at a boundary, then release page scrolling.
       if (leavingAtFirstCup || leavingAtLastCup) {
-        scheduleGestureEnd();
+        if (now - lastWheelNavigationRef.current < 240 && e.cancelable) {
+          e.preventDefault();
+        }
         return;
       }
 
       // Prevent the page itself from moving while there are more cups in this direction.
       if (e.cancelable) e.preventDefault();
-      scheduleGestureEnd();
 
-      // A burst of wheel/trackpad events is one gesture and may change only one cup.
-      wheelGestureActiveRef.current = true;
+      // Time-based stepping keeps continuous mouse/trackpad scrolling fluid.
+      if (now - lastWheelNavigationRef.current < 140) return;
+      lastWheelNavigationRef.current = now;
 
       if (direction === 1) goToNext();
       else goToPrev();
@@ -161,10 +144,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
       window.removeEventListener("wheel", handleWheel);
-      if (wheelGestureEndTimerRef.current) {
-        clearTimeout(wheelGestureEndTimerRef.current);
-        wheelGestureEndTimerRef.current = null;
-      }
     };
   }, [goToNext, goToPrev]);
 
@@ -336,7 +315,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   transform: transformStyle,
                   transformOrigin: "center center",
                   transition:
-                    "transform 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease-out",
+                    "transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease-out",
                 }}
                 className={`w-[clamp(280px,21vw,380px)] max-md:w-[clamp(210px,50vw,290px)] max-sm:w-[clamp(160px,52vw,220px)] h-full flex items-center justify-center ${
                   !isCurrent ? "cursor-pointer" : ""
