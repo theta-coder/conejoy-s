@@ -720,7 +720,7 @@ export default function ConeStory() {
         <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
           {/* Copy section */}
           <section
-            className="copy relative z-[3] self-center max-md:text-center max-md:-translate-y-6 max-sm:-translate-y-8"
+            className="copy relative z-[3] self-center max-md:text-center max-md:mt-2 max-sm:mt-3 max-md:translate-y-0"
             aria-labelledby="hero-title"
           >
             <p className="kicker mb-[18px] max-md:mb-[6px] max-sm:mb-[4px] text-[0.72rem] max-md:text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.16em] uppercase">
