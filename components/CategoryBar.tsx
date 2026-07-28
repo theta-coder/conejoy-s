@@ -13,9 +13,9 @@ export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
     const handleScroll = () => {
       const cupsEl = document.getElementById("cups");
       if (!cupsEl) return;
+      const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
       const cupsRect = cupsEl.getBoundingClientRect();
-      // If top of cups section is in upper half of viewport, activate cups
-      if (cupsRect.top <= window.innerHeight * 0.45) {
+      if (cupsRect.top <= headerOffset + 80) {
         setActiveCategory("cups");
         onCategoryChange?.("cups");
       } else {
@@ -38,16 +38,17 @@ export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
       (window as any).__BYPASS_CUPS_LOCK__ = true;
       setTimeout(() => {
         (window as any).__BYPASS_CUPS_LOCK__ = false;
-      }, 1000);
+      }, 1200);
     }
 
     if (id === "cones") {
-      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (id === "cups") {
       const cupsEl = document.getElementById("cups");
       if (cupsEl) {
-        const targetTop = window.scrollY + cupsEl.getBoundingClientRect().top;
-        window.scrollTo({ top: targetTop, behavior: "instant" as ScrollBehavior });
+        const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
+        const targetTop = window.scrollY + cupsEl.getBoundingClientRect().top - headerOffset + 2;
+        window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
       }
     }
   };
