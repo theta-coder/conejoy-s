@@ -259,7 +259,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-6 max-sm:pt-5 pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
+      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-5 max-sm:pt-4 pb-6 max-md:pb-5 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
       aria-label="Cups Collection"
     >
       {/* 1. Collection Heading & Short Description */}
@@ -286,9 +286,9 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </h3>
       </div>
 
-      <div className="my-4 max-sm:my-3 w-[min(1480px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-[minmax(0,1fr)_360px] max-lg:grid-cols-1 items-center gap-5 max-lg:gap-3">
+      <div className="my-4 max-sm:my-2.5 w-[min(1480px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-[minmax(0,1fr)_360px] max-xl:grid-cols-1 items-center gap-5 max-xl:gap-3">
       {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
-      <div className="relative w-full flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(210px,32svh,290px)] select-none">
+      <div className="relative w-full flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(190px,29svh,270px)] max-sm:min-h-[clamp(170px,28svh,230px)] select-none">
         {/* Left Arrow Button */}
         <button
           type="button"
@@ -307,7 +307,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
 
         {/* Cup Viewport Stage Container */}
-        <div className="relative w-full h-[clamp(280px,36svh,400px)] max-md:h-[clamp(210px,32svh,290px)] flex items-center justify-center">
+        <div className="relative w-full h-[clamp(280px,36svh,400px)] max-md:h-[clamp(190px,29svh,270px)] max-sm:h-[clamp(170px,28svh,230px)] flex items-center justify-center">
           {/* White Backdrop Circle Centered Dead-Center behind Active Cup */}
           <div
             className="absolute w-[clamp(240px,19vw,320px)] max-md:w-[clamp(170px,44vw,230px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
@@ -403,7 +403,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
       </div>
 
-      <aside className="relative z-30 w-full max-w-[360px] max-lg:max-w-[760px] max-lg:w-[calc(100%-24px)] max-lg:mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
+      <aside className="relative z-30 w-full max-w-[360px] max-xl:max-w-[900px] max-xl:w-[calc(100%-24px)] max-xl:mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
         <div className="flex items-center justify-between gap-3 mb-3">
           <div>
             <h4 id="serving-heading" className="text-sm font-black uppercase tracking-wide">Choose your serving</h4>
@@ -416,7 +416,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 max-lg:flex max-lg:overflow-x-auto max-lg:snap-x max-lg:snap-mandatory max-lg:pb-2 max-lg:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
+        <div className="grid grid-cols-2 gap-2 max-xl:flex max-xl:overflow-x-auto max-xl:snap-x max-xl:snap-mandatory max-xl:pb-2 max-xl:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
           {SERVING_OPTIONS.map((option) => {
             const isSelected = selectedServingId === option.id;
             return (
@@ -426,7 +426,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => setSelectedServingId(option.id)}
-                className={`relative min-h-[92px] rounded-xl border p-2.5 text-left transition-all active:scale-[0.98] max-lg:min-w-[155px] max-lg:snap-start ${
+                className={`relative min-h-[92px] rounded-xl border p-2.5 text-left transition-all active:scale-[0.98] max-xl:min-w-[155px] max-xl:snap-start ${
                   isSelected
                     ? "border-ink bg-ink text-panel shadow-md"
                     : "border-ink/15 bg-white/65 text-ink hover:border-ink/45"
@@ -473,7 +473,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       {/* 4. Temporary order summary */}
       <div className="w-[min(1100px,calc(100%-48px))] max-sm:w-[calc(100%-24px)] mx-auto z-10 rounded-2xl border border-ink/15 bg-white/70 backdrop-blur-md p-4 max-sm:p-3 shadow-sm">
-        <div className="flex items-center justify-between gap-3 mb-2.5">
+        <div className="flex max-sm:flex-col max-sm:items-start items-center justify-between gap-1.5 sm:gap-3 mb-2.5">
           <h4 className="text-sm font-black uppercase tracking-wide">Your Order <span className="text-ink/50">· {temporaryOrder.length} {temporaryOrder.length === 1 ? "item" : "items"}</span></h4>
           <strong className="text-sm tabular-nums">Total: {formatRupees(temporaryTotal)}</strong>
         </div>
@@ -483,8 +483,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         ) : (
           <div className="max-h-[190px] overflow-y-auto divide-y divide-ink/10 pr-1">
             {temporaryOrder.map((entry) => (
-              <div key={entry.entryId} className="py-2.5 flex max-sm:flex-wrap items-center gap-3">
-                <div className="min-w-0 flex-1">
+              <div key={entry.entryId} className="py-2.5 flex max-sm:flex-wrap items-center gap-3 max-sm:gap-2">
+                <div className="min-w-0 flex-1 max-sm:basis-full">
                   <p className="text-xs font-black truncate">{entry.flavourName} · {entry.name}</p>
                   <p className="text-[0.68rem] font-semibold text-ink/55">{entry.scoops} scoop{entry.scoops === 1 ? "" : "s"} · {formatRupees(entry.price)} each</p>
                 </div>
@@ -500,47 +500,14 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </div>
         )}
 
-        <button type="button" onClick={handleAddAllToCart} disabled={temporaryOrder.length === 0} className="mt-3 ml-auto w-full max-w-[300px] min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 flex items-center justify-center">
+        <button type="button" onClick={handleAddAllToCart} disabled={temporaryOrder.length === 0} className="mt-3 ml-auto w-full max-w-[300px] max-sm:max-w-none min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 flex items-center justify-center">
           Add All to Cart
         </button>
-
-        {/* 5. Carousel Progress Tiles Indicator */}
-        <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-1.5">
-          {FLAVOURS.map((item, idx) => (
-            <div key={item.id} className="group relative flex flex-col items-center">
-              {/* Tooltip Label on Hover */}
-              <span className="pointer-events-none absolute bottom-full mb-2 px-2.5 py-1 rounded-lg bg-ink text-panel text-[0.7rem] max-sm:text-[0.62rem] font-black tracking-wide uppercase whitespace-nowrap opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 ease-custom shadow-lg z-40">
-                {item.name}
-                <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-ink" />
-              </span>
-              <button
-                type="button"
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`Go to ${item.name} cup`}
-                className={`h-2 rounded-full transition-all duration-200 cursor-pointer ${
-                  idx === activeIdx
-                    ? "w-[36px] bg-ink opacity-100 shadow-sm scale-105"
-                    : "w-[18px] bg-ink/30 hover:bg-ink/75 hover:scale-110"
-                }`}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Completion Badge on 12th Cup */}
-        {activeIdx === FLAVOURS.length - 1 && (
-          <div className="mt-2 text-[0.7rem] max-sm:text-[0.64rem] font-black tracking-widest uppercase opacity-80 animate-badge-pop flex items-center gap-1.5 bg-ink/10 text-ink px-4 py-1 rounded-full shadow-sm">
-            <svg className="w-3.5 h-3.5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>All 12 Cups Explored</span>
-          </div>
-        )}
       </div>
 
       {/* 6. Right-side Vertical Progress Scrollbar — syncs with cup index */}
       <div
-        className="absolute right-3 max-sm:right-1.5 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-1"
+        className="absolute right-3 max-sm:hidden top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-1"
         aria-hidden="true"
       >
         {/* Track */}
