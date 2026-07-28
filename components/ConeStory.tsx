@@ -7,6 +7,9 @@ import CupsSection from "@/components/CupsSection";
 import { useCart } from "@/context/CartContext";
 
 const CONE_AUTO_ADVANCE_MS = 3500;
+const CONE_PRICE = 100;
+const CONE_ORIGINAL_PRICE = 150;
+const CONE_SAVING = 50;
 
 export default function ConeStory() {
   const { totalCount, setIsCartOpen, addToCart } = useCart();
@@ -54,9 +57,15 @@ export default function ConeStory() {
     if (!activeCone) return;
     addToCart({
       type: "Cone",
+      flavourId: activeCone.id,
       flavour: activeCone.name,
       quantity: coneQty,
       size: "Single Scoop",
+      servingId: "single-cone",
+      scoopCount: 1,
+      unitPrice: CONE_PRICE,
+      originalPrice: CONE_ORIGINAL_PRICE,
+      saving: CONE_SAVING,
       image: activeCone.imageSrc,
       color: activeCone.color,
     });
@@ -964,7 +973,7 @@ export default function ConeStory() {
           <span className="footer-label max-md:hidden">
             Freshly scooped in Pakistan
           </span>
-          <span className="counter tabular-nums">
+          <span className="counter tabular-nums max-sm:hidden">
             Flavour{" "}
             <b id="current">
               {String(activeIndex + 1).padStart(2, "0")}
@@ -974,6 +983,14 @@ export default function ConeStory() {
 
           {/* Quantity + Add to Cart */}
           <div className="flex items-center gap-2">
+            <div className="flex flex-col items-start justify-center min-h-[42px] max-sm:min-h-[36px] px-2.5 max-sm:px-2 rounded-xl bg-white/60 backdrop-blur-md border border-ink/10 shadow-sm leading-none" aria-label="Cone offer: original price Rs. 150, now Rs. 100, save Rs. 50">
+              <span className="flex items-baseline gap-1.5 whitespace-nowrap">
+                <strong className="text-[0.82rem] max-sm:text-[0.72rem] tracking-normal normal-case">Rs. 100</strong>
+                <span className="text-[0.58rem] max-sm:text-[0.52rem] text-ink/45 line-through tracking-normal normal-case">Rs. 150</span>
+              </span>
+              <span className="mt-1 rounded-full bg-green-700 text-white px-1.5 py-0.5 text-[0.52rem] max-sm:text-[0.48rem] font-black tracking-normal normal-case whitespace-nowrap">Save Rs. 50</span>
+            </div>
+
             <div className="flex items-center gap-0 px-1.5 py-0.5 rounded-full bg-[rgba(255,255,255,0.6)] backdrop-blur-md border border-[rgba(21,21,15,0.12)]">
               <button
                 type="button"

@@ -19,7 +19,6 @@ interface ServingOption {
 }
 
 const SERVING_OPTIONS: ServingOption[] = [
-  { id: "single", name: "Single Scoop", scoops: 1, price: 100, originalPrice: 100, saving: 0 },
   { id: "small-cup", name: "Small Cup", scoops: 2, price: 160, originalPrice: 200, saving: 40 },
   { id: "medium-cup", name: "Medium Cup", scoops: 3, price: 220, originalPrice: 300, saving: 80 },
   { id: "large-cup", name: "Large Cup", scoops: 4, price: 290, originalPrice: 400, saving: 110 },
