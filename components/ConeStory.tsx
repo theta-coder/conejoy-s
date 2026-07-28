@@ -781,28 +781,7 @@ export default function ConeStory() {
               </button>
             </div>
 
-            {/* Motion Cue Prompt between 1st Cone and 2nd Cone */}
-            <div className="mt-6 max-md:mt-3 flex items-center max-md:justify-center">
-              <button
-                type="button"
-                onClick={() => handleDotClick(1)}
-                className={`group inline-flex items-center gap-2.5 px-4 py-2 max-sm:px-3.5 max-sm:py-1.5 rounded-full bg-ink text-panel text-[0.74rem] max-sm:text-[0.66rem] font-black tracking-wider uppercase shadow-xl transition-all duration-500 animate-scroll-bounce hover:scale-105 active:scale-95 cursor-pointer z-30 border border-panel/20 ${
-                  activeIndex === 0
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-40 hover:opacity-100"
-                }`}
-                aria-label="Swipe or scroll down for next flavour: Kulfa"
-              >
-                <svg className="w-4 h-4 max-sm:w-3.5 max-sm:h-3.5 text-panel animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-                <span>
-                  {activeIndex === 0 ? "Swipe / Scroll down for 02 Kulfa" : "Scroll to discover"}
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-panel/70" aria-hidden="true" />
-                <span className="text-[0.68rem] font-bold tracking-widest text-panel/90">↓</span>
-              </button>
-            </div>
+
           </section>
 
           {/* Stage section */}
