@@ -7,7 +7,10 @@ import CupsSection from "@/components/CupsSection";
 import { useCart } from "@/context/CartContext";
 
 export default function ConeStory() {
-  const { totalCount, setIsCartOpen } = useCart();
+  const { totalCount, setIsCartOpen, addToCart } = useCart();
+
+  const [coneQuantities, setConeQuantities] = useState<Record<string, number>>({});
+  const [isConeAdded, setIsConeAdded] = useState(false);
   const storyRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const coneRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -32,6 +35,31 @@ export default function ConeStory() {
 
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
+
+  const activeCone = FLAVOURS[activeIndex];
+  const coneQty = coneQuantities[activeCone?.id] || 1;
+
+  const handleConeQtyChange = (delta: number) => {
+    if (!activeCone) return;
+    setConeQuantities((prev) => {
+      const cur = prev[activeCone.id] || 1;
+      return { ...prev, [activeCone.id]: Math.max(1, Math.min(10, cur + delta)) };
+    });
+  };
+
+  const handleAddConeToCart = () => {
+    if (!activeCone) return;
+    addToCart({
+      type: "Cone",
+      flavour: activeCone.name,
+      quantity: coneQty,
+      size: "Single Scoop",
+      image: activeCone.imageSrc,
+      color: activeCone.color,
+    });
+    setIsConeAdded(true);
+    setTimeout(() => setIsConeAdded(false), 1800);
+  };
 
   // Load recent flavours from localStorage on mount & generate random indices fallback
   useEffect(() => {
@@ -874,14 +902,59 @@ export default function ConeStory() {
             </b>{" "}
             / 12
           </span>
-          <a
-            className="button inline-flex items-center min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] text-panel bg-ink rounded-full text-[0.72rem] max-sm:text-[0.68rem] no-underline transition-transform duration-180 ease-custom hover:-translate-y-[2px] active:scale-[0.97] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4"
-            href="https://wa.me/923044490480?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%20a%20cone."
-            target="_blank"
-            rel="noreferrer"
-          >
-            Get this scoop
-          </a>
+
+          {/* Quantity + Add to Cart */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-0 px-1.5 py-0.5 rounded-full bg-[rgba(255,255,255,0.6)] backdrop-blur-md border border-[rgba(21,21,15,0.12)]">
+              <button
+                type="button"
+                onClick={() => handleConeQtyChange(-1)}
+                disabled={coneQty <= 1}
+                aria-label={`Decrease ${activeCone?.name} cone quantity`}
+                className="w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center text-sm font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+              >
+                −
+              </button>
+              <span className="w-6 text-center text-[0.78rem] max-sm:text-[0.7rem] font-black tabular-nums">
+                {coneQty}
+              </span>
+              <button
+                type="button"
+                onClick={() => handleConeQtyChange(1)}
+                disabled={coneQty >= 10}
+                aria-label={`Increase ${activeCone?.name} cone quantity`}
+                className="w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center text-sm font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddConeToCart}
+              className={`inline-flex items-center gap-1.5 min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] rounded-full text-[0.72rem] max-sm:text-[0.68rem] font-black uppercase tracking-wider no-underline transition-all duration-200 ease-custom hover:-translate-y-[2px] active:scale-[0.97] cursor-pointer focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 ${
+                isConeAdded
+                  ? "bg-green-700 text-white shadow-[0_4px_16px_rgba(22,101,52,0.3)] scale-[1.02]"
+                  : "bg-ink text-panel"
+              }`}
+            >
+              {isConeAdded ? (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Added ✓</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <span>Add to Cart</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </main>
     </div>
