@@ -14,7 +14,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
-  // Touch and drag refs
+  // Touch refs
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const touchDeltaXRef = useRef<number>(0);
@@ -53,14 +53,14 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     setActiveIdx((prev) => Math.min(FLAVOURS.length - 1, prev + 1));
   }, []);
 
-  // Auto-advance cups motion when section is active in viewport
+  // Auto-advance cups motion when section is active in viewport (every 3.5 seconds)
   useEffect(() => {
     const timer = window.setTimeout(() => {
       if (document.hidden || !sectionRef.current) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
       const rect = sectionRef.current.getBoundingClientRect();
-      const isVisible = rect.top < window.innerHeight * 0.7 && rect.bottom > window.innerHeight * 0.3;
+      const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > window.innerHeight * 0.2;
       if (!isVisible) return;
 
       if (activeIdx < FLAVOURS.length - 1) {
@@ -95,7 +95,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     }, 1800);
   };
 
-  // Keyboard Navigation (Left / Right Arrows) when in Section
+  // Keyboard Navigation (Left / Right Arrows)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!sectionRef.current) return;
@@ -116,7 +116,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrev, goToNext]);
 
-  // Desktop Mouse Wheel / Trackpad Scroll Locking with Boundary Escape & Navbar Bypass
+  // Desktop Wheel Scroll Handler
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
@@ -130,29 +130,20 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
       const delta = e.deltaY;
 
-      // Scrolling UP inside Cups
-      if (delta < -20) {
-        if (activeIdx > 0) {
-          e.preventDefault();
-          const now = Date.now();
-          if (now - lastScrollTimeRef.current >= 450) {
-            lastScrollTimeRef.current = now;
-            goToPrev();
-          }
+      if (delta < -20 && activeIdx > 0) {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastScrollTimeRef.current >= 450) {
+          lastScrollTimeRef.current = now;
+          goToPrev();
         }
-        // If activeIdx === 0 (first cup), do NOT preventDefault -> allow natural scroll up to Cones
-      }
-      // Scrolling DOWN inside Cups
-      else if (delta > 20) {
-        if (activeIdx < FLAVOURS.length - 1) {
-          e.preventDefault();
-          const now = Date.now();
-          if (now - lastScrollTimeRef.current >= 450) {
-            lastScrollTimeRef.current = now;
-            goToNext();
-          }
+      } else if (delta > 20 && activeIdx < FLAVOURS.length - 1) {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastScrollTimeRef.current >= 450) {
+          lastScrollTimeRef.current = now;
+          goToNext();
         }
-        // If activeIdx === 11 (last cup), do NOT preventDefault -> allow natural scroll down past Cups
       }
     };
 
@@ -160,7 +151,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [goToNext, goToPrev, activeIdx]);
 
-  // Mobile / Tablet Touch Drag Scroll Locking
+  // Mobile / Tablet Horizontal Touch Swipe Handler
   useEffect(() => {
     const sectionEl = sectionRef.current;
     if (!sectionEl) return;
@@ -173,10 +164,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
-        return;
-      }
-
       if (touchStartXRef.current !== null && touchStartYRef.current !== null) {
         touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
         touchDeltaYRef.current = e.touches[0].clientY - touchStartYRef.current;
@@ -184,43 +171,25 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         const absX = Math.abs(touchDeltaXRef.current);
         const absY = Math.abs(touchDeltaYRef.current);
 
-        // If vertical swipe dominates inside Cups section
-        if (absY > absX && absY > 15) {
-          // Swiping UP (scrolling DOWN)
-          if (touchDeltaYRef.current < 0) {
-            if (activeIdx < FLAVOURS.length - 1) {
-              if (e.cancelable) e.preventDefault();
-              const now = Date.now();
-              if (now - lastScrollTimeRef.current >= 450) {
-                lastScrollTimeRef.current = now;
-                goToNext();
-              }
-            }
-          }
-          // Swiping DOWN (scrolling UP)
-          else if (touchDeltaYRef.current > 0) {
-            if (activeIdx > 0) {
-              if (e.cancelable) e.preventDefault();
-              const now = Date.now();
-              if (now - lastScrollTimeRef.current >= 450) {
-                lastScrollTimeRef.current = now;
-                goToPrev();
-              }
-            }
-          }
+        // Prevent page scroll when user is intentionally swiping horizontally left/right across cups
+        if (absX > absY && absX > 20) {
+          if (e.cancelable) e.preventDefault();
         }
       }
     };
 
     const handleTouchEnd = () => {
-      // Horizontal swipe fallback
-      if (Math.abs(touchDeltaXRef.current) > 40 && Math.abs(touchDeltaXRef.current) > Math.abs(touchDeltaYRef.current)) {
-        if (touchDeltaXRef.current > 0 && activeIdx > 0) {
-          goToPrev();
-        } else if (touchDeltaXRef.current < 0 && activeIdx < FLAVOURS.length - 1) {
+      const absX = Math.abs(touchDeltaXRef.current);
+      const absY = Math.abs(touchDeltaYRef.current);
+
+      if (absX > 30 && absX > absY) {
+        if (touchDeltaXRef.current < 0 && activeIdx < FLAVOURS.length - 1) {
           goToNext();
+        } else if (touchDeltaXRef.current > 0 && activeIdx > 0) {
+          goToPrev();
         }
       }
+
       touchStartXRef.current = null;
       touchStartYRef.current = null;
       touchDeltaXRef.current = 0;
@@ -260,7 +229,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </p>
       </div>
 
-      {/* 2. Flavour Counter & Flavour Name (DIRECTLY ABOVE THE CUP) */}
+      {/* 2. Flavour Counter & Flavour Name */}
       <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center text-center z-10 transition-all duration-300">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
           <span>{activeFlavour.indexLabel}</span>
@@ -272,7 +241,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </h3>
       </div>
 
-      {/* 3. Cup Carousel Stage (ACTIVE CUP DEAD-CENTER) */}
+      {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
       <div className="relative my-4 max-sm:my-3 w-full max-w-[1100px] mx-auto flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(210px,32svh,290px)] select-none">
         {/* Left Arrow Button */}
         <button
@@ -317,19 +286,21 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
               // Active cup exact center anchor
               transformStyle = "translate(-50%, -50%) scale(1) rotate(0deg)";
             } else if (isPrev) {
-              opacity = 0.32;
+              opacity = 0.20;
               zIndex = 10;
+              // Horizontal slide left
               transformStyle =
                 typeof window !== "undefined" && window.innerWidth <= 640
-                  ? "translate(-50%, -50%) translateX(clamp(-260px, -62vw, -180px)) scale(0.58) rotate(-3deg)"
-                  : "translate(-50%, -50%) translateX(clamp(-420px, -28vw, -280px)) scale(0.62) rotate(-3deg)";
+                  ? "translate(-50%, -50%) translateX(-105%) scale(0.6) rotate(-4deg)"
+                  : "translate(-50%, -50%) translateX(-115%) scale(0.62) rotate(-4deg)";
             } else if (isNext) {
-              opacity = 0.32;
+              opacity = 0.20;
               zIndex = 10;
+              // Horizontal slide right
               transformStyle =
                 typeof window !== "undefined" && window.innerWidth <= 640
-                  ? "translate(-50%, -50%) translateX(clamp(180px, 62vw, 260px)) scale(0.58) rotate(3deg)"
-                  : "translate(-50%, -50%) translateX(clamp(280px, 28vw, 420px)) scale(0.62) rotate(3deg)";
+                  ? "translate(-50%, -50%) translateX(105%) scale(0.6) rotate(4deg)"
+                  : "translate(-50%, -50%) translateX(115%) scale(0.62) rotate(4deg)";
             }
 
             return (
@@ -359,7 +330,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   width={500}
                   height={500}
                   loading={isCurrent ? "eager" : "lazy"}
-                  className="w-full h-full object-contain filter drop-shadow-[0_22px_22px_rgba(40,30,15,0.22)] transition-transform duration-300"
+                  className="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)] transition-transform duration-300"
                 />
               </div>
             );
@@ -438,8 +409,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </button>
         </div>
 
-        {/* 5. Carousel Progress Indicator (Larger Interactive Tiles with Hover Flavour Tooltip) */}
-        <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-2">
+        {/* 5. Carousel Progress Tiles Indicator */}
+        <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-1.5">
           {FLAVOURS.map((item, idx) => (
             <div key={item.id} className="group relative flex flex-col items-center">
               {/* Tooltip Label on Hover */}
@@ -451,10 +422,10 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                 type="button"
                 onClick={() => setActiveIdx(idx)}
                 aria-label={`Go to ${item.name} cup`}
-                className={`h-3 rounded-full transition-all duration-300 cursor-pointer ${
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                   idx === activeIdx
-                    ? "w-8 bg-ink opacity-100 shadow-md scale-105"
-                    : "w-3 bg-ink/30 hover:bg-ink/75 hover:scale-125"
+                    ? "w-9 bg-ink opacity-100 shadow-sm scale-105"
+                    : "w-4.5 bg-ink/30 hover:bg-ink/75 hover:scale-110"
                 }`}
               />
             </div>
