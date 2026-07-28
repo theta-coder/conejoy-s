@@ -20,7 +20,10 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const touchDeltaXRef = useRef<number>(0);
   const touchDeltaYRef = useRef<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
-  const lastScrollTimeRef = useRef<number>(0);
+  const activeIdxRef = useRef(0);
+  const wheelDeltaRef = useRef(0);
+  const wheelGestureLockedRef = useRef(false);
+  const wheelUnlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
   const currentQuantity = quantities[activeFlavour.id] || 1;
@@ -29,6 +32,10 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     if (selectedIndex === undefined) return;
     setActiveIdx(Math.max(0, Math.min(FLAVOURS.length - 1, selectedIndex)));
   }, [selectedIndex]);
+
+  useEffect(() => {
+    activeIdxRef.current = activeIdx;
+  }, [activeIdx]);
 
   useEffect(() => {
     const handleExternalCupSelection = (event: Event) => {
@@ -102,6 +109,18 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
 
   // Desktop Wheel Scroll Handler
   useEffect(() => {
+    const finishWheelGestureAfterPause = () => {
+      if (wheelUnlockTimerRef.current) {
+        clearTimeout(wheelUnlockTimerRef.current);
+      }
+
+      wheelUnlockTimerRef.current = setTimeout(() => {
+        wheelGestureLockedRef.current = false;
+        wheelDeltaRef.current = 0;
+        wheelUnlockTimerRef.current = null;
+      }, 220);
+    };
+
     const handleWheel = (e: WheelEvent) => {
       if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
         return;
@@ -116,28 +135,67 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       const isVisible = visibleHeight > rect.height * 0.4;
       if (!isVisible) return;
 
-      const delta = e.deltaY;
+      const currentIndex = activeIdxRef.current;
+      const normalizedDelta =
+        e.deltaMode === WheelEvent.DOM_DELTA_LINE
+          ? e.deltaY * 16
+          : e.deltaMode === WheelEvent.DOM_DELTA_PAGE
+            ? e.deltaY * window.innerHeight
+            : e.deltaY;
 
-      if (delta < -20 && activeIdx > 0) {
-        e.preventDefault();
-        const now = Date.now();
-        if (now - lastScrollTimeRef.current >= 450) {
-          lastScrollTimeRef.current = now;
-          goToPrev();
+      if (normalizedDelta === 0) return;
+
+      const movingForward = normalizedDelta > 0;
+      const leavingAtFirstCup = !movingForward && currentIndex === 0;
+      const leavingAtLastCup = movingForward && currentIndex === FLAVOURS.length - 1;
+
+      // Only release normal page scrolling at the two true section boundaries.
+      if (leavingAtFirstCup || leavingAtLastCup) {
+        wheelDeltaRef.current = 0;
+        wheelGestureLockedRef.current = false;
+        if (wheelUnlockTimerRef.current) {
+          clearTimeout(wheelUnlockTimerRef.current);
+          wheelUnlockTimerRef.current = null;
         }
-      } else if (delta > 20 && activeIdx < FLAVOURS.length - 1) {
-        e.preventDefault();
-        const now = Date.now();
-        if (now - lastScrollTimeRef.current >= 450) {
-          lastScrollTimeRef.current = now;
-          goToNext();
-        }
+        return;
+      }
+
+      // Keep every residual event inside the section, including small trackpad deltas.
+      if (e.cancelable) e.preventDefault();
+      finishWheelGestureAfterPause();
+
+      if (wheelGestureLockedRef.current) return;
+
+      // Ignore momentum left over from the opposite direction before accumulating.
+      if (
+        wheelDeltaRef.current !== 0 &&
+        Math.sign(wheelDeltaRef.current) !== Math.sign(normalizedDelta)
+      ) {
+        wheelDeltaRef.current = 0;
+      }
+
+      wheelDeltaRef.current += normalizedDelta;
+      if (Math.abs(wheelDeltaRef.current) < 28) return;
+
+      wheelGestureLockedRef.current = true;
+      wheelDeltaRef.current = 0;
+
+      if (movingForward) {
+        goToNext();
+      } else {
+        goToPrev();
       }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
-    return () => window.removeEventListener("wheel", handleWheel);
-  }, [goToNext, goToPrev, activeIdx]);
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      if (wheelUnlockTimerRef.current) {
+        clearTimeout(wheelUnlockTimerRef.current);
+        wheelUnlockTimerRef.current = null;
+      }
+    };
+  }, [goToNext, goToPrev]);
 
   // Mobile / Tablet Horizontal Touch Swipe Handler
   useEffect(() => {
