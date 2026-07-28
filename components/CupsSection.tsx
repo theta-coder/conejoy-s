@@ -410,18 +410,26 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </button>
         </div>
 
-        {/* 5. Carousel Progress Indicator (Dots) */}
-        <div className="mt-2.5 max-sm:mt-2 flex items-center justify-center gap-1.5">
+        {/* 5. Carousel Progress Indicator (Larger Interactive Tiles with Hover Flavour Tooltip) */}
+        <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-2">
           {FLAVOURS.map((item, idx) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setActiveIdx(idx)}
-              aria-label={`Go to ${item.name} cup`}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                idx === activeIdx ? "w-6 bg-ink opacity-100" : "w-2 bg-ink/25 hover:bg-ink/50"
-              }`}
-            />
+            <div key={item.id} className="group relative flex flex-col items-center">
+              {/* Tooltip Label on Hover */}
+              <span className="pointer-events-none absolute bottom-full mb-2 px-2.5 py-1 rounded-lg bg-ink text-panel text-[0.7rem] max-sm:text-[0.62rem] font-black tracking-wide uppercase whitespace-nowrap opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 ease-custom shadow-lg z-40">
+                {item.name}
+                <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-ink" />
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveIdx(idx)}
+                aria-label={`Go to ${item.name} cup`}
+                className={`h-3 rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === activeIdx
+                    ? "w-8 bg-ink opacity-100 shadow-md scale-105"
+                    : "w-3 bg-ink/30 hover:bg-ink/75 hover:scale-125"
+                }`}
+              />
+            </div>
           ))}
         </div>
       </div>
