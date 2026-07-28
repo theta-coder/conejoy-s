@@ -863,13 +863,13 @@ export default function ConeStory() {
                   disabled={activeIndex === 0}
                   onClick={() => handleDotClick(activeIndex - 1)}
                   aria-label={activeIndex > 0 ? `Previous flavour: ${FLAVOURS[activeIndex - 1].name}` : "First flavour reached"}
-                  className={`w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center border border-ink/20 transition-all duration-200 ${
+                  className={`w-9 h-9 max-sm:w-8 max-sm:h-8 rounded-full flex items-center justify-center border border-ink/20 transition-all duration-200 ${
                     activeIndex === 0
                       ? "opacity-20 pointer-events-none bg-panel/40"
                       : "bg-panel text-ink hover:bg-ink hover:text-panel shadow-sm cursor-pointer active:scale-90"
                   }`}
                 >
-                  <svg className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <svg className="w-4.5 h-4.5 max-sm:w-4 max-sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
                   </svg>
                 </button>
@@ -912,13 +912,13 @@ export default function ConeStory() {
                   disabled={activeIndex === FLAVOURS.length - 1}
                   onClick={() => handleDotClick(activeIndex + 1)}
                   aria-label={activeIndex < FLAVOURS.length - 1 ? `Next flavour: ${FLAVOURS[activeIndex + 1].name}` : "Last flavour reached"}
-                  className={`w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center border border-ink/20 transition-all duration-200 ${
+                  className={`w-9 h-9 max-sm:w-8 max-sm:h-8 rounded-full flex items-center justify-center border border-ink/20 transition-all duration-200 ${
                     activeIndex === FLAVOURS.length - 1
                       ? "opacity-20 pointer-events-none bg-panel/40"
                       : "bg-panel text-ink hover:bg-ink hover:text-panel shadow-sm cursor-pointer active:scale-90"
                   }`}
                 >
-                  <svg className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <svg className="w-4.5 h-4.5 max-sm:w-4 max-sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
