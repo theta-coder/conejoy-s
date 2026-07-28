@@ -503,7 +503,6 @@ export default function ConeStory() {
       if (!cups) return;
 
       (window as any).__BYPASS_CUPS_LOCK__ = true;
-      setCupSearchIndex(0);
 
     const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
     const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset + 2;
@@ -521,6 +520,13 @@ export default function ConeStory() {
 
     const handleWheelKitKat = (e: WheelEvent) => {
       if (e.deltaY <= 15) return;
+      if (!storyRef.current) return;
+
+      const storyRect = storyRef.current.getBoundingClientRect();
+      const conesAreActive =
+        storyRect.top <= 100 && storyRect.bottom >= window.innerHeight - 100;
+      if (!conesAreActive) return;
+
       const now = Date.now();
       if (now - lastWheelTime < 1000) return;
       lastWheelTime = now;
