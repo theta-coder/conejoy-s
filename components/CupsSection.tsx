@@ -8,11 +8,42 @@ interface CupsSectionProps {
   selectedIndex?: number;
 }
 
+interface ServingOption {
+  id: string;
+  name: string;
+  scoops: number;
+  price: number;
+  originalPrice: number;
+  saving: number;
+}
+
+interface TemporaryServing extends ServingOption {
+  entryId: string;
+  flavourId: string;
+  flavourName: string;
+  flavourColor: string;
+  image: string;
+  quantity: number;
+}
+
+const SERVING_OPTIONS: ServingOption[] = [
+  { id: "single", name: "Single Scoop", scoops: 1, price: 100, originalPrice: 100, saving: 0 },
+  { id: "small-cup", name: "Small Cup", scoops: 2, price: 160, originalPrice: 200, saving: 40 },
+  { id: "medium-cup", name: "Medium Cup", scoops: 3, price: 220, originalPrice: 300, saving: 80 },
+  { id: "large-cup", name: "Large Cup", scoops: 4, price: 290, originalPrice: 400, saving: 110 },
+  { id: "small-pack", name: "Small Pack", scoops: 6, price: 420, originalPrice: 600, saving: 180 },
+  { id: "family-pack", name: "Family Pack", scoops: 12, price: 820, originalPrice: 1200, saving: 380 },
+];
+
+const formatRupees = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
+
 export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [isAdded, setIsAdded] = useState(false);
-  const { addToCart } = useCart();
+  const [selectedServingId, setSelectedServingId] = useState<string | null>(null);
+  const [servingQuantity, setServingQuantity] = useState(1);
+  const [temporaryOrder, setTemporaryOrder] = useState<TemporaryServing[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { addManyToCart, setIsCartOpen } = useCart();
 
   // Touch refs
   const touchStartXRef = useRef<number | null>(null);
@@ -24,7 +55,14 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const lastWheelNavigationRef = useRef(0);
 
   const activeFlavour: FlavourItem = FLAVOURS[activeIdx];
-  const currentQuantity = quantities[activeFlavour.id] || 1;
+  const selectedServing = SERVING_OPTIONS.find((option) => option.id === selectedServingId) ?? null;
+  const selectedServingPosition = selectedServing
+    ? SERVING_OPTIONS.findIndex((option) => option.id === selectedServing.id) + 1
+    : 0;
+  const temporaryTotal = temporaryOrder.reduce(
+    (total, entry) => total + entry.price * entry.quantity,
+    0
+  );
 
   useEffect(() => {
     if (selectedIndex === undefined) return;
@@ -54,31 +92,78 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       return next;
     });
   }, []);
-
-
-
-  const handleQuantityChange = (delta: number) => {
-    setQuantities((prev) => {
-      const current = prev[activeFlavour.id] || 1;
-      const nextQty = Math.max(1, Math.min(10, current + delta));
-      return { ...prev, [activeFlavour.id]: nextQty };
-    });
+  const handleServingQuantityChange = (delta: number) => {
+    setServingQuantity((current) => Math.max(1, Math.min(20, current + delta)));
   };
 
-  const handleAddToCart = () => {
-    addToCart({
-      type: "Cup",
-      flavour: activeFlavour.name,
-      quantity: currentQuantity,
-      size: "Single Scoop",
-      image: activeFlavour.cupImageSrc,
-      color: activeFlavour.color,
+  const handleAddServing = () => {
+    if (!selectedServing) return;
+
+    const entryId = `${activeFlavour.id}-${selectedServing.id}`;
+    setTemporaryOrder((currentOrder) => {
+      const existingIndex = currentOrder.findIndex((entry) => entry.entryId === entryId);
+      if (existingIndex < 0) {
+        return [
+          ...currentOrder,
+          {
+            ...selectedServing,
+            entryId,
+            flavourId: activeFlavour.id,
+            flavourName: activeFlavour.name,
+            flavourColor: activeFlavour.color,
+            image: activeFlavour.cupImageSrc,
+            quantity: servingQuantity,
+          },
+        ];
+      }
+
+      return currentOrder.map((entry, index) =>
+        index === existingIndex
+          ? { ...entry, quantity: Math.min(20, entry.quantity + servingQuantity) }
+          : entry
+      );
     });
 
-    setIsAdded(true);
-    setTimeout(() => {
-      setIsAdded(false);
-    }, 1800);
+    setSuccessMessage(`${selectedServing.name} added`);
+    setServingQuantity(1);
+    window.setTimeout(() => setSuccessMessage(null), 1800);
+  };
+
+  const updateTemporaryQuantity = (entryId: string, delta: number) => {
+    setTemporaryOrder((currentOrder) =>
+      currentOrder.map((entry) =>
+        entry.entryId === entryId
+          ? { ...entry, quantity: Math.max(1, Math.min(20, entry.quantity + delta)) }
+          : entry
+      )
+    );
+  };
+
+  const removeTemporaryEntry = (entryId: string) => {
+    setTemporaryOrder((currentOrder) => currentOrder.filter((entry) => entry.entryId !== entryId));
+  };
+
+  const handleAddAllToCart = () => {
+    if (temporaryOrder.length === 0) return;
+
+    addManyToCart(
+      temporaryOrder.map((entry) => ({
+        type: "Cup" as const,
+        flavourId: entry.flavourId,
+        flavour: entry.flavourName,
+        quantity: entry.quantity,
+        size: entry.name,
+        servingId: entry.id,
+        scoopCount: entry.scoops,
+        unitPrice: entry.price,
+        originalPrice: entry.originalPrice,
+        saving: entry.saving,
+        image: entry.image,
+        color: entry.flavourColor,
+      }))
+    );
+    setTemporaryOrder([]);
+    setIsCartOpen(true);
   };
 
   // Keyboard Navigation (Left / Right Arrows)
@@ -208,7 +293,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-6 max-sm:pt-5 pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
+      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-6 max-sm:pt-5 pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
       aria-label="Cups Collection"
     >
       {/* 1. Collection Heading & Short Description */}
@@ -237,8 +322,9 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </h3>
       </div>
 
+      <div className="my-4 max-sm:my-3 w-[min(1480px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-[minmax(0,1fr)_360px] max-lg:grid-cols-1 items-center gap-5 max-lg:gap-3">
       {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
-      <div className="relative my-4 max-sm:my-3 w-full max-w-[1100px] mx-auto flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(210px,32svh,290px)] select-none">
+      <div className="relative w-full flex items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(210px,32svh,290px)] select-none">
         {/* Left Arrow Button */}
         <button
           type="button"
@@ -353,59 +439,106 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </button>
       </div>
 
-      {/* 4. Quantity Selector and Add to Cart Button */}
-      <div className="mt-3 max-sm:mt-2 w-[min(1100px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex flex-col items-center justify-center gap-3 max-sm:gap-2.5 z-10">
-        <div className="flex max-sm:flex-col items-center justify-center gap-3 w-full max-w-[380px]">
-          {/* Quantity Modifier */}
-          <div className="flex items-center justify-between px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-[rgba(21,21,15,0.18)] shadow-sm w-[130px] max-sm:w-full">
-            <button
-              type="button"
-              onClick={() => handleQuantityChange(-1)}
-              disabled={currentQuantity <= 1}
-              aria-label={`Decrease ${activeFlavour.name} quantity`}
-              className="w-7 h-7 rounded-full flex items-center justify-center text-base font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
-            >
-              −
-            </button>
-            <span className="text-base font-black tabular-nums">{currentQuantity}</span>
-            <button
-              type="button"
-              onClick={() => handleQuantityChange(1)}
-              disabled={currentQuantity >= 10}
-              aria-label={`Increase ${activeFlavour.name} quantity`}
-              className="w-7 h-7 rounded-full flex items-center justify-center text-base font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
-            >
-              +
-            </button>
+      <aside className="relative z-30 w-full max-w-[360px] max-lg:max-w-[760px] max-lg:w-[calc(100%-24px)] max-lg:mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <h4 id="serving-heading" className="text-sm font-black uppercase tracking-wide">Choose your serving</h4>
+            <p className="text-[0.7rem] font-semibold text-ink/60 mt-0.5">All scoops use {activeFlavour.name}</p>
           </div>
-
-          {/* Add to Cart Button */}
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className={`flex-1 w-full min-h-[46px] px-6 rounded-full font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2 shadow-lg transition-all duration-200 cursor-pointer active:scale-[0.98] ${
-              isAdded
-                ? "bg-green-700 text-white shadow-green-700/30 scale-[1.02]"
-                : "bg-ink text-panel hover:opacity-95"
-            }`}
-          >
-            {isAdded ? (
-              <>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Added ✓</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <span>Add to Cart</span>
-              </>
-            )}
-          </button>
+          <span className="text-[0.65rem] font-black rounded-full bg-ink/10 px-2.5 py-1 whitespace-nowrap">
+            {selectedServing
+              ? `${selectedServingPosition} / ${SERVING_OPTIONS.length} · ${selectedServing.scoops} scoop${selectedServing.scoops === 1 ? "" : "s"}`
+              : `0 / ${SERVING_OPTIONS.length}`}
+          </span>
         </div>
+
+        <div className="grid grid-cols-2 gap-2 max-lg:flex max-lg:overflow-x-auto max-lg:snap-x max-lg:snap-mandatory max-lg:pb-2 max-lg:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
+          {SERVING_OPTIONS.map((option) => {
+            const isSelected = selectedServingId === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => setSelectedServingId(option.id)}
+                className={`relative min-h-[92px] rounded-xl border p-2.5 text-left transition-all active:scale-[0.98] max-lg:min-w-[155px] max-lg:snap-start ${
+                  isSelected
+                    ? "border-ink bg-ink text-panel shadow-md"
+                    : "border-ink/15 bg-white/65 text-ink hover:border-ink/45"
+                }`}
+              >
+                <span className="block pr-5 text-[0.76rem] font-black leading-tight">{option.name}</span>
+                <span className={`block mt-1 text-[0.65rem] font-bold ${isSelected ? "text-panel/70" : "text-ink/55"}`}>
+                  {option.scoops} scoop{option.scoops === 1 ? "" : "s"}
+                </span>
+                <span className="block mt-1.5 text-sm font-black">{formatRupees(option.price)}</span>
+                {option.saving > 0 && (
+                  <span className="flex items-center gap-1.5 mt-1">
+                    <span className={`text-[0.6rem] line-through ${isSelected ? "text-panel/55" : "text-ink/45"}`}>{formatRupees(option.originalPrice)}</span>
+                    <span className={`rounded-full px-1.5 py-0.5 text-[0.56rem] font-black ${isSelected ? "bg-panel text-ink" : "bg-green-700 text-white"}`}>
+                      Save {formatRupees(option.saving)}
+                    </span>
+                  </span>
+                )}
+                {isSelected && <span className="absolute right-2.5 top-2 text-xs" aria-hidden="true">✓</span>}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className="text-xs font-black">Quantity</span>
+          <div className="flex items-center rounded-full border border-ink/20 bg-white/80 p-1">
+            <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-8 h-8 rounded-full font-black hover:bg-ink/10 disabled:opacity-30" aria-label="Decrease serving quantity">−</button>
+            <span className="w-9 text-center text-sm font-black tabular-nums">{servingQuantity}</span>
+            <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-8 h-8 rounded-full font-black hover:bg-ink/10 disabled:opacity-30" aria-label="Increase serving quantity">+</button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleAddServing}
+          disabled={!selectedServing}
+          className="mt-3 w-full min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35"
+        >
+          {successMessage ?? "Add This Serving"}
+        </button>
+      </aside>
+      </div>
+
+      {/* 4. Temporary order summary */}
+      <div className="w-[min(1100px,calc(100%-48px))] max-sm:w-[calc(100%-24px)] mx-auto z-10 rounded-2xl border border-ink/15 bg-white/70 backdrop-blur-md p-4 max-sm:p-3 shadow-sm">
+        <div className="flex items-center justify-between gap-3 mb-2.5">
+          <h4 className="text-sm font-black uppercase tracking-wide">Your Order <span className="text-ink/50">· {temporaryOrder.length} {temporaryOrder.length === 1 ? "item" : "items"}</span></h4>
+          <strong className="text-sm tabular-nums">Total: {formatRupees(temporaryTotal)}</strong>
+        </div>
+
+        {temporaryOrder.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-ink/20 px-3 py-3 text-center text-xs font-semibold text-ink/55">Choose a serving above to start your order.</p>
+        ) : (
+          <div className="max-h-[190px] overflow-y-auto divide-y divide-ink/10 pr-1">
+            {temporaryOrder.map((entry) => (
+              <div key={entry.entryId} className="py-2.5 flex max-sm:flex-wrap items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-black truncate">{entry.flavourName} · {entry.name}</p>
+                  <p className="text-[0.68rem] font-semibold text-ink/55">{entry.scoops} scoop{entry.scoops === 1 ? "" : "s"} · {formatRupees(entry.price)} each</p>
+                </div>
+                <div className="flex items-center rounded-full border border-ink/15 bg-white/75 p-0.5">
+                  <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, -1)} disabled={entry.quantity <= 1} className="w-7 h-7 rounded-full text-xs font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Decrease ${entry.flavourName} ${entry.name} quantity`}>−</button>
+                  <span className="w-7 text-center text-xs font-black tabular-nums">{entry.quantity}</span>
+                  <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, 1)} disabled={entry.quantity >= 20} className="w-7 h-7 rounded-full text-xs font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Increase ${entry.flavourName} ${entry.name} quantity`}>+</button>
+                </div>
+                <strong className="w-[82px] text-right text-xs tabular-nums">{formatRupees(entry.price * entry.quantity)}</strong>
+                <button type="button" onClick={() => removeTemporaryEntry(entry.entryId)} className="text-[0.68rem] font-black text-red-700 hover:underline" aria-label={`Remove ${entry.flavourName} ${entry.name}`}>Remove</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button type="button" onClick={handleAddAllToCart} disabled={temporaryOrder.length === 0} className="mt-3 ml-auto w-full max-w-[300px] min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 flex items-center justify-center">
+          Add All to Cart
+        </button>
 
         {/* 5. Carousel Progress Tiles Indicator */}
         <div className="mt-3.5 max-sm:mt-3 flex items-center justify-center gap-1.5">

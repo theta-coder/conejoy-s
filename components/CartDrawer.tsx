@@ -5,6 +5,11 @@ import { useCart } from "@/context/CartContext";
 
 export default function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, clearCart, totalCount } = useCart();
+  const pricedTotal = cart.reduce(
+    (total, item) => total + (item.unitPrice ?? 0) * item.quantity,
+    0
+  );
+  const hasPricedItems = cart.some((item) => item.unitPrice !== undefined);
 
   if (!isCartOpen) return null;
 
@@ -65,9 +70,16 @@ export default function CartDrawer() {
                       <span className="text-[0.6rem] font-extrabold uppercase px-1.5 py-0.5 rounded bg-ink/10">
                         {item.type}
                       </span>
-                      <span className="text-[0.65rem] opacity-60 font-semibold">{item.size}</span>
+                      <span className="text-[0.65rem] opacity-60 font-semibold">
+                        {item.size}{item.scoopCount ? ` · ${item.scoopCount} scoop${item.scoopCount === 1 ? "" : "s"}` : ""}
+                      </span>
                     </div>
                     <h3 className="text-base font-extrabold text-ink truncate mt-0.5">{item.flavour}</h3>
+                    {item.unitPrice !== undefined && (
+                      <p className="mt-1 text-xs font-bold text-ink/65">
+                        {`Rs. ${item.unitPrice.toLocaleString("en-PK")} × ${item.quantity} = Rs. ${(item.unitPrice * item.quantity).toLocaleString("en-PK")}`}
+                      </p>
+                    )}
 
                     {/* Quantity controls */}
                     <div className="flex items-center gap-2 mt-2">
@@ -112,9 +124,15 @@ export default function CartDrawer() {
                 <span>Total Items</span>
                 <span>{totalCount}</span>
               </div>
+              {hasPricedItems && (
+                <div className="flex items-center justify-between text-base font-black">
+                  <span>Grand Total</span>
+                  <span>Rs. {pricedTotal.toLocaleString("en-PK")}</span>
+                </div>
+              )}
               <a
                 href={`https://wa.me/923044490480?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%3A%0A${encodeURIComponent(
-                  cart.map((c) => `- ${c.quantity}x ${c.flavour} (${c.type}, ${c.size})`).join("\n")
+                  cart.map((c) => `- ${c.quantity}x ${c.flavour} (${c.type}, ${c.size}${c.scoopCount ? `, ${c.scoopCount} scoops` : ""})${c.unitPrice ? ` = Rs. ${(c.unitPrice * c.quantity).toLocaleString("en-PK")}` : ""}`).join("\n")
                 )}`}
                 target="_blank"
                 rel="noreferrer"
