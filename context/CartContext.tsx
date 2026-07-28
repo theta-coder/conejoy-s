@@ -21,7 +21,6 @@ export interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (item: Omit<CartItem, "id">) => void;
-  addManyToCart: (items: Omit<CartItem, "id">[]) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   clearCart: () => void;
@@ -100,44 +99,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [showToast]
   );
 
-  const addManyToCart = useCallback(
-    (items: Omit<CartItem, "id">[]) => {
-      if (items.length === 0) return;
-
-      setCart((previousCart) => {
-        const nextCart = [...previousCart];
-
-        items.forEach((item) => {
-          const existingIdx = nextCart.findIndex(
-            (current) =>
-              current.type === item.type &&
-              (item.flavourId ? current.flavourId === item.flavourId : current.flavour === item.flavour) &&
-              (item.servingId ? current.servingId === item.servingId : current.size === item.size)
-          );
-
-          if (existingIdx >= 0) {
-            nextCart[existingIdx] = {
-              ...nextCart[existingIdx],
-              ...item,
-              quantity: nextCart[existingIdx].quantity + item.quantity,
-            };
-          } else {
-            const flavourKey = item.flavourId ?? item.flavour.toLowerCase().replace(/\s+/g, "-");
-            const servingKey = item.servingId ?? item.size.toLowerCase().replace(/\s+/g, "-");
-            const id = `${item.type.toLowerCase()}-${flavourKey}-${servingKey}`;
-            nextCart.push({ ...item, id });
-          }
-        });
-
-        return nextCart;
-      });
-
-      const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
-      showToast(`${totalQuantity} cup serving${totalQuantity === 1 ? "" : "s"} added to cart.`);
-    },
-    [showToast]
-  );
-
   const removeFromCart = useCallback((id: string) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   }, []);
@@ -167,7 +128,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         cart,
         addToCart,
-        addManyToCart,
         removeFromCart,
         updateQuantity,
         clearCart,

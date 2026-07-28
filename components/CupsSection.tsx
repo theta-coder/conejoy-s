@@ -17,15 +17,6 @@ interface ServingOption {
   saving: number;
 }
 
-interface TemporaryServing extends ServingOption {
-  entryId: string;
-  flavourId: string;
-  flavourName: string;
-  flavourColor: string;
-  image: string;
-  quantity: number;
-}
-
 const SERVING_OPTIONS: ServingOption[] = [
   { id: "single", name: "Single Scoop", scoops: 1, price: 100, originalPrice: 100, saving: 0 },
   { id: "small-cup", name: "Small Cup", scoops: 2, price: 160, originalPrice: 200, saving: 40 },
@@ -41,9 +32,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [selectedServingId, setSelectedServingId] = useState<string | null>(null);
   const [servingQuantity, setServingQuantity] = useState(1);
-  const [temporaryOrder, setTemporaryOrder] = useState<TemporaryServing[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const { addManyToCart, setIsCartOpen } = useCart();
+  const { addToCart } = useCart();
 
   // Touch refs
   const touchStartXRef = useRef<number | null>(null);
@@ -59,10 +49,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const selectedServingPosition = selectedServing
     ? SERVING_OPTIONS.findIndex((option) => option.id === selectedServing.id) + 1
     : 0;
-  const temporaryTotal = temporaryOrder.reduce(
-    (total, entry) => total + entry.price * entry.quantity,
-    0
-  );
 
   useEffect(() => {
     if (selectedIndex === undefined) return;
@@ -99,71 +85,24 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   const handleAddServing = () => {
     if (!selectedServing) return;
 
-    const entryId = `${activeFlavour.id}-${selectedServing.id}`;
-    setTemporaryOrder((currentOrder) => {
-      const existingIndex = currentOrder.findIndex((entry) => entry.entryId === entryId);
-      if (existingIndex < 0) {
-        return [
-          ...currentOrder,
-          {
-            ...selectedServing,
-            entryId,
-            flavourId: activeFlavour.id,
-            flavourName: activeFlavour.name,
-            flavourColor: activeFlavour.color,
-            image: activeFlavour.cupImageSrc,
-            quantity: servingQuantity,
-          },
-        ];
-      }
-
-      return currentOrder.map((entry, index) =>
-        index === existingIndex
-          ? { ...entry, quantity: Math.min(20, entry.quantity + servingQuantity) }
-          : entry
-      );
+    addToCart({
+      type: "Cup",
+      flavourId: activeFlavour.id,
+      flavour: activeFlavour.name,
+      quantity: servingQuantity,
+      size: selectedServing.name,
+      servingId: selectedServing.id,
+      scoopCount: selectedServing.scoops,
+      unitPrice: selectedServing.price,
+      originalPrice: selectedServing.originalPrice,
+      saving: selectedServing.saving,
+      image: activeFlavour.cupImageSrc,
+      color: activeFlavour.color,
     });
 
-    setSuccessMessage(`${selectedServing.name} added`);
+    setSuccessMessage(`${selectedServing.name} added to cart`);
     setServingQuantity(1);
     window.setTimeout(() => setSuccessMessage(null), 1800);
-  };
-
-  const updateTemporaryQuantity = (entryId: string, delta: number) => {
-    setTemporaryOrder((currentOrder) =>
-      currentOrder.map((entry) =>
-        entry.entryId === entryId
-          ? { ...entry, quantity: Math.max(1, Math.min(20, entry.quantity + delta)) }
-          : entry
-      )
-    );
-  };
-
-  const removeTemporaryEntry = (entryId: string) => {
-    setTemporaryOrder((currentOrder) => currentOrder.filter((entry) => entry.entryId !== entryId));
-  };
-
-  const handleAddAllToCart = () => {
-    if (temporaryOrder.length === 0) return;
-
-    addManyToCart(
-      temporaryOrder.map((entry) => ({
-        type: "Cup" as const,
-        flavourId: entry.flavourId,
-        flavour: entry.flavourName,
-        quantity: entry.quantity,
-        size: entry.name,
-        servingId: entry.id,
-        scoopCount: entry.scoops,
-        unitPrice: entry.price,
-        originalPrice: entry.originalPrice,
-        saving: entry.saving,
-        image: entry.image,
-        color: entry.flavourColor,
-      }))
-    );
-    setTemporaryOrder([]);
-    setIsCartOpen(true);
   };
 
   // Keyboard Navigation (Left / Right Arrows)
@@ -463,56 +402,9 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           disabled={!selectedServing}
           className="mt-3 w-full min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35"
         >
-          {successMessage ?? "Add This Serving"}
+          {successMessage ?? "Add to Cart"}
         </button>
       </aside>
-      </div>
-
-      {/* 4. Temporary order summary */}
-      <div className="w-[min(1100px,calc(100%-48px))] max-sm:w-[calc(100%-24px)] mx-auto z-10 rounded-2xl border border-ink/15 bg-white/70 backdrop-blur-md p-4 max-sm:p-3 shadow-sm">
-        <div className="flex items-center justify-between gap-2 sm:gap-3 mb-2.5">
-          <h4 className="text-sm max-sm:text-[0.72rem] font-black uppercase tracking-wide whitespace-nowrap">Your Order <span className="text-ink/50">· {temporaryOrder.length} {temporaryOrder.length === 1 ? "item" : "items"}</span></h4>
-          <strong className="text-sm max-sm:text-[0.72rem] tabular-nums whitespace-nowrap">Total: {formatRupees(temporaryTotal)}</strong>
-        </div>
-
-        {temporaryOrder.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-ink/20 px-3 py-3 text-center text-xs font-semibold text-ink/55">Choose a serving above to start your order.</p>
-        ) : (
-          <div className="max-h-[190px] overflow-y-auto divide-y divide-ink/10 pr-1">
-            {temporaryOrder.map((entry) => (
-              <div key={entry.entryId} className="py-2.5 flex items-center gap-3 max-sm:block">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs font-black truncate">{entry.flavourName} · {entry.name}</p>
-                    <div className="hidden max-sm:flex items-center gap-2 flex-shrink-0">
-                      <strong className="text-[0.68rem] tabular-nums">{formatRupees(entry.price * entry.quantity)}</strong>
-                      <button type="button" onClick={() => removeTemporaryEntry(entry.entryId)} className="text-[0.62rem] font-black text-red-700 hover:underline" aria-label={`Remove ${entry.flavourName} ${entry.name}`}>Remove</button>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 mt-0.5">
-                    <p className="text-[0.68rem] max-sm:text-[0.63rem] font-semibold text-ink/55 whitespace-nowrap">{entry.scoops} scoop{entry.scoops === 1 ? "" : "s"} · {formatRupees(entry.price)} each</p>
-                    <div className="hidden max-sm:flex items-center rounded-full border border-ink/15 bg-white/75 p-0.5 flex-shrink-0">
-                      <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, -1)} disabled={entry.quantity <= 1} className="w-6 h-6 rounded-full text-[0.68rem] font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Decrease ${entry.flavourName} ${entry.name} quantity`}>−</button>
-                      <span className="w-6 text-center text-[0.68rem] font-black tabular-nums">{entry.quantity}</span>
-                      <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, 1)} disabled={entry.quantity >= 20} className="w-6 h-6 rounded-full text-[0.68rem] font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Increase ${entry.flavourName} ${entry.name} quantity`}>+</button>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex max-sm:hidden items-center rounded-full border border-ink/15 bg-white/75 p-0.5">
-                  <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, -1)} disabled={entry.quantity <= 1} className="w-7 h-7 rounded-full text-xs font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Decrease ${entry.flavourName} ${entry.name} quantity`}>−</button>
-                  <span className="w-7 text-center text-xs font-black tabular-nums">{entry.quantity}</span>
-                  <button type="button" onClick={() => updateTemporaryQuantity(entry.entryId, 1)} disabled={entry.quantity >= 20} className="w-7 h-7 rounded-full text-xs font-black hover:bg-ink/10 disabled:opacity-30" aria-label={`Increase ${entry.flavourName} ${entry.name} quantity`}>+</button>
-                </div>
-                <strong className="max-sm:hidden w-[82px] text-right text-xs tabular-nums">{formatRupees(entry.price * entry.quantity)}</strong>
-                <button type="button" onClick={() => removeTemporaryEntry(entry.entryId)} className="max-sm:hidden text-[0.68rem] font-black text-red-700 hover:underline" aria-label={`Remove ${entry.flavourName} ${entry.name}`}>Remove</button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <button type="button" onClick={handleAddAllToCart} disabled={temporaryOrder.length === 0} className="mt-3 ml-auto w-full max-w-[300px] max-sm:max-w-none min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 flex items-center justify-center">
-          Add All to Cart
-        </button>
       </div>
     </section>
   );
