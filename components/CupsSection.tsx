@@ -53,6 +53,24 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
     setActiveIdx((prev) => Math.min(FLAVOURS.length - 1, prev + 1));
   }, []);
 
+  // Auto-advance cups motion when section is active in viewport
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (document.hidden || !sectionRef.current) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight * 0.7 && rect.bottom > window.innerHeight * 0.3;
+      if (!isVisible) return;
+
+      if (activeIdx < FLAVOURS.length - 1) {
+        goToNext();
+      }
+    }, 3500);
+
+    return () => window.clearTimeout(timer);
+  }, [activeIdx, goToNext]);
+
   const handleQuantityChange = (delta: number) => {
     setQuantities((prev) => {
       const current = prev[activeFlavour.id] || 1;
@@ -101,7 +119,6 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
   // Desktop Mouse Wheel / Trackpad Scroll Locking with Boundary Escape & Navbar Bypass
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      // Check for direct navbar navigation bypass flag
       if (typeof window !== "undefined" && (window as any).__BYPASS_CUPS_LOCK__) {
         return;
       }
