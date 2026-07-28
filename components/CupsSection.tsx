@@ -426,6 +426,28 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
           </div>
         )}
       </div>
+
+      {/* 6. Right-side Vertical Progress Scrollbar — syncs with cup index */}
+      <div
+        className="absolute right-3 max-sm:right-1.5 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-1"
+        aria-hidden="true"
+      >
+        {/* Track */}
+        <div className="relative w-[5px] max-sm:w-[4px] h-[120px] max-sm:h-[90px] rounded-full bg-ink/10 overflow-hidden">
+          {/* Thumb — slides down as activeIdx increases */}
+          <div
+            className="absolute left-0 w-full rounded-full bg-ink/70 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{
+              height: `${Math.max(18, 100 / FLAVOURS.length)}%`,
+              top: `${(activeIdx / (FLAVOURS.length - 1)) * (100 - Math.max(18, 100 / FLAVOURS.length))}%`,
+            }}
+          />
+        </div>
+        {/* Counter label */}
+        <span className="mt-1 text-[0.58rem] max-sm:text-[0.5rem] font-black tracking-wider text-ink/50 tabular-nums">
+          {String(activeIdx + 1).padStart(2, "0")}/{FLAVOURS.length}
+        </span>
+      </div>
     </section>
   );
 }
