@@ -113,7 +113,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       wheelGestureEndTimerRef.current = setTimeout(() => {
         wheelGestureActiveRef.current = false;
         wheelGestureEndTimerRef.current = null;
-      }, 180);
+      }, 110);
     };
 
     const handleWheel = (e: WheelEvent) => {
@@ -189,7 +189,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         const absY = Math.abs(touchDeltaYRef.current);
 
         // Prevent page scroll when user is intentionally swiping horizontally left/right across cups
-        if (absX > absY && absX > 20) {
+        if (absX > absY && absX > 12) {
           if (e.cancelable) e.preventDefault();
         }
       }
@@ -199,7 +199,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       const absX = Math.abs(touchDeltaXRef.current);
       const absY = Math.abs(touchDeltaYRef.current);
 
-      if (absX > 30 && absX > absY) {
+      if (absX > 20 && absX > absY) {
         if (touchDeltaXRef.current < 0 && activeIdx < FLAVOURS.length - 1) {
           goToNext();
         } else if (touchDeltaXRef.current > 0 && activeIdx > 0) {
@@ -229,7 +229,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-6 max-sm:pt-5 pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-700 ease-custom text-ink"
+      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-6 max-sm:pt-5 pb-6 max-md:pb-4 flex flex-col items-center justify-center overflow-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
       aria-label="Cups Collection"
     >
       {/* 1. Collection Heading & Short Description */}
@@ -247,7 +247,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
       </div>
 
       {/* 2. Flavour Counter & Flavour Name */}
-      <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center text-center z-10 transition-all duration-300">
+      <div className="mt-3 max-sm:mt-2 flex flex-col items-center justify-center text-center z-10 transition-all duration-200">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/10 text-[0.72rem] max-sm:text-[0.66rem] font-black tracking-widest uppercase">
           <span>{activeFlavour.indexLabel}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" aria-hidden="true" />
@@ -335,7 +335,8 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   zIndex,
                   transform: transformStyle,
                   transformOrigin: "center center",
-                  transition: "all 650ms cubic-bezier(0.22, 1, 0.36, 1)",
+                  transition:
+                    "transform 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease-out",
                 }}
                 className={`w-[clamp(280px,21vw,380px)] max-md:w-[clamp(210px,50vw,290px)] max-sm:w-[clamp(160px,52vw,220px)] h-full flex items-center justify-center ${
                   !isCurrent ? "cursor-pointer" : ""
@@ -346,8 +347,9 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                   alt={item.cupAlt}
                   width={500}
                   height={500}
-                  loading={isCurrent ? "eager" : "lazy"}
-                  className="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)] transition-transform duration-300"
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)] transition-transform duration-200"
                 />
               </div>
             );
@@ -439,7 +441,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
                 type="button"
                 onClick={() => setActiveIdx(idx)}
                 aria-label={`Go to ${item.name} cup`}
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                className={`h-2 rounded-full transition-all duration-200 cursor-pointer ${
                   idx === activeIdx
                     ? "w-[36px] bg-ink opacity-100 shadow-sm scale-105"
                     : "w-[18px] bg-ink/30 hover:bg-ink/75 hover:scale-110"
@@ -469,7 +471,7 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         <div className="relative w-[5px] max-sm:w-[4px] h-[120px] max-sm:h-[90px] rounded-full bg-ink/10 overflow-hidden">
           {/* Thumb — slides down as activeIdx increases */}
           <div
-            className="absolute left-0 w-full rounded-full bg-ink/70 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className="absolute left-0 w-full rounded-full bg-ink/70 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
               height: `${Math.max(18, 100 / FLAVOURS.length)}%`,
               top: `${(activeIdx / (FLAVOURS.length - 1)) * (100 - Math.max(18, 100 / FLAVOURS.length))}%`,
