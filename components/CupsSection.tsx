@@ -276,13 +276,10 @@ export default function CupsSection({ selectedIndex }: CupsSectionProps) {
         </p>
       </div>
 
-      {/* 2. Flavour Counter & Flavour Name (Combined on same line) */}
+      {/* 2. Flavour Name */}
       <div className="mt-3 max-sm:mt-2 flex items-center justify-center text-center z-10 transition-all duration-200">
-        <h3 className="font-display text-[clamp(1.8rem,4vw,3.2rem)] max-sm:text-[clamp(1.4rem,5.5vw,2.1rem)] font-black uppercase tracking-tight m-0 text-ink leading-tight whitespace-nowrap flex items-center gap-2.5 max-sm:gap-2">
-          <span className="text-[0.55em] font-extrabold tracking-wider px-3 py-1 max-sm:px-2.5 max-sm:py-0.5 rounded-full bg-ink/10 align-middle">
-            {activeFlavour.indexLabel}
-          </span>
-          <span>{activeFlavour.name}</span>
+        <h3 className="font-display text-[clamp(1.8rem,4vw,3.2rem)] max-sm:text-[clamp(1.4rem,5.5vw,2.1rem)] font-black uppercase tracking-tight m-0 text-ink leading-tight whitespace-nowrap">
+          {activeFlavour.name}
         </h3>
       </div>
 
