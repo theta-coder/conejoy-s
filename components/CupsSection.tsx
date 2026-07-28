@@ -42,6 +42,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
   const touchDeltaXRef = useRef<number>(0);
   const touchDeltaYRef = useRef<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const servingCardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIdxRef = useRef(0);
   const lastWheelNavigationRef = useRef(0);
 
@@ -50,6 +51,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
   const selectedServingPosition = selectedServing
     ? SERVING_OPTIONS.findIndex((option) => option.id === selectedServing.id) + 1
     : 0;
+  const selectedServingTotal = selectedServing ? selectedServing.price * servingQuantity : 0;
 
   useEffect(() => {
     if (selectedIndex === undefined) return;
@@ -61,6 +63,19 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
   useEffect(() => {
     activeIdxRef.current = activeIdx;
   }, [activeIdx]);
+
+  useEffect(() => {
+    if (!selectedServingId || typeof window === "undefined" || window.innerWidth >= 768) return;
+    const selectedIndex = SERVING_OPTIONS.findIndex((option) => option.id === selectedServingId);
+    if (selectedIndex < 0) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    servingCardRefs.current[selectedIndex]?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [selectedServingId]);
 
   // Next and Previous Index (Bounded, non-looping)
   const prevIdx = activeIdx > 0 ? activeIdx - 1 : null;
@@ -83,6 +98,17 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
   }, []);
   const handleServingQuantityChange = (delta: number) => {
     setServingQuantity((current) => Math.max(1, Math.min(20, current + delta)));
+  };
+
+  const handleServingKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex = Math.max(0, Math.min(SERVING_OPTIONS.length - 1, index + direction));
+    setSelectedServingId(SERVING_OPTIONS[nextIndex].id);
+    servingCardRefs.current[nextIndex]?.focus();
   };
 
   const handleAddServing = () => {
@@ -342,60 +368,78 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </div>
       </div>
 
-      <aside className="relative z-30 w-[min(1200px,calc(100%-24px))] mx-auto rounded-2xl border border-ink/15 bg-white/75 backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-4 max-sm:p-3" aria-labelledby="serving-heading">
-        <div className="flex items-center justify-between gap-3 mb-3">
+      <aside className="relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border border-ink/15 bg-white/[0.78] backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-6 max-lg:p-5 max-sm:p-4" aria-labelledby="serving-heading">
+        <div className="flex items-start justify-between gap-3 mb-5 max-sm:mb-4">
           <div>
-            <h4 id="serving-heading" className="text-sm font-black uppercase tracking-wide">Choose your serving</h4>
-            <p className="text-[0.7rem] font-semibold text-ink/60 mt-0.5">All scoops use {activeFlavour.name}</p>
+            <h4 id="serving-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">Choose your serving</h4>
+            <p className="text-[0.76rem] max-sm:text-[0.7rem] font-semibold text-ink/60 mt-1">All scoops will be {activeFlavour.name}</p>
           </div>
-          <span className="text-[0.65rem] font-black rounded-full bg-ink/10 px-2.5 py-1 whitespace-nowrap">
-            {selectedServing
-              ? `${selectedServingPosition} / ${SERVING_OPTIONS.length} · ${selectedServing.scoops} scoop${selectedServing.scoops === 1 ? "" : "s"}`
-              : `0 / ${SERVING_OPTIONS.length}`}
+          <span className="text-[0.68rem] max-sm:text-[0.62rem] font-black rounded-full border border-ink/10 bg-ink/10 px-3 py-1.5 whitespace-nowrap">
+            {selectedServing ? `${selectedServing.name} selected` : "Select one"}
           </span>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-2 max-xl:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
-          {SERVING_OPTIONS.map((option) => {
+        <div className="flex md:grid md:grid-cols-3 xl:grid-cols-6 gap-3 max-sm:gap-2.5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 pr-8 md:pr-0 scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
+          {SERVING_OPTIONS.map((option, optionIndex) => {
             const isSelected = selectedServingId === option.id;
             return (
               <button
                 key={option.id}
+                ref={(element) => {
+                  servingCardRefs.current[optionIndex] = element;
+                }}
                 type="button"
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => setSelectedServingId(option.id)}
-                className={`relative min-h-[100px] min-w-[155px] xl:min-w-0 xl:flex-1 snap-start rounded-xl border p-2.5 text-left transition-all active:scale-[0.98] ${
+                onKeyDown={(event) => handleServingKeyDown(event, optionIndex)}
+                className={`relative min-h-[148px] min-w-[78vw] max-w-[300px] flex-none md:min-w-0 md:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
                   isSelected
-                    ? "border-ink bg-ink text-panel shadow-md"
-                    : "border-ink/15 bg-white/65 text-ink hover:border-ink/45"
+                    ? "border-ink bg-white/95 text-ink shadow-[0_10px_26px_rgba(21,21,15,0.14)] scale-[1.01]"
+                    : "border-ink/12 bg-white/60 text-ink shadow-sm hover:-translate-y-0.5 hover:border-ink/40 hover:bg-white/85 hover:shadow-md"
                 }`}
               >
-                <span className="block pr-5 text-[0.76rem] font-black leading-tight">{option.name}</span>
-                <span className={`block mt-1 text-[0.65rem] font-bold ${isSelected ? "text-panel/70" : "text-ink/55"}`}>
+                <span className="block pr-7 text-[0.9rem] max-lg:text-[0.84rem] font-black leading-tight">{option.name}</span>
+                <span className="block mt-2 text-[0.72rem] font-bold text-ink/55">
                   {option.scoops} scoop{option.scoops === 1 ? "" : "s"}
                 </span>
-                <span className="block mt-1.5 text-sm font-black">{formatRupees(option.price)}</span>
-                {option.saving > 0 && (
-                  <span className="flex items-center gap-1.5 mt-1">
-                    <span className={`text-[0.6rem] line-through ${isSelected ? "text-panel/55" : "text-ink/45"}`}>{formatRupees(option.originalPrice)}</span>
-                    <span className={`rounded-full px-1.5 py-0.5 text-[0.56rem] font-black ${isSelected ? "bg-panel text-ink" : "bg-green-700 text-white"}`}>
-                      Save {formatRupees(option.saving)}
+                <span className="mt-auto pt-4">
+                  <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
+                  {option.saving > 0 && (
+                    <span className="flex flex-wrap items-center gap-2 mt-2">
+                      <span className="text-[0.7rem] line-through text-ink/40">{formatRupees(option.originalPrice)}</span>
+                      <span className="rounded-full px-2 py-1 text-[0.64rem] font-black bg-green-700 text-white leading-none">
+                        Save {formatRupees(option.saving)}
+                      </span>
                     </span>
-                  </span>
-                )}
-                {isSelected && <span className="absolute right-2.5 top-2 text-xs" aria-hidden="true">✓</span>}
+                  )}
+                </span>
+                {isSelected && <span className="absolute right-3 top-3 w-6 h-6 rounded-full bg-ink text-panel text-xs font-black flex items-center justify-center shadow-sm" aria-hidden="true">✓</span>}
               </button>
             );
           })}
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <span className="text-xs font-black">Quantity</span>
-          <div className="flex items-center rounded-full border border-ink/20 bg-white/80 p-1">
-            <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-8 h-8 rounded-full font-black hover:bg-ink/10 disabled:opacity-30" aria-label="Decrease serving quantity">−</button>
-            <span className="w-9 text-center text-sm font-black tabular-nums">{servingQuantity}</span>
-            <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-8 h-8 rounded-full font-black hover:bg-ink/10 disabled:opacity-30" aria-label="Increase serving quantity">+</button>
+        <div className="hidden max-sm:block mt-2 text-center text-[0.66rem] font-black text-ink/50" aria-live="polite">
+          {selectedServing ? `${selectedServingPosition} of ${SERVING_OPTIONS.length}` : `Swipe to explore · ${SERVING_OPTIONS.length} options`}
+        </div>
+
+        <div className="mt-5 max-sm:mt-4 flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <span className="block text-[0.68rem] font-black uppercase tracking-[0.08em] text-ink/50">Selected serving</span>
+            <strong className="block mt-1 text-[0.84rem] max-sm:text-[0.76rem] truncate">
+              {selectedServing
+                ? `${selectedServing.name} · ${selectedServing.scoops} scoop${selectedServing.scoops === 1 ? "" : "s"}`
+                : "Choose a size above"}
+            </strong>
+          </div>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <span className="text-xs font-black max-sm:hidden">Quantity</span>
+            <div className="flex items-center rounded-full border border-ink/20 bg-white/85 p-1 shadow-sm">
+              <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Decrease serving quantity">−</button>
+              <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">{servingQuantity}</span>
+              <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Increase serving quantity">+</button>
+            </div>
           </div>
         </div>
 
@@ -403,9 +447,9 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           type="button"
           onClick={handleAddServing}
           disabled={!selectedServing}
-          className="mt-3 w-full min-h-[44px] rounded-full bg-ink text-panel text-xs font-black uppercase tracking-wider shadow-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35"
+          className="mt-3 w-full min-h-[48px] rounded-full bg-ink text-panel text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-ink/15 disabled:text-ink/55 disabled:shadow-none"
         >
-          {successMessage ?? "Add to Cart"}
+          {successMessage ?? (selectedServing ? `Add to Cart · ${formatRupees(selectedServingTotal)}` : "Select a serving first")}
         </button>
       </aside>
       </div>
