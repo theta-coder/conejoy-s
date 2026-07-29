@@ -17,6 +17,7 @@ export default function CupsPage() {
   const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
   const [searchCategory, setSearchCategory] = useState<"cones" | "cups">("cups");
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectionRequestKey, setSelectionRequestKey] = useState<number>(0);
 
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +28,7 @@ export default function CupsPage() {
     const selectParam = searchParams.get("select");
     if (selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
       setSelectedIndex(Math.max(0, Math.min(FLAVOURS.length - 1, parseInt(selectParam, 10))));
+      setSelectionRequestKey((k) => k + 1);
     }
   }, []);
 
@@ -60,6 +62,7 @@ export default function CupsPage() {
       return;
     }
     setSelectedIndex(idx);
+    setSelectionRequestKey((k) => k + 1);
     setSearchQuery("");
     setSearchOpen(false);
     setSearchSelectedIndex(-1);
@@ -212,7 +215,7 @@ export default function CupsPage() {
 
       {/* Main Cups Content */}
       <main className="pt-[126px] max-md:pt-[110px] max-sm:pt-[102px]">
-        <CupsSection selectedIndex={selectedIndex} />
+        <CupsSection selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
       </main>
     </div>
   );
