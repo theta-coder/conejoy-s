@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 
 interface CategoryBarProps {
   onCategoryChange?: (category: "cones" | "cups") => void;
+  onNavigate?: (category: "cones" | "cups") => void;
 }
 
-export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
+export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBarProps) {
   const pathname = usePathname();
   const activeCategory: "cones" | "cups" = pathname.startsWith("/cups") ? "cups" : "cones";
 
@@ -24,6 +25,7 @@ export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-center gap-2">
         <Link
           href="/"
+          onClick={() => onNavigate?.("cones")}
           className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeCategory === "cones"
               ? "bg-ink text-panel shadow-md scale-[1.02]"
@@ -37,6 +39,7 @@ export default function CategoryBar({ onCategoryChange }: CategoryBarProps) {
 
         <Link
           href="/cups"
+          onClick={() => onNavigate?.("cups")}
           className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeCategory === "cups"
               ? "bg-ink text-panel shadow-md scale-[1.02]"

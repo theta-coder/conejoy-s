@@ -507,22 +507,25 @@ export default function ConeStory() {
     router.push("/cups");
   }, [router]);
 
-  // Restore scroll position when returning from /cups or via ?select= query param
+  // Restore scroll position when returning from /cups or via ?select= query param.
+  // The route flag is one-shot; the index remains available for later history
+  // navigation without affecting an ordinary direct visit to `/`.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const searchParams = new URLSearchParams(window.location.search);
     const selectParam = searchParams.get("select");
     const lastConeIdx = sessionStorage.getItem("coneLastIndex");
+    const isReturningFromCups = sessionStorage.getItem("coneReturnFromCups") === "true";
 
     let targetIndex: number | null = null;
     if (selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
       targetIndex = parseInt(selectParam, 10);
-    } else if (lastConeIdx !== null && !isNaN(parseInt(lastConeIdx, 10))) {
+    } else if (isReturningFromCups && lastConeIdx !== null && !isNaN(parseInt(lastConeIdx, 10))) {
       targetIndex = parseInt(lastConeIdx, 10);
     }
 
     if (targetIndex !== null) {
-      sessionStorage.removeItem("coneLastIndex");
+      sessionStorage.removeItem("coneReturnFromCups");
       const target = Math.max(0, Math.min(FLAVOURS.length - 1, targetIndex));
       const timer = setTimeout(() => {
         if (!storyRef.current) return;
@@ -536,6 +539,40 @@ export default function ConeStory() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // A final upward touch gesture continues the journey into the Cups route.
+  useEffect(() => {
+    if (activeIndex !== FLAVOURS.length - 1 || !storyRef.current) return;
+
+    const story = storyRef.current;
+    let touchStartY: number | null = null;
+    let touchStartX: number | null = null;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartX = event.touches[0]?.clientX ?? null;
+      touchStartY = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (touchStartX === null || touchStartY === null) return;
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      touchStartX = null;
+      touchStartY = null;
+
+      if (deltaY < -50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+        handleNavigateToCups();
+      }
+    };
+
+    story.addEventListener("touchstart", handleTouchStart, { passive: true });
+    story.addEventListener("touchend", handleTouchEnd, { passive: true });
+    return () => {
+      story.removeEventListener("touchstart", handleTouchStart);
+      story.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [activeIndex, handleNavigateToCups]);
 
   // Wheel scroll down handler when at 12th Cone (Kit Kat)
   useEffect(() => {
@@ -750,7 +787,14 @@ export default function ConeStory() {
         </nav>
 
         {/* Category Navigation Bar (Cones / Cups) */}
-        <CategoryBar onCategoryChange={setSearchCategory} />
+        <CategoryBar
+          onCategoryChange={setSearchCategory}
+          onNavigate={(category) => {
+            if (category === "cups") {
+              sessionStorage.setItem("coneLastIndex", String(activeIndexRef.current));
+            }
+          }}
+        />
 
         {/* Hero Grid */}
         <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">

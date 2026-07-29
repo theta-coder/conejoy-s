@@ -33,6 +33,7 @@ export default function CupsPage() {
   // Prefetch / route for fast return transition
   useEffect(() => {
     router.prefetch("/");
+    sessionStorage.setItem("coneReturnFromCups", "true");
   }, [router]);
 
   // Click outside search listener
