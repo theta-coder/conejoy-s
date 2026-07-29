@@ -27,6 +27,10 @@ export const metadata: Metadata = {
   },
 };
 
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/CartDrawer";
+import Toast from "@/components/Toast";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,7 +42,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${dmSans.variable} ${manrope.variable} antialiased m-0 text-ink bg-bg font-sans overflow-x-hidden`}
       >
-        {children}
+        <CartProvider>
+          {children}
+          <CartDrawer />
+          <Toast />
+        </CartProvider>
       </body>
     </html>
   );

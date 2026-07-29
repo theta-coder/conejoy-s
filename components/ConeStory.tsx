@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import CategoryBar from "@/components/CategoryBar";
-import CupsSection from "@/components/CupsSection";
 import { useCart } from "@/context/CartContext";
 
 const CONE_AUTO_ADVANCE_MS = 3500;
@@ -12,6 +12,7 @@ const CONE_ORIGINAL_PRICE = 150;
 const CONE_SAVING = 50;
 
 export default function ConeStory() {
+  const router = useRouter();
   const { totalCount, setIsCartOpen, addToCart } = useCart();
 
   const [coneQuantities, setConeQuantities] = useState<Record<string, number>>({});
@@ -24,6 +25,11 @@ export default function ConeStory() {
   const badgeRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   
+  // Prefetch /cups route for instant transition
+  useEffect(() => {
+    router.prefetch("/cups");
+  }, [router]);
+
   const storyTopRef = useRef<number>(0);
   const scrollRangeRef = useRef<number>(1);
 
@@ -198,30 +204,17 @@ export default function ConeStory() {
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
-        if (typeof window !== "undefined") {
-          (window as any).__BYPASS_CUPS_LOCK__ = true;
-          setTimeout(() => {
-            (window as any).__BYPASS_CUPS_LOCK__ = false;
-          }, 1000);
-        }
-        setCupSearchIndex(idx);
-        setCupSearchRequestKey((current) => current + 1);
-        const cups = document.getElementById("cups");
-        if (cups) {
-          const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 820 ? 110 : 126;
-          const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset;
-          window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
-        }
         setSearchQuery("");
         setSearchOpen(false);
         setSearchSelectedIndex(-1);
         if (FLAVOURS[idx]) saveRecent(FLAVOURS[idx].id);
+        router.push(`/cups?select=${idx}`);
         return;
       }
 
       scrollToFlavour(idx);
     },
-    [searchCategory, saveRecent, scrollToFlavour]
+    [searchCategory, saveRecent, scrollToFlavour, router]
   );
 
   // Keyboard navigation for search (ArrowDown, ArrowUp, Enter, Escape)
@@ -507,19 +500,41 @@ export default function ConeStory() {
     });
   }, []);
 
-  const scrollToCupsSection = useCallback(() => {
-      const cups = document.getElementById("cups");
-      if (!cups) return;
+  const handleNavigateToCups = useCallback(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("coneLastIndex", String(activeIndexRef.current));
+    }
+    router.push("/cups");
+  }, [router]);
 
-      (window as any).__BYPASS_CUPS_LOCK__ = true;
+  // Restore scroll position when returning from /cups or via ?select= query param
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const searchParams = new URLSearchParams(window.location.search);
+    const selectParam = searchParams.get("select");
+    const lastConeIdx = sessionStorage.getItem("coneLastIndex");
 
-    const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
-    const targetTop = window.scrollY + cups.getBoundingClientRect().top - headerOffset + 2;
-    window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+    let targetIndex: number | null = null;
+    if (selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
+      targetIndex = parseInt(selectParam, 10);
+    } else if (lastConeIdx !== null && !isNaN(parseInt(lastConeIdx, 10))) {
+      targetIndex = parseInt(lastConeIdx, 10);
+    }
 
-    window.setTimeout(() => {
-      (window as any).__BYPASS_CUPS_LOCK__ = false;
-    }, 1200);
+    if (targetIndex !== null) {
+      sessionStorage.removeItem("coneLastIndex");
+      const target = Math.max(0, Math.min(FLAVOURS.length - 1, targetIndex));
+      const timer = setTimeout(() => {
+        if (!storyRef.current) return;
+        const scrollRange = Math.max(1, storyRef.current.offsetHeight - window.innerHeight);
+        const progress = target / (FLAVOURS.length - 1);
+        const storyTop = window.scrollY + storyRef.current.getBoundingClientRect().top;
+        const targetY = storyTop + progress * scrollRange;
+        window.scrollTo({ top: targetY, behavior: "instant" as any });
+      }, 60);
+
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Wheel scroll down handler when at 12th Cone (Kit Kat)
@@ -539,12 +554,12 @@ export default function ConeStory() {
       const now = Date.now();
       if (now - lastWheelTime < 1000) return;
       lastWheelTime = now;
-      scrollToCupsSection();
+      handleNavigateToCups();
     };
 
     window.addEventListener("wheel", handleWheelKitKat, { passive: true });
     return () => window.removeEventListener("wheel", handleWheelKitKat);
-  }, [activeIndex, scrollToCupsSection]);
+  }, [activeIndex, handleNavigateToCups]);
 
   // Auto-discover flavours for visitors who do not swipe or scroll. The timer
   // resets after every index change, and only runs while the Cones story is active.
@@ -571,11 +586,11 @@ export default function ConeStory() {
         return;
       }
 
-      scrollToCupsSection();
+      handleNavigateToCups();
     }, CONE_AUTO_ADVANCE_MS);
 
     return () => window.clearTimeout(timer);
-  }, [activeIndex, handleDotClick, searchOpen, scrollToCupsSection]);
+  }, [activeIndex, handleDotClick, searchOpen, handleNavigateToCups]);
 
 
 
@@ -1044,9 +1059,6 @@ export default function ConeStory() {
         </div>
       </main>
     </div>
-
-    {/* Cups Collection Section (Positioned cleanly below the 1200svh cone scroll track) */}
-    <CupsSection selectedIndex={cupSearchIndex} selectionRequestKey={cupSearchRequestKey} />
     </>
   );
 }
