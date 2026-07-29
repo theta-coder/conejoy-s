@@ -365,16 +365,20 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </div>
       </div>
 
-      <aside className="relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border border-ink/15 bg-white/[0.78] backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-6 max-lg:p-5 max-sm:p-4" aria-labelledby="serving-heading">
-        <div className="mb-4">
+      <aside className="relative z-30 w-[min(920px,calc(100%-24px))] mx-auto rounded-[22px] border border-ink/15 bg-white/[0.82] backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] px-6 py-5 max-sm:p-4" aria-labelledby="serving-heading">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <h4 id="serving-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">Choose your serving</h4>
-            <p className="text-[0.76rem] max-sm:text-[0.7rem] font-semibold text-ink/60 mt-1">All scoops will be {activeFlavour.name}</p>
+            <h4 id="serving-heading" className="text-[0.78rem] font-black uppercase tracking-[0.1em]">Choose your serving</h4>
+            <p className="mt-1 text-[0.74rem] font-semibold text-ink/55">All scoops will be {activeFlavour.name}</p>
           </div>
+          <span className="pt-0.5 text-[0.7rem] font-black tabular-nums text-ink/45" aria-live="polite">
+            {selectedServingIndex + 1} / {SERVING_OPTIONS.length}
+          </span>
         </div>
 
-        <div className="rounded-2xl border border-ink/15 bg-white/70 p-3.5 max-sm:p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-          <div className="grid grid-cols-[48px_minmax(0,1fr)_48px] items-center gap-3">
+        <div className="mt-4 grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_auto]">
+          <div>
+            <div className="grid grid-cols-[48px_minmax(0,1fr)_48px] items-center gap-4">
             <button
               type="button"
               onClick={() => handleServingTierChange(-1)}
@@ -384,16 +388,16 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                   ? `Select smaller serving: ${SERVING_OPTIONS[selectedServingIndex - 1].name}, ${SERVING_OPTIONS[selectedServingIndex - 1].scoops} scoops`
                   : "Small Cup is the smallest serving"
               }
-              className="w-12 h-12 rounded-full border border-ink/15 bg-white/85 text-xl font-black text-ink shadow-sm transition-[transform,background-color,opacity] hover:bg-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2"
+              className="w-12 h-12 rounded-full border border-ink/20 bg-transparent text-xl font-black text-ink transition-[transform,background-color,opacity] hover:bg-ink/5 active:scale-95 disabled:cursor-not-allowed disabled:opacity-20 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2"
             >
               −
             </button>
 
             <div className="min-w-0 text-center" aria-live="polite" aria-atomic="true">
-              <strong className="block truncate font-display text-[clamp(1.05rem,2vw,1.3rem)] font-black tracking-tight text-ink">
+              <strong className="block truncate font-display text-[clamp(1.2rem,2.2vw,1.55rem)] font-black tracking-[-0.03em] text-ink">
                 {selectedServing.name}
               </strong>
-              <span className="mt-0.5 block text-[0.72rem] font-black uppercase tracking-[0.1em] text-ink/55">
+              <span className="mt-0.5 block text-[0.72rem] font-black uppercase tracking-[0.12em] text-ink/50">
                 {selectedServing.scoops} Scoops
               </span>
             </div>
@@ -407,46 +411,46 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                   ? `Select larger serving: ${SERVING_OPTIONS[selectedServingIndex + 1].name}, ${SERVING_OPTIONS[selectedServingIndex + 1].scoops} scoops`
                   : "Family Pack is the largest serving"
               }
-              className="w-12 h-12 rounded-full border border-ink/15 bg-ink text-panel text-xl font-black shadow-sm transition-[transform,opacity] hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2"
+              className="w-12 h-12 rounded-full border border-ink/20 bg-transparent text-xl font-black text-ink transition-[transform,background-color,opacity] hover:bg-ink/5 active:scale-95 disabled:cursor-not-allowed disabled:opacity-20 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2"
             >
               +
             </button>
+            </div>
+
+            <div className="mt-2 min-h-[1.1rem] text-center text-[0.7rem] font-bold text-ink/55" aria-live="polite" aria-atomic="true">
+              {upsellHint ?? "\u00a0"}
+            </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 border-t border-ink/10 pt-3">
-            <strong className="text-[1.08rem] font-black leading-none">{formatRupees(selectedServing.price)}</strong>
-            <span className="text-[0.72rem] font-bold line-through text-ink/40">{formatRupees(selectedServing.originalPrice)}</span>
-            <span className="rounded-full bg-green-700 px-2.5 py-1 text-[0.65rem] font-black leading-none text-white">
-              Save {formatRupees(selectedServing.saving)}
-            </span>
+          <div className="min-w-[190px] text-center md:border-l md:border-ink/10 md:pl-6">
+            <div className="flex items-baseline justify-center gap-2">
+              <strong className="font-display text-[1.65rem] font-black tracking-[-0.04em] leading-none">
+                {formatRupees(selectedServing.price)}
+              </strong>
+              <span className="text-[0.72rem] font-bold line-through text-ink/35">{formatRupees(selectedServing.originalPrice)}</span>
+            </div>
+            <p className="mt-2 text-[0.7rem] font-black text-green-800">You save {formatRupees(selectedServing.saving)}</p>
           </div>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3 text-[0.68rem] font-bold text-ink/50">
-          <span aria-live="polite">{selectedServingIndex + 1} of {SERVING_OPTIONS.length}</span>
-          <span className="min-h-[1rem] text-right text-ink/65" aria-live="polite" aria-atomic="true">
-            {upsellHint ?? "\u00a0"}
-          </span>
-        </div>
-
-        <div className="mt-4 flex items-center justify-between gap-4 border-t border-ink/10 pt-4">
-          <span className="text-[0.72rem] font-black uppercase tracking-[0.08em] text-ink/55">Quantity</span>
-          <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="mt-4 flex items-center gap-4 border-t border-ink/10 pt-4 max-sm:flex-col max-sm:items-stretch">
+          <div className="flex items-center justify-between gap-3 max-sm:w-full">
+            <span className="text-[0.7rem] font-black uppercase tracking-[0.08em] text-ink/50">Quantity</span>
             <div className="flex items-center rounded-full border border-ink/20 bg-white/85 p-1 shadow-sm">
               <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Decrease serving quantity">−</button>
               <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">{servingQuantity}</span>
               <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Increase serving quantity">+</button>
             </div>
           </div>
-        </div>
 
-        <button
-          type="button"
-          onClick={handleAddServing}
-          className="mt-3 w-full min-h-[48px] rounded-full bg-ink text-panel text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-        >
-          {successMessage ?? `Add to Cart · ${formatRupees(selectedServingTotal)}`}
-        </button>
+          <button
+            type="button"
+            onClick={handleAddServing}
+            className="min-h-[48px] flex-1 rounded-full bg-ink px-6 text-panel text-[0.8rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+          >
+            {successMessage ?? `Add to Cart · ${formatRupees(selectedServingTotal)}`}
+          </button>
+        </div>
       </aside>
       </div>
     </section>
