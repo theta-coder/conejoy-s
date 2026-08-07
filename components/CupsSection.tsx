@@ -182,12 +182,8 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
       touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
       touchDeltaYRef.current = e.touches[0].clientY - touchStartYRef.current;
 
-      const absX = Math.abs(touchDeltaXRef.current);
-      const absY = Math.abs(touchDeltaYRef.current);
-
-      if (absX > absY && absX > 20) {
-        if (e.cancelable) e.preventDefault();
-      }
+      // Keep this listener passive. `touch-action: pan-y` lets the browser own
+      // vertical scrolling while we only inspect the completed horizontal swipe.
     };
 
     const handleTouchEnd = () => {
@@ -211,7 +207,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
     };
 
     sectionEl.addEventListener("touchstart", handleTouchStart, { passive: true });
-    sectionEl.addEventListener("touchmove", handleTouchMove, { passive: false });
+    sectionEl.addEventListener("touchmove", handleTouchMove, { passive: true });
     sectionEl.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
@@ -226,7 +222,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-5 max-sm:pt-4 pb-6 max-md:pb-5 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink"
+      className="cups-section relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-5 max-sm:pt-4 pb-6 max-md:pb-5 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink touch-pan-y"
       aria-label="Cups Collection"
     >
       {/* 1. Collection Heading & Short Description */}
@@ -267,7 +263,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         <div className="relative w-full h-[clamp(280px,36svh,400px)] max-md:h-[clamp(190px,29svh,270px)] max-sm:h-[clamp(170px,28svh,230px)] flex items-center justify-center">
           {/* White Backdrop Circle Centered Dead-Center behind Active Cup */}
           <div
-            className="absolute w-[clamp(240px,19vw,320px)] max-md:w-[clamp(170px,44vw,230px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+            className="cup-backdrop absolute w-[clamp(240px,19vw,320px)] max-md:w-[clamp(170px,44vw,230px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
             aria-hidden="true"
           />
 
@@ -328,15 +324,20 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                   !isCurrent ? "cursor-pointer" : ""
                 }`}
               >
-                <img
-                  src={item.cupImageSrc}
-                  alt={item.cupAlt}
-                  width={500}
-                  height={500}
-                  loading="eager"
-                  decoding="async"
-                  className="w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)] transition-transform duration-200"
-                />
+                <picture className="contents">
+                  <source srcSet={item.cupWebpSrc} type="image/webp" />
+                  <img
+                    src={item.cupImageSrc}
+                    alt={item.cupAlt}
+                    width={500}
+                    height={500}
+                    sizes="(max-width: 640px) 52vw, (max-width: 768px) 50vw, 21vw"
+                    loading={isCurrent ? "eager" : "lazy"}
+                    fetchPriority={isCurrent ? "high" : "low"}
+                    decoding="async"
+                    className="cup-product-image w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)] transition-transform duration-200"
+                  />
+                </picture>
               </div>
             );
           })}
@@ -367,7 +368,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </div>
       </div>
 
-      <aside className="relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border border-ink/15 bg-white/[0.78] backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-6 max-lg:p-5 max-sm:p-4" aria-labelledby="serving-heading">
+      <aside className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border border-ink/15 bg-white/[0.78] backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-6 max-lg:p-5 max-sm:p-4" aria-labelledby="serving-heading">
         <div className="flex items-start justify-between gap-3 mb-5 max-sm:mb-4">
           <div>
             <h4 id="serving-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">Choose your serving</h4>

@@ -279,7 +279,19 @@ export default function ConeStory() {
     let ticking = false;
     let animFrameId: number | null = null;
     let resizeTimeout: NodeJS.Timeout | null = null;
+    let lastMobileFrameTime = 0;
+    let lastMobileConeIndexes = new Set<number>();
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const navigatorWithHints = navigator as Navigator & {
+      deviceMemory?: number;
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const connection = navigatorWithHints.connection;
+    const lowPowerDevice =
+      (navigatorWithHints.deviceMemory !== undefined && navigatorWithHints.deviceMemory <= 4) ||
+      connection?.saveData === true ||
+      connection?.effectiveType === "slow-2g" ||
+      connection?.effectiveType === "2g";
 
     // Cache story measurements outside the per-frame animation loop
     function measureStory() {
@@ -290,7 +302,17 @@ export default function ConeStory() {
       scrollRangeRef.current = Math.max(1, story.offsetHeight - window.innerHeight);
     }
 
-    function render() {
+    function render(frameTime = 0) {
+      const isMobile = window.innerWidth <= 820;
+
+      // Cap mobile animation work at roughly 30 FPS. A skipped frame keeps the
+      // latest scroll position available for the next scheduled render.
+      if (isMobile && !reduceMotion && !lowPowerDevice && frameTime - lastMobileFrameTime < 32) {
+        ticking = false;
+        return;
+      }
+      if (isMobile) lastMobileFrameTime = frameTime;
+
       const scrollY = window.scrollY;
       const rawProgress =
         scrollRangeRef.current > 0
@@ -300,7 +322,7 @@ export default function ConeStory() {
       const progressFloat = rawProgress * (FLAVOURS.length - 1);
       const nextActive = clamp(Math.round(progressFloat), 0, FLAVOURS.length - 1);
 
-      if (reduceMotion) {
+      if (reduceMotion || (isMobile && lowPowerDevice)) {
         if (nextActive !== activeIndexRef.current) {
           activeIndexRef.current = nextActive;
           setActiveIndex(nextActive);
@@ -339,15 +361,28 @@ export default function ConeStory() {
         }
       } else {
         const isCompactMobile = window.innerWidth <= 480;
-        const isMobile = window.innerWidth <= 820;
 
         const angleStepDeg = isCompactMobile ? 48 : isMobile ? 44 : 38;
         const yRadiusPercent = isCompactMobile ? 88 : isMobile ? 92 : 100;
         const xRadiusPercent = isCompactMobile ? 120 : isMobile ? 140 : 220;
         const maxRotationDeg = isCompactMobile ? 12 : 18;
 
-        coneRefs.current.forEach((cone, idx) => {
+        const floorIndex = Math.floor(progressFloat);
+        const ceilIndex = Math.ceil(progressFloat);
+        const mobileConeIndexes = new Set([floorIndex, ceilIndex]);
+        const coneIndexesToUpdate = isMobile
+          ? new Set([...lastMobileConeIndexes, ...mobileConeIndexes])
+          : new Set(FLAVOURS.map((_, idx) => idx));
+
+        coneIndexesToUpdate.forEach((idx) => {
+          const cone = coneRefs.current[idx];
           if (!cone) return;
+          if (isMobile && !mobileConeIndexes.has(idx)) {
+            cone.style.cssText += ";opacity:0;visibility:hidden;will-change:auto;filter:none";
+            cone.setAttribute("aria-hidden", "true");
+            return;
+          }
+
           const dist = idx - progressFloat;
           const absDist = Math.abs(dist);
 
@@ -367,16 +402,10 @@ export default function ConeStory() {
             const shouldPromoteLayer = absDist <= 1.0;
             cone.style.willChange = shouldPromoteLayer ? "transform, opacity" : "auto";
 
-            // Optimize filter cost for mobile screens
-            if (isMobile) {
-              if (absDist <= 0.4) {
-                cone.style.filter = "drop-shadow(0 14px 12px rgba(52, 39, 22, 0.18))";
-              } else {
-                cone.style.filter = "none";
-              }
-            } else {
-              cone.style.filter = "drop-shadow(0 22px 18px rgba(52, 39, 22, 0.2))";
-            }
+            // Live CSS filters are expensive on mobile; desktop retains the depth effect.
+            cone.style.filter = isMobile
+              ? "none"
+              : "drop-shadow(0 22px 18px rgba(52, 39, 22, 0.2))";
 
             const angleDeg = dist * angleStepDeg;
             const angleRad = (angleDeg * Math.PI) / 180;
@@ -404,6 +433,7 @@ export default function ConeStory() {
             cone.style.zIndex = String(zIndex);
           }
         });
+        if (isMobile) lastMobileConeIndexes = mobileConeIndexes;
 
         // Trigger React state and discrete text update strictly when active index changes
         if (nextActive !== activeIndexRef.current) {
@@ -915,7 +945,8 @@ export default function ConeStory() {
                     height={1500}
                     sizes="(max-width: 480px) 74vw, (max-width: 820px) 78vw, 34vw"
                     loading={idx <= 1 ? "eager" : "lazy"}
-                    decoding={idx === 0 ? "sync" : "async"}
+                    fetchPriority={idx === 0 ? "high" : "low"}
+                    decoding="async"
                     data-color={item.color}
                   />
                 </picture>

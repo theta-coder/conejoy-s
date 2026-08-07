@@ -3,6 +3,7 @@ from PIL import Image
 
 ASSETS_DIR = r"c:\Users\Diyanat Ali\Downloads\New folder\public\assets"
 CONES_DIR = os.path.join(ASSETS_DIR, "cones")
+CUPS_DIR = os.path.join(ASSETS_DIR, "cups")
 
 def optimize_image(filepath, max_width=600, quality=82):
     if not os.path.exists(filepath):
@@ -57,6 +58,13 @@ def main():
             if fname.endswith(".png") and not fname.endswith("-source.png"):
                 fpath = os.path.join(CONES_DIR, fname)
                 optimize_image(fpath, max_width=540, quality=82)
+
+    print("\n--- Optimizing Cup Assets ---")
+    if os.path.exists(CUPS_DIR):
+        for fname in os.listdir(CUPS_DIR):
+            if fname.endswith(".png"):
+                fpath = os.path.join(CUPS_DIR, fname)
+                optimize_image(fpath, max_width=500, quality=78)
 
 if __name__ == "__main__":
     main()

@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CategoryBarProps {
   onCategoryChange?: (category: "cones" | "cups") => void;
@@ -10,12 +8,60 @@ interface CategoryBarProps {
 }
 
 export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBarProps) {
-  const pathname = usePathname();
-  const activeCategory: "cones" | "cups" = pathname.startsWith("/cups") ? "cups" : "cones";
+  const [activeCategory, setActiveCategory] = useState<"cones" | "cups">("cones");
+  const activeCategoryRef = useRef<"cones" | "cups">("cones");
 
   useEffect(() => {
-    onCategoryChange?.(activeCategory);
-  }, [activeCategory, onCategoryChange]);
+    let frameId: number | null = null;
+
+    const handleScroll = () => {
+      if (frameId !== null) return;
+      frameId = requestAnimationFrame(() => {
+        frameId = null;
+        const cupsEl = document.getElementById("cups");
+        if (!cupsEl) return;
+        const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
+        const nextCategory = cupsEl.getBoundingClientRect().top <= headerOffset + 80 ? "cups" : "cones";
+        if (nextCategory === activeCategoryRef.current) return;
+        activeCategoryRef.current = nextCategory;
+        setActiveCategory(nextCategory);
+        onCategoryChange?.(nextCategory);
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (frameId !== null) cancelAnimationFrame(frameId);
+    };
+  }, [onCategoryChange]);
+
+  const scrollToSection = (id: "cones" | "cups") => {
+    activeCategoryRef.current = id;
+    setActiveCategory(id);
+    onCategoryChange?.(id);
+    onNavigate?.(id);
+
+    // Bypass Cups scroll lock during direct navbar navigation
+    if (typeof window !== "undefined") {
+      (window as any).__BYPASS_CUPS_LOCK__ = true;
+      setTimeout(() => {
+        (window as any).__BYPASS_CUPS_LOCK__ = false;
+      }, 1200);
+    }
+
+    if (id === "cones") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (id === "cups") {
+      const cupsEl = document.getElementById("cups");
+      if (cupsEl) {
+        const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
+        const targetTop = window.scrollY + cupsEl.getBoundingClientRect().top - headerOffset + 2;
+        window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+      }
+    }
+  };
 
   return (
     <nav
@@ -23,34 +69,33 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
       aria-label="Category navigation"
     >
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto flex items-center justify-center gap-2">
-        <Link
-          href="/"
-          onClick={() => onNavigate?.("cones")}
-          className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
-            activeCategory === "cones"
-              ? "bg-ink text-panel shadow-md scale-[1.02]"
-              : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
-          }`}
+        <button
+          type="button"
+          onClick={() => scrollToSection("cones")}
+          className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${activeCategory === "cones"
+            ? "bg-ink text-panel shadow-md scale-[1.02]"
+            : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
+            }`}
           aria-current={activeCategory === "cones" ? "page" : undefined}
         >
           <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
           <span>Cones</span>
-        </Link>
+        </button>
 
-        <Link
-          href="/cups"
-          onClick={() => onNavigate?.("cups")}
-          className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
-            activeCategory === "cups"
-              ? "bg-ink text-panel shadow-md scale-[1.02]"
-              : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
-          }`}
+        <button
+          type="button"
+          onClick={() => scrollToSection("cups")}
+          className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${activeCategory === "cups"
+            ? "bg-ink text-panel shadow-md scale-[1.02]"
+            : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
+            }`}
           aria-current={activeCategory === "cups" ? "page" : undefined}
         >
           <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
           <span>Cups</span>
-        </Link>
+        </button>
       </div>
     </nav>
   );
 }
+

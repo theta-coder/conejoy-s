@@ -72,3 +72,39 @@
 .animate-pulse-glow {
   animation: pulse-glow 2s infinite;
 }
+
+@media (max-width: 820px) {
+  .cup-product-image,
+  .cone {
+    filter: none !important;
+  }
+
+  .cup-backdrop,
+  .cup-serving-panel,
+  .nav,
+  .category-bar {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .cup-backdrop {
+    background-color: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 12px 32px rgba(21, 21, 15, 0.08);
+  }
+
+  .cup-serving-panel {
+    background-color: rgba(255, 255, 255, 0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cups-section,
+  .cup-product-image,
+  .cone,
+  .flavour,
+  .progress-dot {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
