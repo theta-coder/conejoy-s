@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 export interface CartItem {
   id: string;
-  type: "Cup" | "Cone";
+  type: "Cup" | "Cone" | "Shake";
   flavourId?: string;
   flavour: string;
   quantity: number;

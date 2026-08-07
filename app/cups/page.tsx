@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CategoryBar from "@/components/CategoryBar";
 import CupsSection from "@/components/CupsSection";
+import ShakeLab from "@/components/ShakeLab";
 import { useCart } from "@/context/CartContext";
 import { FLAVOURS } from "@/data/flavours";
 
@@ -216,6 +217,7 @@ export default function CupsPage() {
       {/* Main Cups Content */}
       <main className="pt-[126px] max-md:pt-[110px] max-sm:pt-[102px]">
         <CupsSection selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
+        <ShakeLab />
       </main>
     </div>
   );

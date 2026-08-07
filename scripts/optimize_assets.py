@@ -4,6 +4,7 @@ from PIL import Image
 ASSETS_DIR = r"c:\Users\Diyanat Ali\Downloads\New folder\public\assets"
 CONES_DIR = os.path.join(ASSETS_DIR, "cones")
 CUPS_DIR = os.path.join(ASSETS_DIR, "cups")
+SHAKES_DIR = os.path.join(ASSETS_DIR, "shakes")
 
 def optimize_image(filepath, max_width=600, quality=82):
     if not os.path.exists(filepath):
@@ -65,6 +66,13 @@ def main():
             if fname.endswith(".png"):
                 fpath = os.path.join(CUPS_DIR, fname)
                 optimize_image(fpath, max_width=500, quality=78)
+
+    print("\n--- Optimizing Shake Assets ---")
+    if os.path.exists(SHAKES_DIR):
+        for fname in os.listdir(SHAKES_DIR):
+            if fname.endswith(".png"):
+                fpath = os.path.join(SHAKES_DIR, fname)
+                optimize_image(fpath, max_width=900, quality=82)
 
 if __name__ == "__main__":
     main()

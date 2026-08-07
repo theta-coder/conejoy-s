@@ -368,13 +368,17 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </div>
       </div>
 
-      <aside className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border border-ink/15 bg-white/[0.78] backdrop-blur-md shadow-[0_18px_55px_rgba(21,21,15,0.12)] p-6 max-lg:p-5 max-sm:p-4" aria-labelledby="serving-heading">
+      <aside
+        className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border backdrop-blur-md p-6 max-lg:p-5 max-sm:p-4"
+        style={{ "--cup-accent": activeFlavour.color } as React.CSSProperties}
+        aria-labelledby="serving-heading"
+      >
         <div className="flex items-start justify-between gap-3 mb-5 max-sm:mb-4">
           <div>
             <h4 id="serving-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">Choose your serving</h4>
-            <p className="text-[0.76rem] max-sm:text-[0.7rem] font-semibold text-ink/60 mt-1">All scoops will be {activeFlavour.name}</p>
+            <p className="cup-serving-muted text-[0.76rem] max-sm:text-[0.7rem] font-semibold mt-1">All scoops will be {activeFlavour.name}</p>
           </div>
-          <span className="text-[0.68rem] max-sm:text-[0.62rem] font-black rounded-full border border-ink/10 bg-ink/10 px-3 py-1.5 whitespace-nowrap">
+          <span className="cup-serving-status text-[0.68rem] max-sm:text-[0.62rem] font-black rounded-full border px-3 py-1.5 whitespace-nowrap">
             {selectedServing ? `${selectedServing.name} selected` : "Select one"}
           </span>
         </div>
@@ -393,28 +397,28 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                 aria-checked={isSelected}
                 onClick={() => setSelectedServingId(option.id)}
                 onKeyDown={(event) => handleServingKeyDown(event, optionIndex)}
-                className={`relative min-h-[148px] min-w-[78vw] max-w-[300px] flex-none md:min-w-0 md:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
+                className={`cup-serving-card relative min-h-[148px] min-w-[78vw] max-w-[300px] flex-none md:min-w-0 md:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
                   isSelected
-                    ? "border-ink bg-white/95 text-ink shadow-[0_10px_26px_rgba(21,21,15,0.14)] scale-[1.01]"
-                    : "border-ink/12 bg-white/60 text-ink shadow-sm hover:-translate-y-0.5 hover:border-ink/40 hover:bg-white/85 hover:shadow-md"
+                    ? "is-selected shadow-[0_10px_26px_rgba(21,21,15,0.13)] scale-[1.01]"
+                    : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
                 }`}
               >
                 <span className="block pr-7 text-[0.9rem] max-lg:text-[0.84rem] font-black leading-tight">{option.name}</span>
-                <span className="block mt-2 text-[0.72rem] font-bold text-ink/55">
+                <span className="cup-serving-muted block mt-2 text-[0.72rem] font-bold">
                   {option.scoops} scoop{option.scoops === 1 ? "" : "s"}
                 </span>
                 <span className="mt-auto pt-4">
                   <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
                   {option.saving > 0 && (
                     <span className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className="text-[0.7rem] line-through text-ink/40">{formatRupees(option.originalPrice)}</span>
+                      <span className="cup-serving-muted text-[0.7rem] line-through">{formatRupees(option.originalPrice)}</span>
                       <span className="rounded-full px-2 py-1 text-[0.64rem] font-black bg-green-700 text-white leading-none">
                         Save {formatRupees(option.saving)}
                       </span>
                     </span>
                   )}
                 </span>
-                {isSelected && <span className="absolute right-3 top-3 w-6 h-6 rounded-full bg-ink text-panel text-xs font-black flex items-center justify-center shadow-sm" aria-hidden="true">✓</span>}
+                {isSelected && <span className="cup-serving-check absolute right-3 top-3 w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center shadow-sm" aria-hidden="true">✓</span>}
               </button>
             );
           })}
@@ -435,7 +439,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
             <span className="text-xs font-black max-sm:hidden">Quantity</span>
-            <div className="flex items-center rounded-full border border-ink/20 bg-white/85 p-1 shadow-sm">
+            <div className="cup-serving-quantity flex items-center rounded-full border p-1 shadow-sm">
               <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Decrease serving quantity">−</button>
               <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">{servingQuantity}</span>
               <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Increase serving quantity">+</button>
