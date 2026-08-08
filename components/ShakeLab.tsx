@@ -1,9 +1,15 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { FLAVOURS } from "@/data/flavours";
 
 type ShakeSize = "Regular" | "Large";
+
+interface ShakeLabProps {
+  selectedIndex?: number;
+  selectionRequestKey?: number;
+}
 
 interface ShakeFlavour {
   id: string;
@@ -14,40 +20,38 @@ interface ShakeFlavour {
   accent: string;
 }
 
-const SHAKES: ShakeFlavour[] = [
-  {
-    id: "mango-saffron",
-    name: "Mango Saffron",
-    note: "Alphonso mango, saffron ribbon, pistachio finish",
-    image: "/assets/shakes/mango-saffron.webp",
-    fallback: "/assets/shakes/mango-saffron.png",
-    accent: "#f0ae19",
-  },
-  {
-    id: "strawberry",
-    name: "Strawberry Silk",
-    note: "Strawberry cream, berry ribbon, crisp fruit crumb",
-    image: "/assets/shakes/strawberry.webp",
-    fallback: "/assets/shakes/strawberry.png",
-    accent: "#d9848c",
-  },
-  {
-    id: "dark-chocolate",
-    name: "Dark Chocolate",
-    note: "Deep cocoa, chocolate ribbon, fine cocoa crumble",
-    image: "/assets/shakes/dark-chocolate.webp",
-    fallback: "/assets/shakes/dark-chocolate.png",
-    accent: "#6f4436",
-  },
-  {
-    id: "chocolate-wafer",
-    name: "Chocolate Wafer",
-    note: "Milk chocolate, wafer crunch, whipped cream finish",
-    image: "/assets/shakes/chocolate-wafer.webp",
-    fallback: "/assets/shakes/chocolate-wafer.png",
-    accent: "#9a6047",
-  },
-];
+const SHAKE_NOTES: Record<string, string> = {
+  mango: "Golden mango, cream, pistachio finish",
+  kulfa: "Cardamom kulfa, almond, pistachio",
+  chocolate: "Deep cocoa, chocolate chips, cream",
+  blueberry: "Black currant, berry ribbon, cream",
+  "caramel-crunch": "Caramel ribbon, golden crunch, cream",
+  "tutti-frutti": "Fruit cream, candied fruit, soft vanilla",
+  "coffee-chino": "Espresso, ice cream, roasted coffee crumb",
+  pistachio: "Pistachio cream, fine nut finish",
+  vanilla: "Vanilla bean, chilled cream, soft whip",
+  strawberry: "Strawberry cream, berry ribbon, fruit crumb",
+  "coconut-delight": "Coconut cream, toasted coconut finish",
+  "kit-kat": "Milk chocolate, wafer crunch, cocoa ribbon",
+};
+
+const SHAKE_FILE_IDS: Record<string, string> = {
+  chocolate: "chocolate-chip",
+  blueberry: "black-currant",
+  pistachio: "pista",
+};
+
+const SHAKES: ShakeFlavour[] = FLAVOURS.map((flavour) => {
+  const fileId = SHAKE_FILE_IDS[flavour.id] ?? flavour.id;
+  return {
+    id: flavour.id,
+    name: flavour.name,
+    note: SHAKE_NOTES[flavour.id],
+    image: `/assets/shakes/${fileId}.webp`,
+    fallback: `/assets/shakes/${fileId}.png`,
+    accent: flavour.color,
+  };
+});
 
 const SIZES: Record<ShakeSize, { volume: string; price: number }> = {
   Regular: { volume: "12 oz", price: 420 },
@@ -56,18 +60,19 @@ const SIZES: Record<ShakeSize, { volume: string; price: number }> = {
 
 const TOPPINGS = ["Whipped cream", "Wafer crunch", "Chocolate drizzle"];
 
-export default function ShakeLab() {
+export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLabProps) {
   const { addToCart } = useCart();
-  const [activeId, setActiveId] = useState(SHAKES[0].id);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [size, setSize] = useState<ShakeSize>("Regular");
   const [toppings, setToppings] = useState<string[]>(["Whipped cream"]);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const activeShake = SHAKES[activeIndex];
 
-  const activeShake = useMemo(
-    () => SHAKES.find((shake) => shake.id === activeId) ?? SHAKES[0],
-    [activeId]
-  );
+  useEffect(() => {
+    if (selectedIndex === undefined) return;
+    setActiveIndex(Math.max(0, Math.min(SHAKES.length - 1, selectedIndex)));
+  }, [selectedIndex, selectionRequestKey]);
 
   const toggleTopping = (topping: string) => {
     setToppings((current) =>
@@ -94,49 +99,49 @@ export default function ShakeLab() {
   };
 
   return (
-    <section id="shakes" className="relative overflow-hidden bg-[#111315] text-[#f4f4ef] px-4 py-20 max-md:py-14 max-sm:py-10">
-      <div className="pointer-events-none absolute inset-0 opacity-60 [background:radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.09),transparent_34%)]" aria-hidden="true" />
-
+    <section
+      id="shakes"
+      className="shake-lab relative overflow-hidden px-4 py-16 text-ink transition-colors duration-500 max-md:py-12 max-sm:py-9"
+      style={{ "--shake-accent": activeShake.accent } as React.CSSProperties}
+    >
       <div className="relative mx-auto w-full max-w-[1380px]">
-        <header className="max-w-[760px] mb-12 max-md:mb-8">
-          <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-white/45">Cone Joys Shake Lab</p>
-          <h2 className="mt-3 font-display text-[clamp(2.5rem,6vw,5.8rem)] font-extrabold leading-[0.88] tracking-[-0.075em]">
+        <header className="mb-10 max-w-[760px] max-md:mb-7">
+          <p className="shake-muted text-[0.68rem] font-black uppercase tracking-[0.2em]">Cone Joys Shake Lab · 12 signature pours</p>
+          <h2 className="mt-3 font-display text-[clamp(2.4rem,5.6vw,5.4rem)] font-extrabold leading-[0.9] tracking-[-0.075em]">
             Churned to your specification.
           </h2>
-          <p className="mt-5 max-w-[54ch] text-sm leading-relaxed text-white/58">
-            Four signature ice-cream shakes. Pick a pour, set the size, then finish it your way.
+          <p className="shake-muted mt-5 max-w-[54ch] text-sm font-semibold leading-relaxed">
+            Your favourite Cone Joys flavour, blended cold and finished exactly your way.
           </p>
         </header>
 
-        <div className="grid grid-cols-[0.72fr_1.42fr_0.86fr] gap-4 min-h-[650px] max-lg:grid-cols-[0.7fr_1.3fr] max-lg:min-h-0 max-md:grid-cols-1">
-          <div className="border-y border-white/12 py-3 max-md:order-2 max-md:border-y-0 max-md:py-0">
-            <p className="mb-3 px-2 text-[0.62rem] font-black uppercase tracking-[0.16em] text-white/35">Select your pour</p>
-            <div className="flex flex-col max-md:flex-row max-md:overflow-x-auto max-md:pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Shake flavours">
+        <div className="grid grid-cols-[0.82fr_1.35fr_0.9fr] gap-4 max-xl:grid-cols-[0.72fr_1.28fr] max-md:grid-cols-1">
+          <div className="shake-panel border p-3 max-md:order-2 max-md:border-0 max-md:bg-transparent max-md:p-0">
+            <p className="shake-muted mb-3 px-2 text-[0.62rem] font-black uppercase tracking-[0.16em]">Select your pour</p>
+            <div className="grid grid-cols-2 gap-1.5 max-md:flex max-md:overflow-x-auto max-md:pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Shake flavours">
               {SHAKES.map((shake, index) => {
-                const isActive = shake.id === activeShake.id;
+                const isActive = index === activeIndex;
                 return (
                   <button
                     key={shake.id}
                     type="button"
                     role="radio"
                     aria-checked={isActive}
-                    onClick={() => setActiveId(shake.id)}
-                    className={`group min-w-0 border-t border-white/10 px-2 py-5 text-left transition-colors max-md:min-w-[72vw] max-md:border max-md:border-white/12 max-md:p-4 ${
-                      isActive ? "bg-white text-[#111315]" : "text-white hover:bg-white/5"
-                    }`}
+                    onClick={() => setActiveIndex(index)}
+                    className={`shake-flavour min-h-[92px] min-w-0 border p-3 text-left transition-[transform,background-color,border-color] active:scale-[0.98] max-md:min-w-[62vw] ${isActive ? "is-active" : "hover:-translate-y-0.5"}`}
                   >
-                    <span className={`block text-[0.62rem] font-black tabular-nums ${isActive ? "text-black/40" : "text-white/30"}`}>0{index + 1}</span>
-                    <span className="mt-4 block font-display text-[clamp(1.05rem,1.6vw,1.45rem)] font-extrabold leading-tight tracking-[-0.04em]">{shake.name}</span>
-                    <span className={`mt-2 block text-[0.7rem] leading-relaxed ${isActive ? "text-black/55" : "text-white/38"}`}>{shake.note}</span>
+                    <span className="shake-muted block text-[0.58rem] font-black tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="mt-2 block font-display text-[0.88rem] font-extrabold leading-tight tracking-[-0.03em]">{shake.name}</span>
+                    <span className="shake-muted mt-1.5 block text-[0.61rem] leading-snug max-xl:hidden max-md:block">{shake.note}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="relative min-h-[650px] overflow-hidden bg-[#d7dadd] max-lg:min-h-[620px] max-md:order-1 max-md:min-h-[500px] max-sm:min-h-[390px]">
-            <div className="absolute left-5 top-5 z-10 flex items-center gap-2 text-[#111315]">
-              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: activeShake.accent }} />
+          <div className="shake-stage relative min-h-[650px] overflow-hidden border max-xl:min-h-[620px] max-md:order-1 max-md:min-h-[500px] max-sm:min-h-[390px]">
+            <div className="absolute left-5 top-5 z-10 flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-ink" />
               <span className="text-[0.62rem] font-black uppercase tracking-[0.14em]">Freshly churned</span>
             </div>
             <picture key={activeShake.id}>
@@ -146,76 +151,62 @@ export default function ShakeLab() {
                 alt={`${activeShake.name} premium ice-cream shake`}
                 width={900}
                 height={900}
-                loading="lazy"
+                loading={activeIndex === 0 ? "eager" : "lazy"}
                 decoding="async"
                 className="h-full w-full object-cover animate-badge-pop motion-reduce:animate-none"
               />
             </picture>
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/60 via-black/12 to-transparent p-6 pt-24">
+            <div className="shake-stage-caption absolute inset-x-0 bottom-0 flex items-end justify-between p-6 pt-24 max-sm:p-4 max-sm:pt-20">
               <div>
                 <p className="font-display text-[clamp(1.7rem,3vw,3rem)] font-extrabold leading-none tracking-[-0.055em]">{activeShake.name}</p>
-                <p className="mt-2 text-xs font-semibold text-white/72">{activeShake.note}</p>
+                <p className="mt-2 text-xs font-semibold opacity-65">{activeShake.note}</p>
               </div>
               <span className="text-xs font-black tabular-nums">Rs. {SIZES[size].price}</span>
             </div>
           </div>
 
-          <aside className="flex flex-col border border-white/12 bg-[#191b1d] p-6 max-lg:col-span-2 max-lg:grid max-lg:grid-cols-2 max-lg:gap-8 max-md:order-3 max-md:col-span-1 max-md:grid-cols-1 max-md:gap-5 max-sm:p-4" aria-label="Customize your shake">
+          <aside className="shake-panel flex flex-col border p-6 max-xl:col-span-2 max-xl:grid max-xl:grid-cols-2 max-xl:gap-8 max-md:order-3 max-md:col-span-1 max-md:grid-cols-1 max-md:gap-5 max-sm:p-4" aria-label="Customize your shake">
             <div>
-              <p className="text-[0.62rem] font-black uppercase tracking-[0.16em] text-white/35">Make it yours</p>
+              <p className="shake-muted text-[0.62rem] font-black uppercase tracking-[0.16em]">Make it yours</p>
               <h3 className="mt-3 font-display text-2xl font-extrabold tracking-[-0.05em]">Finish the build.</h3>
-
               <fieldset className="mt-8">
-                <legend className="text-[0.66rem] font-black uppercase tracking-[0.12em] text-white/48">Size</legend>
+                <legend className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Size</legend>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {(Object.keys(SIZES) as ShakeSize[]).map((item) => (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setSize(item)}
-                      className={`border px-3 py-3 text-left transition-colors ${size === item ? "border-white bg-white text-[#111315]" : "border-white/14 text-white hover:border-white/40"}`}
-                    >
+                    <button key={item} type="button" onClick={() => setSize(item)} className={`shake-option border px-3 py-3 text-left transition-colors ${size === item ? "is-active" : ""}`}>
                       <span className="block text-xs font-black">{item}</span>
-                      <span className={`mt-1 block text-[0.64rem] ${size === item ? "text-black/50" : "text-white/38"}`}>{SIZES[item].volume}</span>
+                      <span className="shake-muted mt-1 block text-[0.64rem]">{SIZES[item].volume}</span>
                     </button>
                   ))}
                 </div>
               </fieldset>
             </div>
 
-            <div className="lg:mt-8">
-              <fieldset>
-                <legend className="text-[0.66rem] font-black uppercase tracking-[0.12em] text-white/48">Finishing touches</legend>
-                <div className="mt-3 space-y-2">
-                  {TOPPINGS.map((topping) => {
-                    const checked = toppings.includes(topping);
-                    return (
-                      <button
-                        key={topping}
-                        type="button"
-                        aria-pressed={checked}
-                        onClick={() => toggleTopping(topping)}
-                        className="flex w-full items-center justify-between border-b border-white/10 py-3 text-left text-xs font-bold"
-                      >
-                        <span>{topping}</span>
-                        <span className={`flex h-5 w-5 items-center justify-center border text-[0.64rem] ${checked ? "border-white bg-white text-[#111315]" : "border-white/25 text-transparent"}`}>✓</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </fieldset>
-            </div>
+            <fieldset className="xl:mt-8">
+              <legend className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Finishing touches</legend>
+              <div className="mt-3 space-y-1">
+                {TOPPINGS.map((topping) => {
+                  const checked = toppings.includes(topping);
+                  return (
+                    <button key={topping} type="button" aria-pressed={checked} onClick={() => toggleTopping(topping)} className="shake-divider flex w-full items-center justify-between border-b py-3 text-left text-xs font-bold">
+                      <span>{topping}</span>
+                      <span className={`shake-check flex h-5 w-5 items-center justify-center border text-[0.64rem] ${checked ? "is-active" : "text-transparent"}`}>✓</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
 
-            <div className="mt-auto pt-8 max-lg:col-span-2 max-lg:pt-0 max-md:col-span-1">
-              <div className="mb-3 flex items-center justify-between border-t border-white/12 pt-4">
-                <span className="text-[0.66rem] font-black uppercase tracking-[0.12em] text-white/48">Quantity</span>
-                <div className="flex items-center border border-white/16">
+            <div className="mt-auto pt-8 max-xl:col-span-2 max-xl:pt-0 max-md:col-span-1">
+              <div className="shake-divider mb-3 flex items-center justify-between border-t pt-4">
+                <span className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Quantity</span>
+                <div className="shake-quantity flex items-center border">
                   <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} className="h-9 w-9 disabled:opacity-25" aria-label="Decrease shake quantity">−</button>
                   <span className="w-9 text-center text-xs font-black tabular-nums">{quantity}</span>
                   <button type="button" onClick={() => setQuantity((value) => Math.min(10, value + 1))} disabled={quantity === 10} className="h-9 w-9 disabled:opacity-25" aria-label="Increase shake quantity">+</button>
                 </div>
               </div>
-              <button type="button" onClick={handleAdd} className={`min-h-[52px] w-full px-5 text-xs font-black uppercase tracking-[0.12em] transition-colors active:scale-[0.99] ${added ? "bg-[#2e7d4f] text-white" : "bg-white text-[#111315] hover:bg-[#e8e9e6]"}`}>
+              <button type="button" onClick={handleAdd} className={`min-h-[52px] w-full px-5 text-xs font-black uppercase tracking-[0.12em] transition-all active:scale-[0.99] ${added ? "bg-green-700 text-white" : "shake-cta"}`}>
                 {added ? "Added to your order" : `Add shake · Rs. ${(SIZES[size].price * quantity).toLocaleString("en-PK")}`}
               </button>
             </div>

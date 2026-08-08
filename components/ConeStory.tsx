@@ -39,7 +39,7 @@ export default function ConeStory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
-  const [searchCategory, setSearchCategory] = useState<"cones" | "cups">("cones");
+  const [searchCategory, setSearchCategory] = useState<"cones" | "cups" | "shakes">("cones");
   const [cupSearchIndex, setCupSearchIndex] = useState<number>(0);
   const [cupSearchRequestKey, setCupSearchRequestKey] = useState(0);
   const [recentIds, setRecentIds] = useState<string[]>([]);
@@ -200,7 +200,7 @@ export default function ConeStory() {
 
   const selectSearchResult = useCallback(
     (idx: number) => {
-      if (searchCategory === "cups") {
+      if (searchCategory === "cups" || searchCategory === "shakes") {
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -208,7 +208,7 @@ export default function ConeStory() {
         setSearchOpen(false);
         setSearchSelectedIndex(-1);
         if (FLAVOURS[idx]) saveRecent(FLAVOURS[idx].id);
-        router.push(`/cups?select=${idx}`);
+        router.push(searchCategory === "shakes" ? `/cups?category=shakes&select=${idx}#shakes` : `/cups?select=${idx}`);
         return;
       }
 
@@ -708,7 +708,7 @@ export default function ConeStory() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
               <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.62rem] font-black uppercase tracking-wide">
-                {searchCategory === "cups" ? "Cups" : "Cones"}
+                {searchCategory === "cones" ? "Cones" : searchCategory === "cups" ? "Cups" : "Shakes"}
               </span>
               <input
                 type="text"

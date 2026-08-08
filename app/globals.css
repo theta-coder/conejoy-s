@@ -157,3 +157,54 @@
     transition-duration: 1ms !important;
   }
 }
+
+.shake-lab {
+  --shake-deep: color-mix(in srgb, var(--shake-accent) 56%, #15150f);
+  --shake-panel: color-mix(in srgb, var(--shake-accent) 17%, white);
+  --shake-card: color-mix(in srgb, var(--shake-accent) 7%, white);
+  --shake-selected: color-mix(in srgb, var(--shake-accent) 30%, white);
+  --shake-line: color-mix(in srgb, var(--shake-accent) 44%, #665f59);
+  --shake-muted: color-mix(in srgb, var(--shake-accent) 25%, #554e49);
+  background-color: var(--shake-accent);
+}
+
+.shake-panel {
+  background-color: color-mix(in srgb, var(--shake-panel) 94%, transparent);
+  border-color: color-mix(in srgb, var(--shake-line) 42%, transparent);
+  box-shadow: 0 18px 55px color-mix(in srgb, var(--shake-deep) 12%, transparent);
+}
+
+.shake-muted { color: var(--shake-muted); }
+.shake-divider { border-color: color-mix(in srgb, var(--shake-line) 34%, transparent); }
+
+.shake-flavour,
+.shake-option,
+.shake-check,
+.shake-quantity {
+  background-color: var(--shake-card);
+  border-color: color-mix(in srgb, var(--shake-line) 42%, transparent);
+}
+
+.shake-flavour.is-active,
+.shake-option.is-active,
+.shake-check.is-active {
+  background-color: var(--shake-selected);
+  border-color: var(--shake-deep);
+}
+
+.shake-stage {
+  background-color: var(--shake-accent);
+  border-color: color-mix(in srgb, var(--shake-line) 32%, transparent);
+  box-shadow: 0 22px 65px color-mix(in srgb, var(--shake-deep) 13%, transparent);
+}
+
+.shake-stage-caption {
+  background: linear-gradient(to top, color-mix(in srgb, var(--shake-accent) 84%, #15150f), transparent);
+}
+
+.shake-cta {
+  color: white;
+  background-color: var(--shake-deep);
+}
+
+.shake-cta:hover { opacity: 0.9; }

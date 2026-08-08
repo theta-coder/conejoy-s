@@ -3,13 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 
 interface CategoryBarProps {
-  onCategoryChange?: (category: "cones" | "cups") => void;
-  onNavigate?: (category: "cones" | "cups") => void;
+  onCategoryChange?: (category: "cones" | "cups" | "shakes") => void;
+  onNavigate?: (category: "cones" | "cups" | "shakes") => void;
 }
 
 export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBarProps) {
-  const [activeCategory, setActiveCategory] = useState<"cones" | "cups">("cones");
-  const activeCategoryRef = useRef<"cones" | "cups">("cones");
+  const [activeCategory, setActiveCategory] = useState<"cones" | "cups" | "shakes">("cones");
+  const activeCategoryRef = useRef<"cones" | "cups" | "shakes">("cones");
 
   useEffect(() => {
     let frameId: number | null = null;
@@ -19,9 +19,11 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
       frameId = requestAnimationFrame(() => {
         frameId = null;
         const cupsEl = document.getElementById("cups");
-        if (!cupsEl) return;
+        const shakesEl = document.getElementById("shakes");
         const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
-        const nextCategory = cupsEl.getBoundingClientRect().top <= headerOffset + 80 ? "cups" : "cones";
+        let nextCategory: "cones" | "cups" | "shakes" = "cones";
+        if (cupsEl && cupsEl.getBoundingClientRect().top <= headerOffset + 80) nextCategory = "cups";
+        if (shakesEl && shakesEl.getBoundingClientRect().top <= headerOffset + 80) nextCategory = "shakes";
         if (nextCategory === activeCategoryRef.current) return;
         activeCategoryRef.current = nextCategory;
         setActiveCategory(nextCategory);
@@ -37,7 +39,7 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
     };
   }, [onCategoryChange]);
 
-  const scrollToSection = (id: "cones" | "cups") => {
+  const scrollToSection = (id: "cones" | "cups" | "shakes") => {
     activeCategoryRef.current = id;
     setActiveCategory(id);
     onCategoryChange?.(id);
@@ -51,16 +53,19 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
       }, 1200);
     }
 
-    if (id === "cones") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (id === "cups") {
-      const cupsEl = document.getElementById("cups");
-      if (cupsEl) {
+    const target = document.getElementById(id);
+    if (target) {
+      if (id === "cones") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
         const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
-        const targetTop = window.scrollY + cupsEl.getBoundingClientRect().top - headerOffset + 2;
+        const targetTop = window.scrollY + target.getBoundingClientRect().top - headerOffset + 2;
         window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
       }
+      return;
     }
+
+    window.location.href = id === "cones" ? "/" : `/cups${id === "shakes" ? "#shakes" : ""}`;
   };
 
   return (
@@ -94,8 +99,20 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
           <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
           <span>Cups</span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => scrollToSection("shakes")}
+          className={`flex items-center gap-2 px-5 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${activeCategory === "shakes"
+            ? "bg-ink text-panel shadow-md scale-[1.02]"
+            : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
+            }`}
+          aria-current={activeCategory === "shakes" ? "page" : undefined}
+        >
+          <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
+          <span>Shakes</span>
+        </button>
       </div>
     </nav>
   );
 }
-

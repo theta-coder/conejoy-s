@@ -16,7 +16,7 @@ export default function CupsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchSelectedIndex, setSearchSelectedIndex] = useState<number>(-1);
-  const [searchCategory, setSearchCategory] = useState<"cones" | "cups">("cups");
+  const [searchCategory, setSearchCategory] = useState<"cones" | "cups" | "shakes">("cups");
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [selectionRequestKey, setSelectionRequestKey] = useState<number>(0);
 
@@ -27,6 +27,8 @@ export default function CupsPage() {
     if (typeof window === "undefined") return;
     const searchParams = new URLSearchParams(window.location.search);
     const selectParam = searchParams.get("select");
+    const categoryParam = searchParams.get("category");
+    if (categoryParam === "shakes") setSearchCategory("shakes");
     if (selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
       setSelectedIndex(Math.max(0, Math.min(FLAVOURS.length - 1, parseInt(selectParam, 10))));
       setSelectionRequestKey((k) => k + 1);
@@ -60,6 +62,15 @@ export default function CupsPage() {
   const selectSearchResult = (idx: number) => {
     if (searchCategory === "cones") {
       router.push(`/?select=${idx}`);
+      return;
+    }
+    if (searchCategory === "shakes") {
+      setSelectedIndex(idx);
+      setSelectionRequestKey((key) => key + 1);
+      setSearchQuery("");
+      setSearchOpen(false);
+      setSearchSelectedIndex(-1);
+      window.setTimeout(() => document.getElementById("shakes")?.scrollIntoView({ behavior: "smooth" }), 0);
       return;
     }
     setSelectedIndex(idx);
@@ -128,7 +139,7 @@ export default function CupsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
             <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.62rem] font-black uppercase tracking-wide">
-              {searchCategory === "cones" ? "Cones" : "Cups"}
+              {searchCategory === "cones" ? "Cones" : searchCategory === "cups" ? "Cups" : "Shakes"}
             </span>
             <input
               type="text"
@@ -217,7 +228,7 @@ export default function CupsPage() {
       {/* Main Cups Content */}
       <main className="pt-[126px] max-md:pt-[110px] max-sm:pt-[102px]">
         <CupsSection selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
-        <ShakeLab />
+        <ShakeLab selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
       </main>
     </div>
   );
