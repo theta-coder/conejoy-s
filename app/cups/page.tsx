@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CategoryBar from "@/components/CategoryBar";
 import CupsSection from "@/components/CupsSection";
-import ShakeLab from "@/components/ShakeLab";
 import { useCart } from "@/context/CartContext";
 import { FLAVOURS } from "@/data/flavours";
 
@@ -65,12 +64,7 @@ export default function CupsPage() {
       return;
     }
     if (searchCategory === "shakes") {
-      setSelectedIndex(idx);
-      setSelectionRequestKey((key) => key + 1);
-      setSearchQuery("");
-      setSearchOpen(false);
-      setSearchSelectedIndex(-1);
-      window.setTimeout(() => document.getElementById("shakes")?.scrollIntoView({ behavior: "smooth" }), 0);
+      router.push(`/shakes?select=${idx}`);
       return;
     }
     setSelectedIndex(idx);
@@ -228,7 +222,6 @@ export default function CupsPage() {
       {/* Main Cups Content */}
       <main className="pt-[126px] max-md:pt-[110px] max-sm:pt-[102px]">
         <CupsSection selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
-        <ShakeLab selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
       </main>
     </div>
   );

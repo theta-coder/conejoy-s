@@ -208,7 +208,7 @@ export default function ConeStory() {
         setSearchOpen(false);
         setSearchSelectedIndex(-1);
         if (FLAVOURS[idx]) saveRecent(FLAVOURS[idx].id);
-        router.push(searchCategory === "shakes" ? `/cups?category=shakes&select=${idx}#shakes` : `/cups?select=${idx}`);
+        router.push(searchCategory === "shakes" ? `/shakes?select=${idx}` : `/cups?select=${idx}`);
         return;
       }
 

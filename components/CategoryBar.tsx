@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface CategoryBarProps {
   onCategoryChange?: (category: "cones" | "cups" | "shakes") => void;
@@ -8,8 +9,10 @@ interface CategoryBarProps {
 }
 
 export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBarProps) {
-  const [activeCategory, setActiveCategory] = useState<"cones" | "cups" | "shakes">("cones");
-  const activeCategoryRef = useRef<"cones" | "cups" | "shakes">("cones");
+  const pathname = usePathname();
+  const routeCategory = pathname.startsWith("/shakes") ? "shakes" : pathname.startsWith("/cups") ? "cups" : "cones";
+  const [activeCategory, setActiveCategory] = useState<"cones" | "cups" | "shakes">(routeCategory);
+  const activeCategoryRef = useRef<"cones" | "cups" | "shakes">(routeCategory);
 
   useEffect(() => {
     let frameId: number | null = null;
@@ -21,7 +24,7 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
         const cupsEl = document.getElementById("cups");
         const shakesEl = document.getElementById("shakes");
         const headerOffset = window.innerWidth <= 640 ? 102 : window.innerWidth <= 768 ? 110 : 126;
-        let nextCategory: "cones" | "cups" | "shakes" = "cones";
+        let nextCategory: "cones" | "cups" | "shakes" = routeCategory;
         if (cupsEl && cupsEl.getBoundingClientRect().top <= headerOffset + 80) nextCategory = "cups";
         if (shakesEl && shakesEl.getBoundingClientRect().top <= headerOffset + 80) nextCategory = "shakes";
         if (nextCategory === activeCategoryRef.current) return;
@@ -37,7 +40,7 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
       window.removeEventListener("scroll", handleScroll);
       if (frameId !== null) cancelAnimationFrame(frameId);
     };
-  }, [onCategoryChange]);
+  }, [onCategoryChange, routeCategory]);
 
   const scrollToSection = (id: "cones" | "cups" | "shakes") => {
     activeCategoryRef.current = id;
@@ -65,7 +68,7 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
       return;
     }
 
-    window.location.href = id === "cones" ? "/" : `/cups${id === "shakes" ? "#shakes" : ""}`;
+    window.location.href = id === "cones" ? "/" : `/${id}`;
   };
 
   return (
