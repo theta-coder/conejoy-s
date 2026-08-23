@@ -161,7 +161,7 @@ export default function CupsPage() {
                 ✕
               </button>
             ) : (
-              <span className="max-lg:hidden text-[0.6rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase pointer-events-none">
+              <span className="max-lg:hidden text-[0.7rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase pointer-events-none">
                 SEARCH
               </span>
             )}

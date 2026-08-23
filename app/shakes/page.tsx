@@ -87,7 +87,7 @@ export default function ShakesPage() {
         <div ref={searchRef} className="relative z-20 mx-2.5 flex-shrink max-sm:mx-1">
           <div className="flex w-[clamp(155px,32vw,480px)] items-center gap-2 rounded-full border border-ink/20 bg-white/80 px-3.5 py-2 transition-all focus-within:border-ink max-sm:px-3 max-sm:py-1.5">
             <span className="shrink-0 border-r border-ink/15 pr-2 text-[0.7rem] font-black uppercase tracking-wide max-sm:text-[0.68rem]">{searchCategory}</span>
-            <input value={searchQuery} onChange={(event) => { setSearchQuery(event.target.value); setSearchOpen(true); }} onFocus={() => setSearchOpen(true)} onKeyDown={handleSearchKeyDown} placeholder="Search flavour..." className="w-full truncate border-0 bg-transparent text-[0.82rem] font-medium outline-none max-sm:text-[0.72rem]" aria-label={`Search ${searchCategory} flavours`} autoComplete="off" />
+            <input value={searchQuery} onChange={(event) => { setSearchQuery(event.target.value); setSearchOpen(true); }} onFocus={() => setSearchOpen(true)} onKeyDown={handleSearchKeyDown} placeholder="Search flavour..." className="w-full min-h-[28px] truncate border-0 bg-transparent text-[0.82rem] font-medium outline-none max-sm:text-[0.76rem]" aria-label={`Search ${searchCategory} flavours`} autoComplete="off" />
           </div>
           {searchOpen && filteredFlavours.length > 0 && (
             <div className="absolute left-0 right-0 top-full z-50 mt-2 min-w-[210px] overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-xl">

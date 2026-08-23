@@ -737,7 +737,7 @@ export default function ConeStory() {
                   ✕
                 </button>
               ) : (
-                <span className="max-lg:hidden text-[0.6rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase select-none pointer-events-none flex-shrink-0">
+                <span className="max-lg:hidden text-[0.7rem] font-extrabold tracking-wider px-1.5 py-0.5 rounded border border-[rgba(21,21,15,0.15)] bg-panel/80 opacity-40 uppercase select-none pointer-events-none flex-shrink-0">
                   SEARCH
                 </span>
               )}
@@ -982,7 +982,7 @@ export default function ConeStory() {
             </div>
 
             {/* Progress Dot Rail + Up/Down Arrows with Flavour Names */}
-            <div className="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 flex flex-col items-end gap-[6px] z-[10]">
+            <div className="progress absolute right-[1%] max-md:right-[6px] max-sm:right-[4px] top-1/2 -translate-y-1/2 flex flex-col items-end gap-[10px] max-sm:gap-[8px] z-[10]">
               {/* Up Arrow (Previous Flavour) */}
               <div className="group relative flex items-center justify-end mb-1">
                 <span className="pointer-events-none absolute right-full mr-2.5 px-2.5 py-1 rounded-lg bg-ink text-panel text-[0.68rem] max-sm:text-[0.6rem] font-extrabold tracking-wide whitespace-nowrap opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-custom shadow-lg flex items-center gap-1.5">
@@ -1027,7 +1027,7 @@ export default function ConeStory() {
                       opacity: idx === activeIndex ? 1 : 0.25,
                       boxShadow: idx === activeIndex ? "0 0 8px rgba(21,21,15,0.4)" : "none",
                     }}
-                    className="progress-dot relative appearance-none cursor-pointer w-[3.5px] border-0 p-0 transition-all duration-200 ease-custom after:absolute after:content-[''] after:-left-3 after:-right-3 after:-top-[3px] after:-bottom-[3px] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                    className="progress-dot relative appearance-none cursor-pointer w-[3.5px] border-0 p-0 transition-all duration-200 ease-custom after:absolute after:content-[''] after:-left-3 after:-right-3 after:-top-[5px] after:-bottom-[5px] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
                   />
                 </div>
               ))}
@@ -1076,9 +1076,9 @@ export default function ConeStory() {
             <div className="flex flex-col items-start justify-center min-h-[42px] max-sm:min-h-[36px] px-2.5 max-sm:px-2 rounded-xl bg-white/60 backdrop-blur-md border border-ink/10 shadow-sm leading-none" aria-label="Cone offer: original price Rs. 150, now Rs. 100, save Rs. 50">
               <span className="flex items-baseline gap-1.5 whitespace-nowrap">
                 <strong className="text-[0.86rem] max-sm:text-[0.8rem] tracking-normal normal-case">Rs. 100</strong>
-                <span className="text-[0.62rem] max-sm:hidden text-ink/45 line-through tracking-normal normal-case">Rs. 150</span>
+                <span className="text-[0.75rem] max-sm:hidden text-ink/45 line-through tracking-normal normal-case">Rs. 150</span>
               </span>
-              <span className="mt-1 rounded-full bg-green-700 text-white px-1.5 py-0.5 text-[0.62rem] max-sm:text-[0.6rem] font-black tracking-normal normal-case whitespace-nowrap">Save Rs. 50</span>
+              <span className="mt-1 rounded-full bg-green-700 text-white px-1.5 py-0.5 text-[0.72rem] max-sm:text-[0.6rem] font-black tracking-normal normal-case whitespace-nowrap">Save Rs. 50</span>
             </div>
 
             <div className="flex items-center gap-0 px-1.5 py-0.5 rounded-full bg-[rgba(255,255,255,0.6)] backdrop-blur-md border border-[rgba(21,21,15,0.12)]">
