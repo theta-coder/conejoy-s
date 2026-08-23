@@ -239,9 +239,9 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </p>
       </div>
 
-      <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-1 items-center gap-3">
+      <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] xl:w-[min(1560px,calc(100%-72px))] max-md:w-full mx-auto grid grid-cols-1 xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] items-center gap-3 xl:gap-9">
       {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
-      <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] max-md:min-h-[clamp(180px,27svh,250px)] max-sm:min-h-[clamp(165px,26svh,215px)] select-none">
+      <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] xl:min-h-[clamp(300px,44svh,470px)] max-md:min-h-[clamp(180px,27svh,250px)] max-sm:min-h-[clamp(165px,26svh,215px)] select-none">
         {/* Left Arrow Button */}
         <button
           type="button"
@@ -260,7 +260,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </button>
 
         {/* Cup Viewport Stage Container */}
-        <div className="relative w-full h-[clamp(200px,30svh,360px)] max-md:h-[clamp(180px,27svh,250px)] max-sm:h-[clamp(165px,26svh,215px)] flex items-center justify-center">
+        <div className="relative w-full h-[clamp(200px,30svh,360px)] xl:h-[clamp(300px,44svh,470px)] max-md:h-[clamp(180px,27svh,250px)] max-sm:h-[clamp(165px,26svh,215px)] flex items-center justify-center">
           {/* White Backdrop Circle Centered Dead-Center behind Active Cup */}
           <div
             className="cup-backdrop absolute w-[clamp(240px,19vw,320px)] max-md:w-[clamp(170px,44vw,230px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
@@ -369,7 +369,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
       </div>
 
       <aside
-        className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border backdrop-blur-md p-5 max-lg:p-4 max-sm:p-3.5"
+        className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] xl:w-full mx-auto rounded-[22px] border backdrop-blur-md p-5 xl:p-6 max-lg:p-4 max-sm:p-3.5"
         style={{ "--cup-accent": activeFlavour.color } as React.CSSProperties}
         aria-labelledby="serving-heading"
       >
