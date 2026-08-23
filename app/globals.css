@@ -57,6 +57,21 @@ html {
   animation: badge-pop 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Bottom sheet entrance. Only translateY — a scale would pull the sheet away
+   from the screen edges it is anchored to. */
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-sheet-up {
+  animation: sheet-up 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @keyframes scroll-bounce {
   0%, 100% {
     transform: translateY(0);

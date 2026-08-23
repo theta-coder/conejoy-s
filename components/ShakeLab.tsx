@@ -58,6 +58,9 @@ const SIZES: Record<ShakeSize, { volume: string; price: number; originalPrice: n
   Large: { volume: "16 oz", price: 520, originalPrice: 650 },
 };
 
+const SIZE_KEYS = Object.keys(SIZES) as ShakeSize[];
+const MIN_PRICE = Math.min(...SIZE_KEYS.map((key) => SIZES[key].price));
+
 const formatRupees = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 
 export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLabProps) {
@@ -66,8 +69,11 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
   const [size, setSize] = useState<ShakeSize>("Regular");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const sheetOpenerRef = useRef<HTMLButtonElement>(null);
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const touchDeltaXRef = useRef(0);
@@ -103,8 +109,56 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
     setActiveIndex((current) => Math.min(SHAKES.length - 1, current + 1));
   }, []);
 
-  // Keyboard navigation, only while the section is on screen.
+  const closeSheet = useCallback(() => {
+    setIsSheetOpen(false);
+    sheetOpenerRef.current?.focus();
+  }, []);
+
+  // Modal behaviour for the mobile sheet: lock the page behind it, close on
+  // Escape, and keep Tab inside the sheet while it is open.
   useEffect(() => {
+    if (!isSheetOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    sheetRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSheet();
+        return;
+      }
+      if (event.key !== "Tab" || !sheetRef.current) return;
+
+      const focusables = sheetRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isSheetOpen, closeSheet]);
+
+  // Carousel keyboard nav, only while the section is on screen and the sheet
+  // is closed (otherwise arrows would change the shake behind the sheet).
+  useEffect(() => {
+    if (isSheetOpen) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
@@ -121,17 +175,17 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goToPrev, goToNext]);
+  }, [goToPrev, goToNext, isSheetOpen]);
 
   // Horizontal swipe on the stage. Listeners stay passive; `touch-action: pan-y`
   // lets the browser own vertical scrolling.
   useEffect(() => {
     const sectionEl = sectionRef.current;
-    if (!sectionEl) return;
+    if (!sectionEl || isSheetOpen) return;
 
     const handleTouchStart = (event: TouchEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target && target.closest("aside, button, input, a, [role='radiogroup']")) {
+      if (target && target.closest("aside, button, input, a, [role='radiogroup'], .shake-sheet")) {
         touchStartXRef.current = null;
         touchStartYRef.current = null;
         return;
@@ -173,9 +227,9 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
       sectionEl.removeEventListener("touchmove", handleTouchMove);
       sectionEl.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [goToNext, goToPrev]);
+  }, [goToNext, goToPrev, isSheetOpen]);
 
-  const handleAdd = () => {
+  const handleAdd = (fromSheet: boolean) => {
     addToCart({
       type: "Shake",
       flavourId: activeShake.id,
@@ -191,10 +245,112 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
     });
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
+    if (fromSheet) window.setTimeout(() => closeSheet(), 550);
   };
 
   const arrowClass =
     "absolute top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink";
+
+  // One source of truth for the controls: rendered inline beside the image on
+  // desktop, and inside the bottom sheet on phones and tablets.
+  const buildControls = (inSheet: boolean, headingId: string) => (
+    <>
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <h4 id={headingId} className="text-[0.86rem] font-black uppercase tracking-[0.08em]">
+            Build your {activeShake.name} shake
+          </h4>
+          <p className="shake-muted text-[0.78rem] font-semibold mt-1">{activeShake.note}</p>
+        </div>
+        <span className="shake-status text-[0.72rem] font-black rounded-full border px-3 py-1.5 whitespace-nowrap self-start">
+          {size} · {activeSize.volume}
+        </span>
+      </div>
+
+      <fieldset>
+        <legend className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em] mb-2">Size</legend>
+        <div className="grid grid-cols-2 gap-3">
+          {SIZE_KEYS.map((item) => {
+            const option = SIZES[item];
+            const isSelected = size === item;
+            return (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setSize(item)}
+                aria-pressed={isSelected}
+                className={`shake-option shake-size-card relative min-h-[86px] rounded-2xl border-2 p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
+                  isSelected
+                    ? "is-active shadow-[0_10px_26px_rgba(21,21,15,0.13)]"
+                    : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
+                }`}
+              >
+                <span className="block pr-7 text-[0.88rem] font-black leading-tight">{item}</span>
+                <span className="shake-muted block mt-1 text-[0.75rem] font-bold">{option.volume}</span>
+                <span className="mt-2 block">
+                  <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
+                  <span className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    <span className="shake-muted text-[0.75rem] line-through">{formatRupees(option.originalPrice)}</span>
+                    <span className="rounded-full px-2 py-1 text-[0.75rem] font-black bg-green-700 text-white leading-none">
+                      Save {formatRupees(option.originalPrice - option.price)}
+                    </span>
+                  </span>
+                </span>
+                {isSelected && (
+                  <span
+                    className="shake-check absolute right-3 top-3 w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center shadow-sm"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <span className="text-xs font-black uppercase tracking-[0.08em] shake-muted">Quantity</span>
+        <div className="shake-quantity flex items-center rounded-full border p-1 shadow-sm">
+          <button
+            type="button"
+            onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+            disabled={quantity <= 1}
+            className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            aria-label="Decrease shake quantity"
+          >
+            −
+          </button>
+          <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">
+            {quantity}
+          </span>
+          <button
+            type="button"
+            onClick={() => setQuantity((value) => Math.min(10, value + 1))}
+            disabled={quantity >= 10}
+            className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            aria-label="Increase shake quantity"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => handleAdd(inSheet)}
+        className={`mt-3 w-full min-h-[52px] rounded-full text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] ${
+          added ? "bg-green-700 text-white" : "bg-ink text-panel"
+        }`}
+      >
+        {added ? "Added to your order" : `Add to Cart · ${formatRupees(total)}`}
+      </button>
+      {saving > 0 && (
+        <p className="mt-2 text-center text-[0.72rem] font-black opacity-60">You save {formatRupees(saving)}</p>
+      )}
+    </>
+  );
 
   return (
     <section
@@ -205,7 +361,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
       aria-label="Shakes Collection"
     >
       {/* 1. Collection heading */}
-      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10">
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10 shrink-0">
         <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.7rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           SHAKES COLLECTION
@@ -219,8 +375,8 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
       </div>
 
       <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] xl:w-[min(1560px,calc(100%-72px))] max-md:w-full mx-auto grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 xl:gap-9 max-xl:flex max-xl:flex-col max-xl:flex-1 max-xl:min-h-0 max-xl:w-full">
-        {/* 2. Shake carousel stage */}
-        <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] xl:min-h-[clamp(320px,56svh,560px)] max-xl:flex-1 max-xl:min-h-[clamp(170px,30svh,420px)] select-none">
+        {/* 2. Shake carousel stage — takes the whole screen below xl */}
+        <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] xl:min-h-[clamp(320px,56svh,560px)] max-xl:flex-1 max-xl:min-h-[160px] select-none">
           <button
             type="button"
             onClick={goToPrev}
@@ -235,7 +391,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             </svg>
           </button>
 
-          <div className="relative w-full h-[clamp(200px,30svh,360px)] xl:h-[clamp(320px,56svh,560px)] max-xl:h-auto max-xl:flex-1 max-xl:min-h-0 max-xl:max-h-[calc(100vw-116px)] flex items-center justify-center">
+          <div className="relative w-full h-[clamp(200px,30svh,360px)] xl:h-[clamp(320px,56svh,560px)] max-xl:h-auto max-xl:flex-1 max-xl:min-h-0 max-xl:max-h-[calc(100vw-24px)] flex items-center justify-center">
             {SHAKES.map((shake, idx) => {
               const isCurrent = idx === activeIndex;
               const isPrev = idx === prevIdx;
@@ -275,7 +431,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                     transformOrigin: "center center",
                     transition: "transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease-out",
                   }}
-                  className={`shake-stage relative h-full aspect-square overflow-hidden rounded-[26px] max-sm:rounded-[18px] ${
+                  className={`shake-stage relative h-full aspect-square overflow-hidden rounded-[26px] max-sm:rounded-[20px] ${
                     !isCurrent ? "cursor-pointer" : ""
                   }`}
                 >
@@ -286,7 +442,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                       alt={`${shake.name} premium ice-cream shake`}
                       width={900}
                       height={900}
-                      sizes="(max-width: 768px) 60vw, (max-width: 1280px) 40vw, 26vw"
+                      sizes="(max-width: 1280px) 96vw, 40vw"
                       loading={isCurrent ? "eager" : "lazy"}
                       fetchPriority={isCurrent ? "high" : "low"}
                       decoding="async"
@@ -314,127 +470,72 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             </svg>
           </button>
 
-          <div className="mt-3 max-sm:mt-2 text-center z-10">
-            <h3 className="font-display text-[clamp(1.3rem,2.8vw,2.1rem)] max-sm:text-[clamp(1.1rem,4.8vw,1.6rem)] font-black uppercase tracking-tight m-0 leading-tight">
+          <div className="mt-3 max-sm:mt-2 text-center z-10 shrink-0">
+            <h3 className="font-display text-[clamp(1.3rem,2.8vw,2.1rem)] max-sm:text-[clamp(1.15rem,5.2vw,1.7rem)] font-black uppercase tracking-tight m-0 leading-tight">
               {activeShake.name}
             </h3>
-            <p className="shake-muted mt-1 text-[0.76rem] max-sm:text-[0.72rem] font-semibold max-sm:hidden">
-              {activeShake.note}
-            </p>
             <p className="mt-1 text-[0.72rem] font-black tabular-nums opacity-60" aria-live="polite">
               {activeIndex + 1} of {SHAKES.length}
             </p>
           </div>
         </div>
 
-        {/* 3. Build panel */}
+        {/* 3a. Desktop: controls sit beside the image */}
         <aside
-          className="shake-panel relative z-30 w-[min(1120px,calc(100%-24px))] xl:w-full xl:max-w-[600px] mx-auto shrink-0 rounded-[22px] border p-5 max-lg:p-4 max-sm:p-3"
+          className="shake-panel relative z-30 hidden xl:block w-full max-w-[600px] mx-auto shrink-0 rounded-[22px] border p-5"
           aria-labelledby="shake-build-heading"
         >
-          <div className="flex items-start justify-between gap-3 mb-4 max-sm:mb-2.5">
-            <div>
-              <h4 id="shake-build-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">
-                Build your <span className="hidden max-sm:inline">{activeShake.name} </span>shake
-              </h4>
-              <p className="shake-sub shake-muted max-sm:hidden text-[0.78rem] font-semibold mt-1">
-                Blended with {activeShake.name}
-              </p>
-            </div>
-            <span className="shake-status text-[0.72rem] font-black rounded-full border px-3 py-1.5 whitespace-nowrap">
-              {size} · {activeSize.volume}
-            </span>
-          </div>
-
-          <fieldset>
-            <legend className="shake-legend shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em] mb-2">Size</legend>
-            <div className="grid grid-cols-2 gap-3 max-sm:gap-2.5">
-              {(Object.keys(SIZES) as ShakeSize[]).map((item) => {
-                const option = SIZES[item];
-                const isSelected = size === item;
-                return (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setSize(item)}
-                    aria-pressed={isSelected}
-                    className={`shake-option shake-size-card relative min-h-[86px] max-sm:min-h-[80px] rounded-2xl border-2 p-3.5 max-sm:p-3 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
-                      isSelected
-                        ? "is-active shadow-[0_10px_26px_rgba(21,21,15,0.13)] scale-[1.01]"
-                        : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
-                    }`}
-                  >
-                    <span className="block pr-7 text-[0.88rem] font-black leading-tight">{item}</span>
-                    <span className="shake-muted block mt-1 text-[0.75rem] font-bold">{option.volume}</span>
-                    <span className="shake-size-price mt-2">
-                      <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
-                      <span className="shake-size-extra flex flex-wrap items-center gap-1.5 mt-1.5">
-                        <span className="shake-muted text-[0.75rem] line-through">{formatRupees(option.originalPrice)}</span>
-                        <span className="rounded-full px-2 py-1 text-[0.75rem] font-black bg-green-700 text-white leading-none">
-                          Save {formatRupees(option.originalPrice - option.price)}
-                        </span>
-                      </span>
-                    </span>
-                    {isSelected && (
-                      <span
-                        className="shake-check absolute right-3 top-3 w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center shadow-sm"
-                        aria-hidden="true"
-                      >
-                        ✓
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </fieldset>
-
-          <div className="shake-actions mt-4 max-sm:mt-3 flex items-center justify-end gap-3">
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <span className="text-xs font-black max-sm:hidden">Quantity</span>
-              <div className="shake-quantity flex items-center rounded-full border p-1 shadow-sm">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                  disabled={quantity <= 1}
-                  className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                  aria-label="Decrease shake quantity"
-                >
-                  −
-                </button>
-                <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity((value) => Math.min(10, value + 1))}
-                  disabled={quantity >= 10}
-                  className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                  aria-label="Increase shake quantity"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleAdd}
-            className={`shake-cta-btn mt-3 w-full min-h-[48px] rounded-full text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] ${
-              added ? "bg-green-700 text-white" : "bg-ink text-panel"
-            }`}
-          >
-            {added ? "Added to your order" : `Add to Cart · ${formatRupees(total)}`}
-          </button>
-
-          {saving > 0 && (
-            <p className="mt-2 max-sm:hidden text-center text-[0.72rem] font-black opacity-60">
-              You save {formatRupees(saving)}
-            </p>
-          )}
+          {buildControls(false, "shake-build-heading")}
         </aside>
       </div>
+
+      {/* 3b. Mobile & tablet: one button, so the image keeps the whole screen */}
+      <div className="xl:hidden w-[calc(100%-24px)] mx-auto shrink-0 z-30">
+        <button
+          ref={sheetOpenerRef}
+          type="button"
+          onClick={() => setIsSheetOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={isSheetOpen}
+          className="w-full min-h-[52px] rounded-full bg-ink text-panel text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <span>Select size</span>
+          <span className="opacity-60" aria-hidden="true">
+            ·
+          </span>
+          <span>from {formatRupees(MIN_PRICE)}</span>
+        </button>
+      </div>
+
+      {isSheetOpen && (
+        <div className="xl:hidden fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-labelledby="shake-sheet-heading">
+          <button
+            type="button"
+            onClick={closeSheet}
+            aria-label="Close size options"
+            className="absolute inset-0 w-full h-full bg-ink/55 backdrop-blur-[2px] cursor-default"
+          />
+          <div
+            ref={sheetRef}
+            tabIndex={-1}
+            style={{ "--shake-accent": activeShake.accent } as React.CSSProperties}
+            className="shake-sheet shake-panel absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-[26px] border-t p-4 pb-6 outline-none animate-sheet-up motion-reduce:animate-none"
+          >
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <span className="mx-auto h-1.5 w-12 rounded-full bg-ink/20" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={closeSheet}
+                aria-label="Close size options"
+                className="absolute right-4 top-4 w-11 h-11 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center text-lg font-black transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            {buildControls(true, "shake-sheet-heading")}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
