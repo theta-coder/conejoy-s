@@ -50,7 +50,7 @@ def optimize_image(filepath, max_width=600, quality=82):
 
 def main():
     print("--- Optimizing Logo Assets ---")
-    logo_path = os.path.join(ASSETS_DIR, "conejoys-logo.png")
+    logo_path = os.path.join(ASSETS_DIR, "conejoys-mascot-logo.png")
     optimize_image(logo_path, max_width=240, quality=90)
 
     print("\n--- Optimizing Cone Assets ---")

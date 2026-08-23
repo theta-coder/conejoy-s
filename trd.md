@@ -53,7 +53,7 @@ Every flavour image must be:
 - Named after the flavour in kebab case.
 - Given an accurate flavour-specific `alt` value.
 
-Current production assets live in `assets/cones/`. The original brand mark is `assets/conejoys-logo.png`.
+Current production assets live in `assets/cones/`. The brand mark is `assets/conejoys-mascot-logo.png`.
 
 If an asset fails to load, the inline SVG fallback keeps the layout usable. Replace failed assets rather than relying on the fallback as a final product image.
 
@@ -83,4 +83,3 @@ If an asset fails to load, the inline SVG fallback keeps the layout usable. Repl
 - Confirm `document.documentElement.scrollWidth === innerWidth`.
 - Confirm all image requests resolve and no Vite/browser overlay appears.
 - Test with reduced motion enabled.
-

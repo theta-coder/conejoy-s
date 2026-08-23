@@ -762,12 +762,12 @@ export default function ConeStory() {
             aria-label="Cone Joy's Ice Cream home"
           >
             <Image
-              className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
-              src="/assets/conejoys-logo-new.png"
+              className="brand-logo block h-auto w-[68px] max-md:w-[57px] max-sm:w-[50px]"
+              src="/assets/conejoys-mascot-logo.png"
               alt="Cone Joy's Ice Cream"
               width={500}
-              height={311}
-              sizes="(max-width: 640px) 80px, (max-width: 768px) 92px, 110px"
+              height={500}
+              sizes="(max-width: 640px) 50px, (max-width: 768px) 57px, 68px"
               loading="eager"
               decoding="sync"
             />

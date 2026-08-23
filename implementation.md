@@ -61,8 +61,7 @@ public/assets/cones/mango.avif
 public/assets/cones/mango.webp
 public/assets/cones/mango.png       # fallback only if required
 ...
-public/assets/conejoys-logo.webp
-public/assets/conejoys-logo.png     # fallback
+public/assets/conejoys-mascot-logo.png
 ```
 
 Use a generated `<picture>` only when the component needs explicit fallback control. Otherwise use `next/image` with a controlled `sizes` value.
@@ -273,4 +272,3 @@ Then verify:
 - All supported viewports remain readable and usable.
 - `npm run build` passes.
 - Vercel production URL displays the same layout as local production mode.
-

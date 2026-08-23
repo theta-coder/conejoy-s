@@ -38,7 +38,7 @@ export default function HomeCategories() {
   return (
     <section
       id="categories"
-      className="scroll-mt-[var(--header-height)] bg-panel px-[clamp(16px,5vw,72px)] py-[clamp(72px,9vw,128px)]"
+      className="scroll-mt-[var(--header-height)] bg-[var(--home-cream)] px-[clamp(16px,5vw,72px)] pb-[clamp(36px,4.5vw,64px)] pt-[clamp(72px,9vw,128px)]"
       aria-labelledby="categories-title"
     >
       <div className="mx-auto w-full max-w-[1380px]">
@@ -48,7 +48,7 @@ export default function HomeCategories() {
         >
           Pick your kind of joy.
         </h2>
-        <p className="mt-5 max-w-[560px] text-base font-semibold leading-relaxed text-ink/70">
+        <p className="mt-5 max-w-[560px] text-base font-semibold leading-relaxed text-[rgba(74,38,24,0.7)]">
           Start with a cone, choose a cup, or make it a shake.
         </p>
 
@@ -57,14 +57,14 @@ export default function HomeCategories() {
             <Link
               key={category.name}
               href={category.href}
-              className={`group relative isolate overflow-hidden rounded-[28px] border border-ink/50 bg-bg text-ink shadow-[0_16px_45px_rgba(67,73,10,0.1)] transition-[transform,box-shadow] duration-300 ease-custom hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(67,73,10,0.16)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink ${category.className}`}
+              className={`group relative isolate overflow-hidden rounded-[28px] border border-[rgba(74,38,24,0.5)] bg-[var(--home-golden)] text-[var(--home-brown)] shadow-[0_16px_45px_rgba(74,38,24,0.1)] transition-[transform,box-shadow] duration-300 ease-custom hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(74,38,24,0.16)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] ${category.className}`}
               aria-label={`Browse ${category.name}`}
             >
               <div className="relative z-20 max-w-[260px] p-7 max-sm:p-6">
                 <h3 className="font-display text-[clamp(2rem,3.4vw,3.8rem)] font-extrabold leading-none tracking-[-0.055em]">
                   {category.name}
                 </h3>
-                <p className="mt-3 text-sm font-bold leading-relaxed text-ink/70">
+                <p className="mt-3 text-sm font-bold leading-relaxed text-[var(--home-brown)]">
                   {category.description}
                 </p>
                 <span className="mt-5 inline-flex min-h-11 items-center font-black underline decoration-2 underline-offset-4">

@@ -29,7 +29,15 @@ html {
 }
 
 html:has(.home-page) {
-  --page-accent: #e6f23c;
+  --page-accent: #fdf6e3;
+}
+
+.home-page {
+  --home-cream: #fdf6e3;
+  --home-brown: #4a2618;
+  --home-golden: #faa926;
+  --home-coral: #f2606b;
+  --home-white: #ffffff;
 }
 
 .home-nav-link {
@@ -39,19 +47,19 @@ html:has(.home-page) {
   justify-content: center;
   border-radius: 9999px;
   padding: 0 14px;
-  color: rgba(21, 21, 15, 0.72);
+  color: rgba(74, 38, 24, 0.72);
   font-size: 0.82rem;
   font-weight: 800;
   transition: color 180ms ease, background-color 180ms ease;
 }
 
 .home-nav-link:hover {
-  color: #15150f;
-  background-color: rgba(21, 21, 15, 0.07);
+  color: #4a2618;
+  background-color: #faa926;
 }
 
 .home-nav-link:focus-visible {
-  outline: 2px solid #15150f;
+  outline: 2px solid #4a2618;
   outline-offset: 3px;
 }
 
