@@ -95,7 +95,7 @@ export default function CupsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg text-ink relative">
+    <div className="min-h-[100dvh] bg-panel text-ink relative">
       {/* Navigation Header */}
       <nav
         className="nav fixed top-0 left-0 z-50 w-full px-[clamp(12px,4vw,64px)] flex items-center justify-between min-h-[80px] max-md:min-h-[64px] max-sm:min-h-[56px] border-b border-line bg-[rgba(255,255,255,0.82)] backdrop-blur-md"

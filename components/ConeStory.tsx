@@ -358,6 +358,8 @@ export default function ConeStory() {
           if (heroRef.current) {
             heroRef.current.style.backgroundColor = FLAVOURS[nextActive].color;
           }
+          // Canvas follows the hero, so overscroll never flashes a neutral.
+          document.documentElement.style.setProperty("--page-accent", FLAVOURS[nextActive].color);
         }
       } else {
         const isCompactMobile = window.innerWidth <= 480;
@@ -477,6 +479,8 @@ export default function ConeStory() {
           if (heroRef.current) {
             heroRef.current.style.backgroundColor = FLAVOURS[nextActive].color;
           }
+          // Canvas follows the hero, so overscroll never flashes a neutral.
+          document.documentElement.style.setProperty("--page-accent", FLAVOURS[nextActive].color);
         }
       }
 

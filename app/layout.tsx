@@ -40,7 +40,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${dmSans.variable} ${manrope.variable} antialiased m-0 text-ink bg-bg font-sans overflow-x-hidden`}
+        className={`${dmSans.variable} ${manrope.variable} antialiased m-0 text-ink bg-panel font-sans overflow-x-hidden`}
       >
         <CartProvider>
           {children}

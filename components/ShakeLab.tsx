@@ -74,6 +74,16 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
     setActiveIndex(Math.max(0, Math.min(SHAKES.length - 1, selectedIndex)));
   }, [selectedIndex, selectionRequestKey]);
 
+  // Match the page canvas to the active pour, so the area beside the page and
+  // the mobile overscroll never show a colour that clashes with the section.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--page-accent", activeShake.accent);
+    return () => {
+      root.style.removeProperty("--page-accent");
+    };
+  }, [activeShake.accent]);
+
   const toggleTopping = (topping: string) => {
     setToppings((current) =>
       current.includes(topping)

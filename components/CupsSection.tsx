@@ -59,6 +59,16 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
     setActiveIdx(nextIndex);
   }, [selectedIndex, selectionRequestKey]);
 
+  // Match the page canvas to the active flavour, so the area beside the page
+  // and the mobile overscroll never show a colour that clashes with the section.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--page-accent", activeFlavour.color);
+    return () => {
+      root.style.removeProperty("--page-accent");
+    };
+  }, [activeFlavour.color]);
+
   useEffect(() => {
     activeIdxRef.current = activeIdx;
   }, [activeIdx]);

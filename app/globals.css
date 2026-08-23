@@ -2,22 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* nav height + category bar (44px chip + bar padding).
-   Keep in sync with CategoryBar.tsx if either changes. */
+/* nav height + category bar (44px chip + bar padding + 1px border).
+   Measured, not guessed. Keep in sync with CategoryBar.tsx if either changes. */
 :root {
-  --header-height: 140px;
+  --header-height: 141px;
 }
 
 @media (max-width: 768px) {
   :root {
-    --header-height: 124px;
+    --header-height: 125px;
   }
 }
 
 @media (max-width: 640px) {
   :root {
-    --header-height: 112px;
+    --header-height: 113px;
   }
+}
+
+/* The canvas — what paints beside the page and during mobile overscroll.
+   Each section keeps --page-accent in sync with its active flavour so this
+   never shows as a neutral strip. The fallback is only used before hydration. */
+html {
+  background-color: var(--page-accent, #f1b844);
+  transition: background-color 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer utilities {
@@ -152,6 +160,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html,
   .cups-section,
   .cup-product-image,
   .cone,
