@@ -1,5 +1,5 @@
-import ConeStory from "@/components/ConeStory";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <ConeStory />;
+  redirect("/cones");
 }

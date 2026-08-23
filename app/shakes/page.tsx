@@ -43,7 +43,7 @@ export default function ShakesPage() {
 
   const selectSearchResult = (index: number) => {
     if (searchCategory === "cones") {
-      router.push(`/?select=${index}`);
+      router.push(`/cones?select=${index}`);
       return;
     }
     if (searchCategory === "cups") {

@@ -35,9 +35,9 @@ export default function CupsPage() {
     }
   }, []);
 
-  // Prefetch / route for fast return transition
+  // Prefetch the cone story for a fast return transition.
   useEffect(() => {
-    router.prefetch("/");
+    router.prefetch("/cones");
     sessionStorage.setItem("coneReturnFromCups", "true");
   }, [router]);
 
@@ -61,7 +61,7 @@ export default function CupsPage() {
 
   const selectSearchResult = (idx: number) => {
     if (searchCategory === "cones") {
-      router.push(`/?select=${idx}`);
+      router.push(`/cones?select=${idx}`);
       return;
     }
     if (searchCategory === "shakes") {
@@ -105,7 +105,7 @@ export default function CupsPage() {
         <div className="flex items-center gap-2.5">
           {/* Back to Cones Button */}
           <Link
-            href="/"
+            href="/cones"
             className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 px-3 py-1.5 rounded-full bg-ink/10 hover:bg-ink/20 text-[0.76rem] max-sm:text-[0.72rem] font-black uppercase tracking-wider text-ink transition-colors cursor-pointer"
             aria-label="Back to Cones"
           >

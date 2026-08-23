@@ -68,7 +68,7 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
       return;
     }
 
-    window.location.href = id === "cones" ? "/" : `/${id}`;
+    window.location.href = `/${id}`;
   };
 
   return (
