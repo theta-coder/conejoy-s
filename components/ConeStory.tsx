@@ -831,7 +831,7 @@ export default function ConeStory() {
         />
 
         {/* Hero Grid */}
-        <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(24px,4vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
+        <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(24px,4vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-start">
           {/* Copy section */}
           <section
             className="copy relative z-[3] self-center max-md:text-center max-md:mt-2 max-sm:mt-3 max-md:translate-y-0"
@@ -917,7 +917,7 @@ export default function ConeStory() {
 
           {/* Stage section */}
           <section
-            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(340px,52svh,500px)] max-sm:h-[clamp(300px,48svh,440px)] max-md:mt-5 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(360px,58svh,560px)] max-sm:h-[clamp(320px,55svh,500px)] max-md:mt-5 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
             aria-label="Scroll-controlled ice cream flavours"
           >
             {/* White circle disc */}
