@@ -1075,10 +1075,10 @@ export default function ConeStory() {
           <div className="flex items-center gap-2">
             <div className="flex flex-col items-start justify-center min-h-[42px] max-sm:min-h-[36px] px-2.5 max-sm:px-2 rounded-xl bg-white/60 backdrop-blur-md border border-ink/10 shadow-sm leading-none" aria-label="Cone offer: original price Rs. 150, now Rs. 100, save Rs. 50">
               <span className="flex items-baseline gap-1.5 whitespace-nowrap">
-                <strong className="text-[0.82rem] max-sm:text-[0.72rem] tracking-normal normal-case">Rs. 100</strong>
-                <span className="text-[0.58rem] max-sm:text-[0.52rem] text-ink/45 line-through tracking-normal normal-case">Rs. 150</span>
+                <strong className="text-[0.86rem] max-sm:text-[0.8rem] tracking-normal normal-case">Rs. 100</strong>
+                <span className="text-[0.62rem] max-sm:hidden text-ink/45 line-through tracking-normal normal-case">Rs. 150</span>
               </span>
-              <span className="mt-1 rounded-full bg-green-700 text-white px-1.5 py-0.5 text-[0.52rem] max-sm:text-[0.48rem] font-black tracking-normal normal-case whitespace-nowrap">Save Rs. 50</span>
+              <span className="mt-1 rounded-full bg-green-700 text-white px-1.5 py-0.5 text-[0.62rem] max-sm:text-[0.6rem] font-black tracking-normal normal-case whitespace-nowrap">Save Rs. 50</span>
             </div>
 
             <div className="flex items-center gap-0 px-1.5 py-0.5 rounded-full bg-[rgba(255,255,255,0.6)] backdrop-blur-md border border-[rgba(21,21,15,0.12)]">
@@ -1087,7 +1087,7 @@ export default function ConeStory() {
                 onClick={() => handleConeQtyChange(-1)}
                 disabled={coneQty <= 1}
                 aria-label={`Decrease ${activeCone?.name} cone quantity`}
-                className="w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center text-sm font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+                className="w-8 h-8 max-sm:w-7 max-sm:h-7 rounded-full flex items-center justify-center text-sm font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
               >
                 −
               </button>
@@ -1099,7 +1099,7 @@ export default function ConeStory() {
                 onClick={() => handleConeQtyChange(1)}
                 disabled={coneQty >= 10}
                 aria-label={`Increase ${activeCone?.name} cone quantity`}
-                className="w-7 h-7 max-sm:w-6 max-sm:h-6 rounded-full flex items-center justify-center text-sm font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+                className="w-8 h-8 max-sm:w-7 max-sm:h-7 rounded-full flex items-center justify-center text-sm font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
               >
                 +
               </button>
@@ -1108,7 +1108,7 @@ export default function ConeStory() {
             <button
               type="button"
               onClick={handleAddConeToCart}
-              className={`inline-flex items-center gap-1.5 min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] rounded-full text-[0.72rem] max-sm:text-[0.68rem] font-black uppercase tracking-wider no-underline transition-all duration-200 ease-custom hover:-translate-y-[2px] active:scale-[0.97] cursor-pointer focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 ${
+              className={`inline-flex items-center gap-1.5 min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] rounded-full text-[0.74rem] max-sm:text-[0.72rem] font-black uppercase tracking-wider no-underline transition-all duration-200 ease-custom hover:-translate-y-[2px] active:scale-[0.97] cursor-pointer focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 ${
                 isConeAdded
                   ? "bg-green-700 text-white shadow-[0_4px_16px_rgba(22,101,52,0.3)] scale-[1.02]"
                   : "bg-ink text-panel"
