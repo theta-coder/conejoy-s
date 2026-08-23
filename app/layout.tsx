@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   description: "Scroll through twelve signature Cone Joys flavours, one delicious scoop at a time.",
   icons: {
     icon: "/assets/favicon.png",
+    apple: "/assets/apple-touch-icon.png",
   },
   openGraph: {
     title: "Cone Joys | Scroll the Flavours",

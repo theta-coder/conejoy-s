@@ -37,7 +37,7 @@ export default function HomeHeader() {
           <Link className="home-nav-link" href="/shakes">
             Shakes
           </Link>
-          <a className="home-nav-link" href="#menu">
+          <a className="home-nav-link" href="#categories">
             Menu
           </a>
         </div>

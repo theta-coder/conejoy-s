@@ -27,7 +27,7 @@ export default function HomeHero() {
               Order on WhatsApp
             </a>
             <a
-              href="#menu"
+              href="#categories"
               className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-full border-2 border-ink bg-transparent px-7 text-sm font-black text-ink transition-colors duration-200 hover:bg-panel focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink max-sm:flex-1 max-sm:px-5"
             >
               See the menu

@@ -3,7 +3,6 @@ import HomeContact from "@/components/HomeContact";
 import HomeFooter from "@/components/HomeFooter";
 import HomeHeader from "@/components/HomeHeader";
 import HomeHero from "@/components/HomeHero";
-import HomeMenu from "@/components/HomeMenu";
 
 export default function Home() {
   return (
@@ -12,7 +11,6 @@ export default function Home() {
       <main>
         <HomeHero />
         <HomeCategories />
-        <HomeMenu />
         <HomeContact />
       </main>
       <HomeFooter />
