@@ -383,7 +383,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           </span>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 lg:grid-cols-5 gap-3 max-sm:gap-2.5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 pr-8 md:pr-0 scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
+        <div className="flex lg:grid lg:grid-cols-5 gap-3 max-sm:gap-2.5 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none pb-2 lg:pb-0 pr-8 lg:pr-0 scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
           {SERVING_OPTIONS.map((option, optionIndex) => {
             const isSelected = selectedServingId === option.id;
             return (
@@ -397,7 +397,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                 aria-checked={isSelected}
                 onClick={() => setSelectedServingId(option.id)}
                 onKeyDown={(event) => handleServingKeyDown(event, optionIndex)}
-                className={`cup-serving-card relative min-h-[122px] min-w-[62vw] max-w-[300px] flex-none md:min-w-0 md:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
+                className={`cup-serving-card relative min-h-[122px] min-w-[62vw] md:min-w-[240px] max-w-[300px] flex-none lg:min-w-0 lg:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
                   isSelected
                     ? "is-selected shadow-[0_10px_26px_rgba(21,21,15,0.13)] scale-[1.01]"
                     : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
@@ -424,7 +424,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           })}
         </div>
 
-        <div className="hidden max-sm:block mt-2 text-center text-[0.72rem] font-black text-ink/60" aria-live="polite">
+        <div className="hidden max-lg:block mt-2 text-center text-[0.72rem] font-black text-ink/60" aria-live="polite">
           {selectedServing ? `${selectedServingPosition} of ${SERVING_OPTIONS.length}` : `Swipe to explore · ${SERVING_OPTIONS.length} options`}
         </div>
 

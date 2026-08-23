@@ -791,7 +791,7 @@ export default function ConeStory() {
 
           <div className="flex items-center gap-3 flex-shrink-0">
             <a
-              className="order-link text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 max-md:hidden"
+              className="order-link inline-flex min-h-[44px] items-center text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 max-md:hidden"
               href="https://wa.me/923044490480"
               target="_blank"
               rel="noreferrer"
