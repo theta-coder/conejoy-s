@@ -16,7 +16,7 @@
 
 @media (max-width: 640px) {
   :root {
-    --header-height: 113px;
+    --header-height: 103px;
   }
 }
 
@@ -221,40 +221,3 @@ html {
   box-shadow: 0 18px 50px color-mix(in srgb, var(--shake-deep) 22%, transparent);
 }
 
-/* Short phones (and landscape) cannot hold the hero image plus every control at
-   accessible sizes. Rather than shrink text or tap targets below their floors,
-   drop the secondary pricing detail and the repeated labels so the whole
-   section still lands on one screen. */
-@media (max-height: 780px) {
-  .shake-lab .shake-size-card {
-    min-height: 0;
-    padding: 0.6rem 0.7rem;
-  }
-
-  /* The card stops being a tall tile: name, volume and price stack tightly. */
-  .shake-lab .shake-size-price {
-    margin-top: 0.35rem;
-    padding-top: 0;
-  }
-
-  .shake-lab .shake-size-extra,
-  .shake-lab .shake-sub {
-    display: none;
-  }
-
-  .shake-lab .shake-legend {
-    margin-bottom: 0.25rem;
-  }
-
-  /* The summary line only repeats the size chip and the topping chips, so drop
-     it and let quantity share a row with the CTA. Saves a whole row. */
-  .shake-lab .shake-summary {
-    display: none;
-  }
-
-  .shake-lab .shake-cta-btn {
-    width: auto;
-    flex: 1 1 0%;
-    margin-top: 0;
-  }
-}

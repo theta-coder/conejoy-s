@@ -220,7 +220,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
 
       <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] xl:w-[min(1560px,calc(100%-72px))] max-md:w-full mx-auto grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 xl:gap-9 max-xl:flex max-xl:flex-col max-xl:flex-1 max-xl:min-h-0 max-xl:w-full">
         {/* 2. Shake carousel stage */}
-        <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] xl:min-h-[clamp(320px,54svh,560px)] max-xl:flex-1 max-xl:min-h-[clamp(170px,30svh,420px)] select-none">
+        <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] xl:min-h-[clamp(320px,56svh,560px)] max-xl:flex-1 max-xl:min-h-[clamp(170px,30svh,420px)] select-none">
           <button
             type="button"
             onClick={goToPrev}
@@ -235,7 +235,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             </svg>
           </button>
 
-          <div className="relative w-full h-[clamp(200px,30svh,360px)] xl:h-[clamp(320px,54svh,560px)] max-xl:h-auto max-xl:flex-1 max-xl:min-h-0 max-xl:max-h-[calc(100vw-116px)] flex items-center justify-center">
+          <div className="relative w-full h-[clamp(200px,30svh,360px)] xl:h-[clamp(320px,56svh,560px)] max-xl:h-auto max-xl:flex-1 max-xl:min-h-0 max-xl:max-h-[calc(100vw-116px)] flex items-center justify-center">
             {SHAKES.map((shake, idx) => {
               const isCurrent = idx === activeIndex;
               const isPrev = idx === prevIdx;
@@ -329,7 +329,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
 
         {/* 3. Build panel */}
         <aside
-          className="shake-panel relative z-30 w-[min(1120px,calc(100%-24px))] xl:w-full mx-auto shrink-0 rounded-[22px] border p-5 max-lg:p-4 max-sm:p-3"
+          className="shake-panel relative z-30 w-[min(1120px,calc(100%-24px))] xl:w-full xl:max-w-[600px] mx-auto shrink-0 rounded-[22px] border p-5 max-lg:p-4 max-sm:p-3"
           aria-labelledby="shake-build-heading"
         >
           <div className="flex items-start justify-between gap-3 mb-4 max-sm:mb-2.5">
@@ -366,9 +366,9 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                   >
                     <span className="block pr-7 text-[0.88rem] font-black leading-tight">{item}</span>
                     <span className="shake-muted block mt-1 text-[0.75rem] font-bold">{option.volume}</span>
-                    <span className="shake-size-price mt-2.5">
+                    <span className="shake-size-price mt-2">
                       <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
-                      <span className="shake-size-extra flex flex-wrap items-center gap-2 mt-2">
+                      <span className="shake-size-extra flex flex-wrap items-center gap-1.5 mt-1.5">
                         <span className="shake-muted text-[0.75rem] line-through">{formatRupees(option.originalPrice)}</span>
                         <span className="rounded-full px-2 py-1 text-[0.75rem] font-black bg-green-700 text-white leading-none">
                           Save {formatRupees(option.originalPrice - option.price)}
@@ -389,13 +389,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             </div>
           </fieldset>
 
-          <div className="shake-actions mt-4 max-sm:mt-2.5 flex flex-wrap items-center gap-3">
-            <div className="shake-summary min-w-0 flex-1">
-              <span className="shake-sub block text-[0.72rem] font-black uppercase tracking-[0.08em] opacity-60">Your shake</span>
-              <strong className="block mt-1 text-[0.84rem] max-sm:text-[0.78rem] truncate">
-                {activeShake.name} · {size} · {activeSize.volume}
-              </strong>
-            </div>
+          <div className="shake-actions mt-4 max-sm:mt-3 flex items-center justify-end gap-3">
             <div className="flex items-center gap-3 flex-shrink-0">
               <span className="text-xs font-black max-sm:hidden">Quantity</span>
               <div className="shake-quantity flex items-center rounded-full border p-1 shadow-sm">
@@ -422,17 +416,17 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                 </button>
               </div>
             </div>
+          </div>
 
-            <button
-              type="button"
-              onClick={handleAdd}
-              className={`shake-cta-btn mt-3 max-sm:mt-2 w-full min-h-[48px] rounded-full text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] ${
+          <button
+            type="button"
+            onClick={handleAdd}
+            className={`shake-cta-btn mt-3 w-full min-h-[48px] rounded-full text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] ${
               added ? "bg-green-700 text-white" : "bg-ink text-panel"
             }`}
           >
-              {added ? "Added to your order" : `Add to Cart · ${formatRupees(total)}`}
-            </button>
-          </div>
+            {added ? "Added to your order" : `Add to Cart · ${formatRupees(total)}`}
+          </button>
 
           {saving > 0 && (
             <p className="mt-2 max-sm:hidden text-center text-[0.72rem] font-black opacity-60">
