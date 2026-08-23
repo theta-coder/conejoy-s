@@ -857,7 +857,7 @@ export default function ConeStory() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <a
               className="order-link inline-flex min-h-[44px] items-center text-[0.88rem] max-sm:text-[0.78rem] font-bold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 max-md:hidden"
-              href="https://wa.me/923044490480"
+              href="https://wa.me/923407258700"
               target="_blank"
               rel="noreferrer"
             >
@@ -1201,7 +1201,7 @@ export default function ConeStory() {
             onClick={() => setIsConeSheetOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={isConeSheetOpen}
-            className="xl:hidden flex-1 min-h-[44px] max-w-[280px] rounded-full bg-ink text-panel text-[0.76rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2"
+            className="xl:hidden w-full min-h-[46px] rounded-full bg-ink text-panel text-[0.76rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2"
           >
             <span>Add to Cart</span>
             <span className="opacity-60" aria-hidden="true">·</span>

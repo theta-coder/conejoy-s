@@ -131,7 +131,7 @@ export default function CartDrawer() {
                 </div>
               )}
               <a
-                href={`https://wa.me/923044490480?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%3A%0A${encodeURIComponent(
+                href={`https://wa.me/923407258700?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%3A%0A${encodeURIComponent(
                   cart.map((c) => `- ${c.quantity}x ${c.flavour} (${c.type}, ${c.size}${c.scoopCount ? `, ${c.scoopCount} scoops` : ""})${c.unitPrice ? ` = Rs. ${(c.unitPrice * c.quantity).toLocaleString("en-PK")}` : ""}`).join("\n")
                 )}`}
                 target="_blank"
