@@ -7,6 +7,16 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    // Full screen list (not `extend`) so `max-*` variants sort correctly.
+    // `xs` covers 320-399px phones, which the nav search bar relies on.
+    screens: {
+      xs: "400px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
       colors: {
         ink: "#15150f",

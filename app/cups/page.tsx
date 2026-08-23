@@ -105,7 +105,7 @@ export default function CupsPage() {
           {/* Back to Cones Button */}
           <Link
             href="/"
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-ink/10 hover:bg-ink/20 text-[0.76rem] max-sm:text-[0.7rem] font-black uppercase tracking-wider text-ink transition-colors cursor-pointer"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 px-3 py-1.5 rounded-full bg-ink/10 hover:bg-ink/20 text-[0.76rem] max-sm:text-[0.72rem] font-black uppercase tracking-wider text-ink transition-colors cursor-pointer"
             aria-label="Back to Cones"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -132,7 +132,7 @@ export default function CupsPage() {
             <svg className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
-            <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.62rem] font-black uppercase tracking-wide">
+            <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.7rem] max-sm:text-[0.68rem] font-black uppercase tracking-wide">
               {searchCategory === "cones" ? "Cones" : searchCategory === "cups" ? "Cups" : "Shakes"}
             </span>
             <input
@@ -145,7 +145,7 @@ export default function CupsPage() {
               onFocus={() => setSearchOpen(true)}
               onKeyDown={handleSearchKeyDown}
               placeholder="Search flavour..."
-              className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
+              className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate min-h-[28px]"
               aria-label="Search flavours"
               autoComplete="off"
             />
@@ -201,10 +201,10 @@ export default function CupsPage() {
           <button
             type="button"
             onClick={() => setIsCartOpen(true)}
-            className="relative p-2.5 rounded-full bg-[rgba(255,255,255,0.7)] hover:bg-white hover:shadow-md transition-all flex items-center justify-center border border-[rgba(21,21,15,0.12)] cursor-pointer"
+            className="relative h-11 w-11 shrink-0 rounded-full bg-[rgba(255,255,255,0.7)] hover:bg-white hover:shadow-md transition-all flex items-center justify-center border border-[rgba(21,21,15,0.12)] cursor-pointer"
             aria-label={`View cart with ${totalCount} items`}
           >
-            <svg className="w-4 h-4 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-[18px] h-[18px] text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
             {totalCount > 0 && (
@@ -220,7 +220,7 @@ export default function CupsPage() {
       <CategoryBar onCategoryChange={setSearchCategory} />
 
       {/* Main Cups Content */}
-      <main className="pt-[126px] max-md:pt-[110px] max-sm:pt-[102px]">
+      <main className="pt-[var(--header-height)]">
         <CupsSection selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
       </main>
     </div>

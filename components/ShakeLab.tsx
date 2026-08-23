@@ -106,7 +106,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
     >
       <div className="relative mx-auto w-full max-w-[1380px]">
         <header className="mb-8 max-w-[760px] max-md:mb-4 max-sm:mb-2">
-          <p className="shake-muted text-[0.68rem] font-black uppercase tracking-[0.2em]">Cone Joys Shake Lab · 12 signature pours</p>
+          <p className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.2em]">Cone Joys Shake Lab · 12 signature pours</p>
           <h2 className="mt-3 font-display text-[clamp(2.4rem,5.6vw,5.4rem)] font-extrabold leading-[0.9] tracking-[-0.075em] max-sm:mt-1 max-sm:text-[1.65rem] max-sm:leading-none">
             Churned to your specification.
           </h2>
@@ -117,7 +117,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
 
         <div className="grid grid-cols-[0.82fr_1.35fr_0.9fr] gap-4 max-xl:grid-cols-[0.72fr_1.28fr] max-md:grid-cols-1 max-sm:gap-2">
           <div className="shake-panel border p-3 max-md:order-2 max-md:border-0 max-md:bg-transparent max-md:p-0">
-            <p className="shake-muted mb-3 px-2 text-[0.62rem] font-black uppercase tracking-[0.16em] max-sm:mb-1 max-sm:px-0">Select your pour</p>
+            <p className="shake-muted mb-3 px-2 text-[0.72rem] font-black uppercase tracking-[0.16em] max-sm:mb-1 max-sm:px-0">Select your pour</p>
             <div className="grid grid-cols-2 gap-1.5 max-md:flex max-md:overflow-x-auto max-md:pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Shake flavours">
               {SHAKES.map((shake, index) => {
                 const isActive = index === activeIndex;
@@ -130,9 +130,9 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                     onClick={() => setActiveIndex(index)}
                     className={`shake-flavour min-h-[92px] min-w-0 border p-3 text-left transition-[transform,background-color,border-color] active:scale-[0.98] max-md:min-w-[62vw] max-sm:min-h-[50px] max-sm:min-w-[38vw] max-sm:px-2.5 max-sm:py-2 ${isActive ? "is-active" : "hover:-translate-y-0.5"}`}
                   >
-                    <span className="shake-muted block text-[0.58rem] font-black tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="shake-muted block text-[0.72rem] font-black tabular-nums">{String(index + 1).padStart(2, "0")}</span>
                     <span className="mt-2 block font-display text-[0.88rem] font-extrabold leading-tight tracking-[-0.03em] max-sm:mt-1 max-sm:text-[0.76rem]">{shake.name}</span>
-                    <span className="shake-muted mt-1.5 block text-[0.61rem] leading-snug max-xl:hidden max-md:block max-sm:hidden">{shake.note}</span>
+                    <span className="shake-muted mt-1.5 block text-[0.75rem] leading-snug max-xl:hidden max-md:block max-sm:hidden">{shake.note}</span>
                   </button>
                 );
               })}
@@ -142,7 +142,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
           <div className="shake-stage relative min-h-[650px] overflow-hidden border max-xl:min-h-[620px] max-md:order-1 max-md:min-h-[360px] max-sm:min-h-[220px]">
             <div className="absolute left-5 top-5 z-10 flex items-center gap-2 max-sm:left-3 max-sm:top-3">
               <span className="h-2 w-2 rounded-full bg-ink" />
-              <span className="text-[0.62rem] font-black uppercase tracking-[0.14em]">Freshly churned</span>
+              <span className="text-[0.72rem] font-black uppercase tracking-[0.14em]">Freshly churned</span>
             </div>
             <picture key={activeShake.id}>
               <source srcSet={activeShake.image} type="image/webp" />
@@ -167,7 +167,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
 
           <aside className="shake-panel flex flex-col border p-6 max-xl:col-span-2 max-xl:grid max-xl:grid-cols-2 max-xl:gap-8 max-md:order-3 max-md:col-span-1 max-md:grid-cols-1 max-md:gap-4 max-sm:grid-cols-2 max-sm:gap-2 max-sm:p-3" aria-label="Customize your shake">
             <div>
-              <p className="shake-muted text-[0.62rem] font-black uppercase tracking-[0.16em] max-sm:hidden">Make it yours</p>
+              <p className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.16em] max-sm:hidden">Make it yours</p>
               <h3 className="mt-3 font-display text-2xl font-extrabold tracking-[-0.05em] max-sm:hidden">Finish the build.</h3>
               <fieldset className="mt-8 max-sm:mt-0">
                 <legend className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Size</legend>
@@ -175,7 +175,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                   {(Object.keys(SIZES) as ShakeSize[]).map((item) => (
                     <button key={item} type="button" onClick={() => setSize(item)} className={`shake-option border px-3 py-3 text-left transition-colors max-sm:px-2 max-sm:py-2 ${size === item ? "is-active" : ""}`}>
                       <span className="block text-xs font-black">{item}</span>
-                      <span className="shake-muted mt-1 block text-[0.64rem]">{SIZES[item].volume}</span>
+                      <span className="shake-muted mt-1 block text-[0.75rem]">{SIZES[item].volume}</span>
                     </button>
                   ))}
                 </div>
@@ -210,9 +210,9 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
               <div className="shake-divider mb-3 flex items-center justify-between border-t pt-4 max-sm:mb-2 max-sm:pt-2">
                 <span className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Quantity</span>
                 <div className="shake-quantity flex items-center border">
-                  <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} className="h-9 w-9 disabled:opacity-25" aria-label="Decrease shake quantity">−</button>
+                  <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} className="h-11 w-11 disabled:opacity-25" aria-label="Decrease shake quantity">−</button>
                   <span className="w-9 text-center text-xs font-black tabular-nums">{quantity}</span>
-                  <button type="button" onClick={() => setQuantity((value) => Math.min(10, value + 1))} disabled={quantity === 10} className="h-9 w-9 disabled:opacity-25" aria-label="Increase shake quantity">+</button>
+                  <button type="button" onClick={() => setQuantity((value) => Math.min(10, value + 1))} disabled={quantity === 10} className="h-11 w-11 disabled:opacity-25" aria-label="Increase shake quantity">+</button>
                 </div>
               </div>
               <button type="button" onClick={handleAdd} className={`min-h-[52px] w-full px-5 text-xs font-black uppercase tracking-[0.12em] transition-all active:scale-[0.99] max-sm:min-h-[42px] ${added ? "bg-green-700 text-white" : "shake-cta"}`}>

@@ -101,14 +101,25 @@ export default function ShakesPage() {
           )}
         </div>
 
-        <button type="button" onClick={() => setIsCartOpen(true)} className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-white/75 text-sm font-black" aria-label={`View cart with ${totalCount} items`}>
-          Bag
-          {totalCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-[0.6rem] text-panel">{totalCount}</span>}
+        <button
+          type="button"
+          onClick={() => setIsCartOpen(true)}
+          className="relative h-11 w-11 shrink-0 rounded-full bg-[rgba(255,255,255,0.7)] hover:bg-white hover:shadow-md transition-all flex items-center justify-center border border-[rgba(21,21,15,0.12)] cursor-pointer"
+          aria-label={`View cart with ${totalCount} items`}
+        >
+          <svg className="w-[18px] h-[18px] text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          {totalCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-ink text-panel text-[0.62rem] font-black flex items-center justify-center shadow-md animate-badge-pop">
+              {totalCount}
+            </span>
+          )}
         </button>
       </nav>
 
       <CategoryBar onCategoryChange={setSearchCategory} />
-      <main className="pt-[126px] max-md:pt-[110px] max-sm:pt-[102px]">
+      <main className="pt-[var(--header-height)]">
         <ShakeLab selectedIndex={selectedIndex} selectionRequestKey={selectionRequestKey} />
       </main>
     </div>

@@ -672,7 +672,7 @@ export default function ConeStory() {
       <main
         ref={heroRef}
         style={{ backgroundColor: FLAVOURS[0].color }}
-        className="hero sticky top-0 min-h-[100svh] pt-[126px] max-md:pt-[110px] max-sm:pt-[102px] grid grid-rows-[1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
+        className="hero sticky top-0 min-h-[100svh] pt-[var(--header-height)] grid grid-rows-[1fr_auto] overflow-hidden isolate transition-colors duration-500 ease-custom"
       >
         {/* Background Ring */}
         <div
@@ -707,7 +707,7 @@ export default function ConeStory() {
               <svg className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-sm:w-3.5 max-sm:h-3.5 opacity-50 flex-shrink-0 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
-              <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.65rem] max-sm:text-[0.62rem] font-black uppercase tracking-wide">
+              <span className="shrink-0 border-r border-ink/15 pr-2 max-sm:pr-1.5 text-[0.7rem] max-sm:text-[0.68rem] font-black uppercase tracking-wide">
                 {searchCategory === "cones" ? "Cones" : searchCategory === "cups" ? "Cups" : "Shakes"}
               </span>
               <input
@@ -720,7 +720,7 @@ export default function ConeStory() {
                 onFocus={() => setSearchOpen(true)}
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search flavour..."
-                className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate"
+                className="bg-transparent outline-none border-none text-[0.86rem] max-lg:text-[0.78rem] max-sm:text-[0.74rem] font-medium w-full placeholder:text-[rgba(21,21,15,0.4)] text-ink truncate min-h-[28px]"
                 aria-label="Search flavours"
                 autoComplete="off"
               />
@@ -801,10 +801,10 @@ export default function ConeStory() {
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2.5 rounded-full bg-[rgba(255,255,255,0.7)] hover:bg-white hover:shadow-md transition-all flex items-center justify-center border border-[rgba(21,21,15,0.12)] cursor-pointer"
+              className="relative h-11 w-11 shrink-0 rounded-full bg-[rgba(255,255,255,0.7)] hover:bg-white hover:shadow-md transition-all flex items-center justify-center border border-[rgba(21,21,15,0.12)] cursor-pointer"
               aria-label={`View cart with ${totalCount} items`}
             >
-              <svg className="w-4 h-4 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <svg className="w-[18px] h-[18px] text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               {totalCount > 0 && (
@@ -827,7 +827,7 @@ export default function ConeStory() {
         />
 
         {/* Hero Grid */}
-        <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(280px,0.72fr)_minmax(440px,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(28px,6vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
+        <div className="hero-grid w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto grid grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] max-md:grid-cols-1 items-center gap-[clamp(24px,4vw,100px)] max-md:gap-[clamp(8px,1.5vh,16px)] min-h-0 py-0 max-md:py-[2px] max-md:content-center">
           {/* Copy section */}
           <section
             className="copy relative z-[3] self-center max-md:text-center max-md:mt-2 max-sm:mt-3 max-md:translate-y-0"
@@ -969,7 +969,7 @@ export default function ConeStory() {
                     visibility: idx === 0 ? "visible" : "hidden",
                     transform: "translate3d(0, -50%, 0)",
                   }}
-                  className="flavour absolute top-1/2 right-0 max-md:right-auto max-md:left-1/2 max-md:-translate-x-1/2 w-full translate-x-[18px] max-md:translate-x-0 -translate-y-1/2 will-change-[opacity,transform] text-right max-md:text-center"
+                  className="flavour absolute top-1/2 right-0 max-md:right-auto max-md:left-1/2 max-md:-translate-x-1/2 w-full lg:translate-x-[18px] -translate-y-1/2 will-change-[opacity,transform] text-right max-md:text-center"
                 >
                   <span className="flavour-index inline-block px-2.5 py-0.5 max-md:bg-ink/10 rounded-full mb-[9px] max-sm:mb-[2px] text-[0.68rem] max-sm:text-[0.62rem] font-extrabold tracking-[0.14em]">
                     {item.indexLabel}

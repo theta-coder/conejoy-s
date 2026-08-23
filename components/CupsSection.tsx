@@ -222,33 +222,33 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
       ref={sectionRef}
       id="cups"
       style={{ backgroundColor: activeFlavour.color }}
-      className="cups-section relative min-h-[calc(100dvh-var(--header-height,126px))] pt-8 max-md:pt-5 max-sm:pt-4 pb-6 max-md:pb-5 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink touch-pan-y"
+      className="cups-section relative min-h-[calc(100dvh-var(--header-height,126px))] pt-5 max-md:pt-4 max-sm:pt-3 pb-4 max-md:pb-3 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink touch-pan-y"
       aria-label="Cups Collection"
     >
       {/* 1. Collection Heading & Short Description */}
       <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10">
-        <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.66rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
+        <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.7rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
           <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
           CUPS COLLECTION
         </p>
         <h2 className="font-display text-[clamp(1.7rem,3.4vw,3rem)] max-sm:text-[clamp(1.4rem,6vw,1.9rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
           Your flavour, served your way.
         </h2>
-        <p className="mt-2.5 max-sm:mt-2 text-[0.86rem] max-md:text-[0.76rem] max-sm:text-[0.7rem] opacity-75 max-w-[460px] mx-auto leading-relaxed">
+        <p className="mt-2 max-sm:mt-1.5 text-[0.86rem] max-md:text-[0.8rem] max-sm:text-[0.76rem] opacity-75 max-w-[460px] mx-auto leading-relaxed">
           Explore all 12 signature flavours in a perfectly chilled cup.
         </p>
       </div>
 
-      <div className="my-4 max-sm:my-2.5 w-[min(1100px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-1 items-center gap-3">
+      <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] max-md:w-full mx-auto grid grid-cols-1 items-center gap-3">
       {/* 3. Cup Carousel Stage (HORIZONTAL MOTION TRANSITION) */}
-      <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(280px,36svh,400px)] max-md:min-h-[clamp(190px,29svh,270px)] max-sm:min-h-[clamp(170px,28svh,230px)] select-none">
+      <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] max-md:min-h-[clamp(180px,27svh,250px)] max-sm:min-h-[clamp(165px,26svh,215px)] select-none">
         {/* Left Arrow Button */}
         <button
           type="button"
           onClick={goToPrev}
           disabled={activeIdx === 0}
           aria-label={prevIdx !== null ? `Previous cup: ${FLAVOURS[prevIdx].name}` : "First cup reached"}
-          className={`absolute left-4 max-md:left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute left-4 max-md:left-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === 0
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -260,7 +260,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </button>
 
         {/* Cup Viewport Stage Container */}
-        <div className="relative w-full h-[clamp(280px,36svh,400px)] max-md:h-[clamp(190px,29svh,270px)] max-sm:h-[clamp(170px,28svh,230px)] flex items-center justify-center">
+        <div className="relative w-full h-[clamp(200px,30svh,360px)] max-md:h-[clamp(180px,27svh,250px)] max-sm:h-[clamp(165px,26svh,215px)] flex items-center justify-center">
           {/* White Backdrop Circle Centered Dead-Center behind Active Cup */}
           <div
             className="cup-backdrop absolute w-[clamp(240px,19vw,320px)] max-md:w-[clamp(170px,44vw,230px)] aspect-square rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_20px_60px_rgba(21,21,15,0.1)] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
@@ -349,7 +349,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           onClick={goToNext}
           disabled={activeIdx === FLAVOURS.length - 1}
           aria-label={nextIdx !== null ? `Next cup: ${FLAVOURS[nextIdx].name}` : "Last cup reached"}
-          className={`absolute right-4 max-md:right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 max-md:w-9 max-md:h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`absolute right-4 max-md:right-2 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeIdx === FLAVOURS.length - 1
               ? "opacity-25 pointer-events-none"
               : "hover:bg-white active:scale-95 cursor-pointer"
@@ -369,21 +369,21 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
       </div>
 
       <aside
-        className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border backdrop-blur-md p-6 max-lg:p-5 max-sm:p-4"
+        className="cup-serving-panel relative z-30 w-[min(1120px,calc(100%-24px))] mx-auto rounded-[22px] border backdrop-blur-md p-5 max-lg:p-4 max-sm:p-3.5"
         style={{ "--cup-accent": activeFlavour.color } as React.CSSProperties}
         aria-labelledby="serving-heading"
       >
-        <div className="flex items-start justify-between gap-3 mb-5 max-sm:mb-4">
+        <div className="flex items-start justify-between gap-3 mb-4 max-sm:mb-3">
           <div>
             <h4 id="serving-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">Choose your serving</h4>
-            <p className="cup-serving-muted text-[0.76rem] max-sm:text-[0.7rem] font-semibold mt-1">All scoops will be {activeFlavour.name}</p>
+            <p className="cup-serving-muted text-[0.78rem] max-sm:text-[0.75rem] font-semibold mt-1">All scoops will be {activeFlavour.name}</p>
           </div>
-          <span className="cup-serving-status text-[0.68rem] max-sm:text-[0.62rem] font-black rounded-full border px-3 py-1.5 whitespace-nowrap">
+          <span className="cup-serving-status text-[0.72rem] max-sm:text-[0.72rem] font-black rounded-full border px-3 py-1.5 whitespace-nowrap">
             {selectedServing ? `${selectedServing.name} selected` : "Select one"}
           </span>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 xl:grid-cols-6 gap-3 max-sm:gap-2.5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 pr-8 md:pr-0 scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
+        <div className="flex md:grid md:grid-cols-3 lg:grid-cols-5 gap-3 max-sm:gap-2.5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 pr-8 md:pr-0 scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Cup serving options">
           {SERVING_OPTIONS.map((option, optionIndex) => {
             const isSelected = selectedServingId === option.id;
             return (
@@ -397,22 +397,22 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                 aria-checked={isSelected}
                 onClick={() => setSelectedServingId(option.id)}
                 onKeyDown={(event) => handleServingKeyDown(event, optionIndex)}
-                className={`cup-serving-card relative min-h-[148px] min-w-[78vw] max-w-[300px] flex-none md:min-w-0 md:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
+                className={`cup-serving-card relative min-h-[122px] min-w-[62vw] max-w-[300px] flex-none md:min-w-0 md:max-w-none snap-start rounded-2xl border-2 p-4 max-lg:p-3.5 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
                   isSelected
                     ? "is-selected shadow-[0_10px_26px_rgba(21,21,15,0.13)] scale-[1.01]"
                     : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
                 }`}
               >
                 <span className="block pr-7 text-[0.9rem] max-lg:text-[0.84rem] font-black leading-tight">{option.name}</span>
-                <span className="cup-serving-muted block mt-2 text-[0.72rem] font-bold">
+                <span className="cup-serving-muted block mt-2 text-[0.75rem] font-bold">
                   {option.scoops} scoop{option.scoops === 1 ? "" : "s"}
                 </span>
                 <span className="mt-auto pt-4">
                   <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
                   {option.saving > 0 && (
                     <span className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className="cup-serving-muted text-[0.7rem] line-through">{formatRupees(option.originalPrice)}</span>
-                      <span className="rounded-full px-2 py-1 text-[0.64rem] font-black bg-green-700 text-white leading-none">
+                      <span className="cup-serving-muted text-[0.75rem] line-through">{formatRupees(option.originalPrice)}</span>
+                      <span className="rounded-full px-2 py-1 text-[0.75rem] font-black bg-green-700 text-white leading-none">
                         Save {formatRupees(option.saving)}
                       </span>
                     </span>
@@ -424,14 +424,14 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           })}
         </div>
 
-        <div className="hidden max-sm:block mt-2 text-center text-[0.66rem] font-black text-ink/50" aria-live="polite">
+        <div className="hidden max-sm:block mt-2 text-center text-[0.72rem] font-black text-ink/60" aria-live="polite">
           {selectedServing ? `${selectedServingPosition} of ${SERVING_OPTIONS.length}` : `Swipe to explore · ${SERVING_OPTIONS.length} options`}
         </div>
 
-        <div className="mt-5 max-sm:mt-4 flex items-center justify-between gap-4">
+        <div className="mt-4 max-sm:mt-3 flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <span className="block text-[0.68rem] font-black uppercase tracking-[0.08em] text-ink/50">Selected serving</span>
-            <strong className="block mt-1 text-[0.84rem] max-sm:text-[0.76rem] truncate">
+            <span className="block text-[0.72rem] font-black uppercase tracking-[0.08em] text-ink/60">Selected serving</span>
+            <strong className="block mt-1 text-[0.84rem] max-sm:text-[0.78rem] truncate">
               {selectedServing
                 ? `${selectedServing.name} · ${selectedServing.scoops} scoop${selectedServing.scoops === 1 ? "" : "s"}`
                 : "Choose a size above"}
@@ -440,9 +440,9 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           <div className="flex items-center gap-3 flex-shrink-0">
             <span className="text-xs font-black max-sm:hidden">Quantity</span>
             <div className="cup-serving-quantity flex items-center rounded-full border p-1 shadow-sm">
-              <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Decrease serving quantity">−</button>
+              <button type="button" onClick={() => handleServingQuantityChange(-1)} disabled={servingQuantity <= 1} className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Decrease serving quantity">−</button>
               <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">{servingQuantity}</span>
-              <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-9 h-9 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Increase serving quantity">+</button>
+              <button type="button" onClick={() => handleServingQuantityChange(1)} disabled={servingQuantity >= 20} className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Increase serving quantity">+</button>
             </div>
           </div>
         </div>

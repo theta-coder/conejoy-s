@@ -2,19 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* nav height + category bar (44px chip + bar padding).
+   Keep in sync with CategoryBar.tsx if either changes. */
 :root {
-  --header-height: 126px;
+  --header-height: 140px;
 }
 
 @media (max-width: 768px) {
   :root {
-    --header-height: 110px;
+    --header-height: 124px;
   }
 }
 
 @media (max-width: 640px) {
   :root {
-    --header-height: 102px;
+    --header-height: 112px;
   }
 }
 
@@ -74,12 +76,15 @@
 }
 
 .cup-serving-panel {
-  --cup-panel: color-mix(in srgb, var(--cup-accent) 18%, white);
-  --cup-card: color-mix(in srgb, var(--cup-accent) 6%, white);
-  --cup-card-selected: color-mix(in srgb, var(--cup-accent) 16%, white);
-  --cup-border: color-mix(in srgb, var(--cup-accent) 34%, white);
-  --cup-strong: color-mix(in srgb, var(--cup-accent) 58%, #15150f);
-  --cup-muted: color-mix(in srgb, var(--cup-accent) 30%, #554c45);
+  --cup-panel: color-mix(in srgb, var(--cup-accent) 20%, white);
+  --cup-card: color-mix(in srgb, var(--cup-accent) 4%, white);
+  /* Selected card must read as selected on its own, not only via the border. */
+  --cup-card-selected: color-mix(in srgb, var(--cup-accent) 30%, white);
+  /* Border needs to separate the card from the panel behind it. */
+  --cup-border: color-mix(in srgb, var(--cup-accent) 45%, #5a524b);
+  /* 40% keeps text at >=4.5:1 on the palest flavours (was 58%, which failed AA on 6 of 12). */
+  --cup-strong: color-mix(in srgb, var(--cup-accent) 40%, #15150f);
+  --cup-muted: color-mix(in srgb, var(--cup-accent) 22%, #554c45);
   color: var(--cup-strong);
   background-color: var(--cup-panel);
   border-color: var(--cup-border);
