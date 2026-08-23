@@ -854,9 +854,6 @@ export default function ConeStory() {
                 flavour.
               </span>
             </h1>
-            <p className="lead max-w-[390px] max-md:max-w-[330px] max-sm:max-w-[300px] mt-[26px] max-md:mt-[4px] max-sm:mt-[2px] mx-0 max-md:mx-auto mb-0 text-[1rem] max-md:text-[0.84rem] max-sm:text-[0.78rem] leading-[1.6] max-md:leading-[1.32] max-sm:leading-[1.28]">
-              From familiar favourites to something new, your next scoop is waiting.
-            </p>
 
             {/* Mobile Active Flavour Display + Nav Controls (Prev / Active / Next) */}
             <div className="hidden max-md:flex items-center justify-center gap-1.5 mt-3 max-sm:mt-2 mb-2 px-1 mx-auto w-full max-w-[360px] z-10">
@@ -920,7 +917,7 @@ export default function ConeStory() {
 
           {/* Stage section */}
           <section
-            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(330px,48svh,470px)] max-sm:h-[clamp(290px,44svh,410px)] max-md:mt-5 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
+            className="stage relative h-[min(72svh,730px)] max-md:h-[clamp(340px,52svh,500px)] max-sm:h-[clamp(300px,48svh,440px)] max-md:mt-5 max-sm:mt-4 min-w-0 max-md:flex max-md:items-center max-md:justify-center"
             aria-label="Scroll-controlled ice cream flavours"
           >
             {/* White circle disc */}
@@ -942,7 +939,7 @@ export default function ConeStory() {
                       opacity: idx === 0 ? 1 : 0,
                       visibility: idx === 0 ? "visible" : "hidden",
                     }}
-                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(78vw,min(46svh,380px))] max-sm:w-[min(74vw,min(42svh,330px))] h-[80%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 pointer-events-none select-none origin-center"
+                    className="cone absolute w-[min(34vw,440px)] max-md:w-[min(78vw,min(46svh,380px))] max-sm:w-[min(74vw,min(42svh,330px))] h-[94%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 pointer-events-none select-none origin-center"
                     src={item.imageSrc}
                     alt={item.alt}
                     width={540}

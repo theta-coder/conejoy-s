@@ -280,15 +280,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </span>
       </div>
 
-      <div
-        className={
-          inSheet
-            ? "grid grid-cols-1 gap-2"
-            : "grid grid-cols-2 lg:grid-cols-5 gap-3"
-        }
-        role="radiogroup"
-        aria-label="Cup serving options"
-      >
+      <div className="grid grid-cols-1 gap-2" role="radiogroup" aria-label="Cup serving options">
         {SERVING_OPTIONS.map((option, optionIndex) => {
           const isSelected = selectedServingId === option.id;
           return (
@@ -299,55 +291,29 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
               aria-checked={isSelected}
               onClick={() => setSelectedServingId(option.id)}
               onKeyDown={(event) => handleServingKeyDown(event, optionIndex)}
-              className={`cup-serving-card relative rounded-2xl border-2 cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
-                inSheet
-                  ? "flex items-center gap-3 min-h-[64px] p-3 pr-11 text-left"
-                  : "min-h-[122px] p-3.5 text-left flex flex-col"
-              } ${
+              className={`cup-serving-card relative flex items-center gap-3 min-h-[64px] rounded-2xl border-2 p-3 pr-11 text-left cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
                 isSelected
                   ? "is-selected shadow-[0_10px_26px_rgba(21,21,15,0.13)]"
-                  : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
+                  : "shadow-sm hover:shadow-md"
               }`}
             >
-              {inSheet ? (
-                <>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-[0.9rem] font-black leading-tight">{option.name}</span>
-                    <span className="cup-serving-muted block mt-0.5 text-[0.75rem] font-bold">
-                      {option.scoops} scoops
-                    </span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-[0.9rem] font-black leading-tight">{option.name}</span>
+                <span className="cup-serving-muted block mt-0.5 text-[0.75rem] font-bold">
+                  {option.scoops} scoops
+                </span>
+              </span>
+              <span className="shrink-0 text-right">
+                <span className="block text-[1rem] font-black leading-none">{formatRupees(option.price)}</span>
+                <span className="flex items-center justify-end gap-1.5 mt-1">
+                  <span className="cup-serving-muted text-[0.75rem] line-through">
+                    {formatRupees(option.originalPrice)}
                   </span>
-                  <span className="shrink-0 text-right">
-                    <span className="block text-[1rem] font-black leading-none">{formatRupees(option.price)}</span>
-                    <span className="flex items-center justify-end gap-1.5 mt-1">
-                      <span className="cup-serving-muted text-[0.75rem] line-through">
-                        {formatRupees(option.originalPrice)}
-                      </span>
-                      <span className="rounded-full px-2 py-0.5 text-[0.72rem] font-black bg-green-700 text-white leading-tight">
-                        Save {formatRupees(option.saving)}
-                      </span>
-                    </span>
+                  <span className="rounded-full px-2 py-0.5 text-[0.72rem] font-black bg-green-700 text-white leading-tight">
+                    Save {formatRupees(option.saving)}
                   </span>
-                </>
-              ) : (
-                <>
-                  <span className="block pr-7 text-[0.88rem] font-black leading-tight">{option.name}</span>
-                  <span className="cup-serving-muted block mt-1 text-[0.75rem] font-bold">
-                    {option.scoops} scoops
-                  </span>
-                  <span className="mt-2 block">
-                    <span className="block text-[1.05rem] font-black leading-none">{formatRupees(option.price)}</span>
-                    <span className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                      <span className="cup-serving-muted text-[0.75rem] line-through">
-                        {formatRupees(option.originalPrice)}
-                      </span>
-                      <span className="rounded-full px-2 py-1 text-[0.72rem] font-black bg-green-700 text-white leading-none">
-                        Save {formatRupees(option.saving)}
-                      </span>
-                    </span>
-                  </span>
-                </>
-              )}
+                </span>
+              </span>
               {isSelected && (
                 <span
                   className="cup-serving-check absolute right-3 top-3 w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center shadow-sm"
