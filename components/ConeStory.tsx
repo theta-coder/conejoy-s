@@ -861,7 +861,7 @@ export default function ConeStory() {
                 type="button"
                 disabled={activeIndex === 0}
                 onClick={() => handleDotClick(activeIndex - 1)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.64rem] font-extrabold tracking-tight transition-all ${
+                className={`flex min-h-[40px] items-center gap-1 px-3 py-1 rounded-full text-[0.72rem] font-extrabold tracking-tight transition-all ${
                   activeIndex === 0
                     ? "opacity-20 pointer-events-none"
                     : "bg-ink/10 text-ink hover:bg-ink hover:text-panel active:scale-95 cursor-pointer shadow-sm"
@@ -897,7 +897,7 @@ export default function ConeStory() {
                 type="button"
                 disabled={activeIndex === FLAVOURS.length - 1}
                 onClick={() => handleDotClick(activeIndex + 1)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.64rem] font-extrabold tracking-tight transition-all ${
+                className={`flex min-h-[40px] items-center gap-1 px-3 py-1 rounded-full text-[0.72rem] font-extrabold tracking-tight transition-all ${
                   activeIndex === FLAVOURS.length - 1
                     ? "opacity-20 pointer-events-none"
                     : "bg-ink/10 text-ink hover:bg-ink hover:text-panel active:scale-95 cursor-pointer shadow-sm"
@@ -1027,7 +1027,7 @@ export default function ConeStory() {
                       opacity: idx === activeIndex ? 1 : 0.25,
                       boxShadow: idx === activeIndex ? "0 0 8px rgba(21,21,15,0.4)" : "none",
                     }}
-                    className="progress-dot appearance-none cursor-pointer w-[3.5px] border-0 p-0 transition-all duration-200 ease-custom focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
+                    className="progress-dot relative appearance-none cursor-pointer w-[3.5px] border-0 p-0 transition-all duration-200 ease-custom after:absolute after:content-[''] after:-left-3 after:-right-3 after:-top-[3px] after:-bottom-[3px] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.45)] focus-visible:outline-offset-4"
                   />
                 </div>
               ))}

@@ -76,7 +76,7 @@ export default function ShakesPage() {
     <div className="min-h-[100dvh] bg-panel text-ink">
       <nav className="nav fixed left-0 top-0 z-50 flex min-h-[80px] w-full items-center justify-between border-b border-line bg-white/85 px-[clamp(12px,4vw,64px)] backdrop-blur-md max-md:min-h-[64px] max-sm:min-h-[56px]" aria-label="Primary navigation">
         <div className="flex items-center gap-2.5">
-          <Link href="/cups" className="inline-flex items-center gap-1 rounded-full bg-ink/10 px-3 py-1.5 text-[0.76rem] font-black uppercase tracking-wider text-ink transition-colors hover:bg-ink/20 max-sm:text-[0.7rem]" aria-label="Back to Cups">
+          <Link href="/cups" className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 rounded-full bg-ink/10 px-3 py-1.5 text-[0.76rem] font-black uppercase tracking-wider text-ink transition-colors hover:bg-ink/20 max-sm:text-[0.7rem]" aria-label="Back to Cups">
             <span aria-hidden="true">←</span><span className="max-sm:hidden">Cups</span>
           </Link>
           <Link href="/" className="brand inline-flex items-center" aria-label="Cone Joy's Ice Cream home">
@@ -86,7 +86,7 @@ export default function ShakesPage() {
 
         <div ref={searchRef} className="relative z-20 mx-2.5 flex-shrink max-sm:mx-1">
           <div className="flex w-[clamp(155px,32vw,480px)] items-center gap-2 rounded-full border border-ink/20 bg-white/80 px-3.5 py-2 transition-all focus-within:border-ink max-sm:px-3 max-sm:py-1.5">
-            <span className="shrink-0 border-r border-ink/15 pr-2 text-[0.65rem] font-black uppercase tracking-wide max-sm:text-[0.6rem]">{searchCategory}</span>
+            <span className="shrink-0 border-r border-ink/15 pr-2 text-[0.7rem] font-black uppercase tracking-wide max-sm:text-[0.68rem]">{searchCategory}</span>
             <input value={searchQuery} onChange={(event) => { setSearchQuery(event.target.value); setSearchOpen(true); }} onFocus={() => setSearchOpen(true)} onKeyDown={handleSearchKeyDown} placeholder="Search flavour..." className="w-full truncate border-0 bg-transparent text-[0.82rem] font-medium outline-none max-sm:text-[0.72rem]" aria-label={`Search ${searchCategory} flavours`} autoComplete="off" />
           </div>
           {searchOpen && filteredFlavours.length > 0 && (

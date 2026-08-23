@@ -170,7 +170,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
               <p className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.16em] max-sm:hidden">Make it yours</p>
               <h3 className="mt-3 font-display text-2xl font-extrabold tracking-[-0.05em] max-sm:hidden">Finish the build.</h3>
               <fieldset className="mt-8 max-sm:mt-0">
-                <legend className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Size</legend>
+                <legend className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em]">Size</legend>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {(Object.keys(SIZES) as ShakeSize[]).map((item) => (
                     <button key={item} type="button" onClick={() => setSize(item)} className={`shake-option border px-3 py-3 text-left transition-colors max-sm:px-2 max-sm:py-2 ${size === item ? "is-active" : ""}`}>
@@ -183,7 +183,7 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             </div>
 
             <fieldset className="xl:mt-8 max-sm:hidden">
-              <legend className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Finishing touches</legend>
+              <legend className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em]">Finishing touches</legend>
               <div className="mt-3 space-y-1">
                 {TOPPINGS.map((topping) => {
                   const checked = toppings.includes(topping);
@@ -198,24 +198,24 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             </fieldset>
 
             <details className="shake-divider col-span-2 border-y py-2 sm:hidden">
-              <summary className="cursor-pointer text-[0.66rem] font-black uppercase tracking-[0.12em]">Finishing touches · {toppings.length} selected</summary>
+              <summary className="cursor-pointer text-[0.72rem] font-black uppercase tracking-[0.12em]">Finishing touches · {toppings.length} selected</summary>
               <div className="mt-2 grid grid-cols-3 gap-1.5">
                 {TOPPINGS.map((topping) => (
-                  <button key={topping} type="button" aria-pressed={toppings.includes(topping)} onClick={() => toggleTopping(topping)} className={`shake-option border px-2 py-2 text-[0.58rem] font-bold ${toppings.includes(topping) ? "is-active" : ""}`}>{topping}</button>
+                  <button key={topping} type="button" aria-pressed={toppings.includes(topping)} onClick={() => toggleTopping(topping)} className={`shake-option flex min-h-[44px] items-center justify-center border px-2 py-2 text-[0.72rem] font-bold ${toppings.includes(topping) ? "is-active" : ""}`}>{topping}</button>
                 ))}
               </div>
             </details>
 
             <div className="mt-auto pt-8 max-xl:col-span-2 max-xl:pt-0 max-md:col-span-1 max-sm:col-span-2">
               <div className="shake-divider mb-3 flex items-center justify-between border-t pt-4 max-sm:mb-2 max-sm:pt-2">
-                <span className="shake-muted text-[0.66rem] font-black uppercase tracking-[0.12em]">Quantity</span>
+                <span className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em]">Quantity</span>
                 <div className="shake-quantity flex items-center border">
                   <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} className="h-11 w-11 disabled:opacity-25" aria-label="Decrease shake quantity">−</button>
                   <span className="w-9 text-center text-xs font-black tabular-nums">{quantity}</span>
                   <button type="button" onClick={() => setQuantity((value) => Math.min(10, value + 1))} disabled={quantity === 10} className="h-11 w-11 disabled:opacity-25" aria-label="Increase shake quantity">+</button>
                 </div>
               </div>
-              <button type="button" onClick={handleAdd} className={`min-h-[52px] w-full px-5 text-xs font-black uppercase tracking-[0.12em] transition-all active:scale-[0.99] max-sm:min-h-[42px] ${added ? "bg-green-700 text-white" : "shake-cta"}`}>
+              <button type="button" onClick={handleAdd} className={`min-h-[52px] w-full px-5 text-xs font-black uppercase tracking-[0.12em] transition-all active:scale-[0.99] max-sm:min-h-[48px] ${added ? "bg-green-700 text-white" : "shake-cta"}`}>
                 {added ? "Added to your order" : `Add shake · Rs. ${(SIZES[size].price * quantity).toLocaleString("en-PK")}`}
               </button>
             </div>
