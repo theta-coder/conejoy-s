@@ -6,7 +6,7 @@ const WHATSAPP_URL =
 
 export default function HomeHeader() {
   return (
-    <header className="sticky top-0 z-50 h-20 border-b border-ink/15 bg-bg/95 px-[clamp(12px,4vw,64px)] backdrop-blur-md max-md:h-16 max-sm:h-14">
+    <header className="sticky top-0 z-50 h-20 border-b border-ink/50 bg-bg/95 px-[clamp(12px,4vw,64px)] backdrop-blur-md max-md:h-16 max-sm:h-14">
       <nav
         className="mx-auto flex h-full w-full max-w-[1380px] items-center justify-between gap-4"
         aria-label="Primary navigation"
@@ -37,7 +37,7 @@ export default function HomeHeader() {
           <Link className="home-nav-link" href="/shakes">
             Shakes
           </Link>
-          <a className="home-nav-link" href="#categories">
+          <a className="home-nav-link" href="#menu">
             Menu
           </a>
         </div>
@@ -48,7 +48,7 @@ export default function HomeHeader() {
           rel="noreferrer"
           className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-ink px-5 text-sm font-black text-panel transition-transform duration-200 ease-custom hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink max-sm:px-4 max-sm:text-xs"
         >
-          Order now
+          Order on WhatsApp
         </a>
       </nav>
     </header>

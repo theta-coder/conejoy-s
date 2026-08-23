@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import CategoryBar from "@/components/CategoryBar";
 import { useCart } from "@/context/CartContext";
+import { CONE_PRICING } from "@/data/menu";
 
 const CONE_AUTO_ADVANCE_MS = 3500;
 const CONE_IMAGE_SIZES =
   "(max-width: 640px) clamp(125px, calc(48svh - 179px), 250px), (max-width: 768px) clamp(144px, calc(48svh - 188px), 269px), min(32.5svh, 329px)";
-const CONE_PRICE = 100;
-const CONE_ORIGINAL_PRICE = 150;
-const CONE_SAVING = 50;
+const CONE_PRICE = CONE_PRICING.price;
+const CONE_ORIGINAL_PRICE = CONE_PRICING.originalPrice;
+const CONE_SAVING = CONE_PRICING.saving;
 
 export default function ConeStory() {
   const router = useRouter();

@@ -11,8 +11,8 @@ export default function HomeHero() {
           <p className="mb-5 text-xs font-black uppercase tracking-[0.16em] max-sm:mb-3 max-sm:text-[0.68rem]">
             Cone Joy&apos;s Ice Cream
           </p>
-          <h1 className="max-w-[680px] font-display text-[clamp(3.4rem,6.6vw,7.4rem)] font-extrabold leading-[0.88] tracking-[-0.075em] max-md:max-w-[600px] max-md:text-[clamp(3rem,12vw,5.4rem)] max-sm:text-[clamp(2.65rem,12.5vw,4rem)]">
-            Cones, cups and shakes in Lahore.
+          <h1 className="max-w-[680px] font-display text-[clamp(3.4rem,4.9vw,6rem)] font-extrabold leading-[0.88] tracking-[-0.075em] max-md:max-w-[600px] max-md:text-[clamp(3rem,12vw,5.4rem)] max-sm:text-[clamp(2.65rem,12.5vw,4rem)]">
+            Lahore&apos;s cones, cups and shakes.
           </h1>
           <p className="mt-6 max-w-[510px] text-[clamp(1rem,1.5vw,1.25rem)] font-semibold leading-relaxed text-ink/75 max-sm:mt-4 max-sm:text-[0.98rem]">
             Visit us in Chung or order for delivery.
@@ -27,7 +27,7 @@ export default function HomeHero() {
               Order on WhatsApp
             </a>
             <a
-              href="#categories"
+              href="#menu"
               className="inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-full border-2 border-ink bg-transparent px-7 text-sm font-black text-ink transition-colors duration-200 hover:bg-panel focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink max-sm:flex-1 max-sm:px-5"
             >
               See the menu

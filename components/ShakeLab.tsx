@@ -3,61 +3,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { FLAVOURS } from "@/data/flavours";
-
-type ShakeSize = "Regular" | "Large";
+import {
+  SHAKE_FLAVOURS as SHAKES,
+  SHAKE_SIZES as SIZES,
+  type ShakeSize,
+} from "@/data/menu";
 
 interface ShakeLabProps {
   selectedIndex?: number;
   selectionRequestKey?: number;
 }
-
-interface ShakeFlavour {
-  id: string;
-  name: string;
-  note: string;
-  image: string;
-  fallback: string;
-  accent: string;
-}
-
-const SHAKE_NOTES: Record<string, string> = {
-  mango: "Golden mango, cream, pistachio finish",
-  kulfa: "Cardamom kulfa, almond, pistachio",
-  chocolate: "Deep cocoa, chocolate chips, cream",
-  blueberry: "Black currant, berry ribbon, cream",
-  "caramel-crunch": "Caramel ribbon, golden crunch, cream",
-  "tutti-frutti": "Fruit cream, candied fruit, soft vanilla",
-  "coffee-chino": "Espresso, ice cream, roasted coffee crumb",
-  pistachio: "Pistachio cream, fine nut finish",
-  vanilla: "Vanilla bean, chilled cream, soft whip",
-  strawberry: "Strawberry cream, berry ribbon, fruit crumb",
-  "coconut-delight": "Coconut cream, toasted coconut finish",
-  "kit-kat": "Milk chocolate, wafer crunch, cocoa ribbon",
-};
-
-const SHAKE_FILE_IDS: Record<string, string> = {
-  chocolate: "chocolate-chip",
-  blueberry: "black-currant",
-  pistachio: "pista",
-};
-
-const SHAKES: ShakeFlavour[] = FLAVOURS.map((flavour) => {
-  const fileId = SHAKE_FILE_IDS[flavour.id] ?? flavour.id;
-  return {
-    id: flavour.id,
-    name: flavour.name,
-    note: SHAKE_NOTES[flavour.id],
-    image: `/assets/shakes/${fileId}.webp`,
-    fallback: `/assets/shakes/${fileId}.png`,
-    accent: flavour.color,
-  };
-});
-
-const SIZES: Record<ShakeSize, { volume: string; price: number; originalPrice: number }> = {
-  Regular: { volume: "12 oz", price: 420, originalPrice: 520 },
-  Large: { volume: "16 oz", price: 520, originalPrice: 650 },
-};
 
 const SIZE_KEYS = Object.keys(SIZES) as ShakeSize[];
 const MIN_PRICE = Math.min(...SIZE_KEYS.map((key) => SIZES[key].price));

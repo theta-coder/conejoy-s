@@ -55,6 +55,11 @@ html:has(.home-page) {
   outline-offset: 3px;
 }
 
+.home-menu-group {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 1100px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @keyframes home-rise {
     from {

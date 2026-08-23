@@ -57,7 +57,7 @@ export default function HomeCategories() {
             <Link
               key={category.name}
               href={category.href}
-              className={`group relative isolate overflow-hidden rounded-[28px] border border-ink/15 bg-bg text-ink shadow-[0_16px_45px_rgba(67,73,10,0.1)] transition-[transform,box-shadow] duration-300 ease-custom hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(67,73,10,0.16)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink ${category.className}`}
+              className={`group relative isolate overflow-hidden rounded-[28px] border border-ink/50 bg-bg text-ink shadow-[0_16px_45px_rgba(67,73,10,0.1)] transition-[transform,box-shadow] duration-300 ease-custom hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(67,73,10,0.16)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink ${category.className}`}
               aria-label={`Browse ${category.name}`}
             >
               <div className="relative z-20 max-w-[260px] p-7 max-sm:p-6">

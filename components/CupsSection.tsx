@@ -4,28 +4,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
+import { CUP_SERVING_OPTIONS as SERVING_OPTIONS } from "@/data/menu";
 
 interface CupsSectionProps {
   selectedIndex?: number;
   selectionRequestKey?: number;
 }
-
-interface ServingOption {
-  id: string;
-  name: string;
-  scoops: number;
-  price: number;
-  originalPrice: number;
-  saving: number;
-}
-
-const SERVING_OPTIONS: ServingOption[] = [
-  { id: "small-cup", name: "Small Cup", scoops: 2, price: 160, originalPrice: 200, saving: 40 },
-  { id: "medium-cup", name: "Medium Cup", scoops: 3, price: 220, originalPrice: 300, saving: 80 },
-  { id: "large-cup", name: "Large Cup", scoops: 4, price: 290, originalPrice: 400, saving: 110 },
-  { id: "small-pack", name: "Small Pack", scoops: 6, price: 420, originalPrice: 600, saving: 180 },
-  { id: "family-pack", name: "Family Pack", scoops: 12, price: 820, originalPrice: 1200, saving: 380 },
-];
 
 const MIN_PRICE = Math.min(...SERVING_OPTIONS.map((option) => option.price));
 
