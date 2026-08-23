@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CategoryBar from "@/components/CategoryBar";
@@ -80,7 +81,15 @@ export default function ShakesPage() {
             <span aria-hidden="true">←</span><span className="max-sm:hidden">Cups</span>
           </Link>
           <Link href="/" className="brand inline-flex items-center" aria-label="Cone Joy's Ice Cream home">
-            <img className="block h-auto w-[110px] max-md:w-[92px] max-sm:w-[80px]" src="/assets/conejoys-logo-new.png" alt="Cone Joy's Ice Cream" width={500} height={311} loading="eager" />
+            <Image
+              className="block h-auto w-[110px] max-md:w-[92px] max-sm:w-[80px]"
+              src="/assets/conejoys-logo-new.png"
+              alt="Cone Joy's Ice Cream"
+              width={500}
+              height={311}
+              sizes="(max-width: 640px) 80px, (max-width: 768px) 92px, 110px"
+              loading="eager"
+            />
           </Link>
         </div>
 

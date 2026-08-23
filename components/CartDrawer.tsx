@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 
 export default function CartDrawer() {
@@ -61,7 +62,16 @@ export default function CartDrawer() {
                     className="w-16 h-16 rounded-xl flex items-center justify-center p-1 flex-shrink-0 shadow-sm border border-black/10"
                     style={{ backgroundColor: item.color || "#f1b844" }}
                   >
-                    <img src={item.image} alt={item.flavour} className="w-full h-full object-contain drop-shadow-sm" />
+                    <div className="relative h-full w-full">
+                      <Image
+                        src={item.image}
+                        alt={item.flavour}
+                        fill
+                        sizes="54px"
+                        loading="eager"
+                        className="w-full h-full object-contain drop-shadow-sm"
+                      />
+                    </div>
                   </div>
 
                   {/* Item Details */}

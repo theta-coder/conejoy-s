@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { FLAVOURS } from "@/data/flavours";
 
@@ -438,20 +439,17 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
                     !isCurrent ? "cursor-pointer" : ""
                   }`}
                 >
-                  <picture>
-                    <source srcSet={shake.image} type="image/webp" />
-                    <img
-                      src={shake.fallback}
-                      alt={`${shake.name} premium ice-cream shake`}
-                      width={900}
-                      height={900}
-                      sizes="(max-width: 1280px) 96vw, 40vw"
-                      loading={isCurrent ? "eager" : "lazy"}
-                      fetchPriority={isCurrent ? "high" : "low"}
-                      decoding="async"
-                      className="h-full w-full object-cover"
-                    />
-                  </picture>
+                  <Image
+                    src={shake.fallback}
+                    alt={`${shake.name} premium ice-cream shake`}
+                    fill
+                    sizes="(max-width: 768px) min(calc(100vw - 24px), calc(100svh - 389px)), (max-width: 1279px) min(calc(100vw - 24px), calc(100svh - 421px)), min(56svh, 560px)"
+                    loading={isCurrent ? "eager" : "lazy"}
+                    fetchPriority={isCurrent ? "high" : "low"}
+                    priority={isCurrent}
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               );
             })}

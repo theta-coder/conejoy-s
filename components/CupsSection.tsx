@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
 
@@ -461,20 +462,17 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                     !isCurrent ? "cursor-pointer" : ""
                   }`}
                 >
-                  <picture className="contents">
-                    <source srcSet={item.cupWebpSrc} type="image/webp" />
-                    <img
-                      src={item.cupImageSrc}
-                      alt={item.cupAlt}
-                      width={500}
-                      height={500}
-                      sizes="(max-width: 1280px) 92vw, 40vw"
-                      loading={isCurrent ? "eager" : "lazy"}
-                      fetchPriority={isCurrent ? "high" : "low"}
-                      decoding="async"
-                      className="cup-product-image w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)]"
-                    />
-                  </picture>
+                  <Image
+                    src={item.cupImageSrc}
+                    alt={item.cupAlt}
+                    fill
+                    sizes="(max-width: 768px) min(calc(100vw - 24px), calc(100svh - 389px)), (max-width: 1279px) min(calc(100vw - 24px), calc(100svh - 421px)), min(56svh, 560px)"
+                    loading={isCurrent ? "eager" : "lazy"}
+                    fetchPriority={isCurrent ? "high" : "low"}
+                    priority={isCurrent}
+                    decoding="async"
+                    className="cup-product-image w-full h-full object-contain filter drop-shadow-[0_25px_20px_rgba(40,30,15,0.22)]"
+                  />
                 </div>
               );
             })}

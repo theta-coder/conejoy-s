@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CategoryBar from "@/components/CategoryBar";
@@ -115,12 +116,13 @@ export default function CupsPage() {
           </Link>
 
           <Link href="/" className="brand inline-flex items-center text-current no-underline" aria-label="Cone Joy's Ice Cream home">
-            <img
+            <Image
               className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
               src="/assets/conejoys-logo-new.png"
               alt="Cone Joy's Ice Cream"
               width={500}
               height={311}
+              sizes="(max-width: 640px) 80px, (max-width: 768px) 92px, 110px"
               loading="eager"
             />
           </Link>

@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import CategoryBar from "@/components/CategoryBar";
 import { useCart } from "@/context/CartContext";
 
 const CONE_AUTO_ADVANCE_MS = 3500;
+const CONE_IMAGE_SIZES =
+  "(max-width: 640px) clamp(125px, calc(48svh - 179px), 250px), (max-width: 768px) clamp(144px, calc(48svh - 188px), 269px), min(32.5svh, 329px)";
 const CONE_PRICE = 100;
 const CONE_ORIGINAL_PRICE = 150;
 const CONE_SAVING = 50;
@@ -28,11 +31,6 @@ export default function ConeStory() {
   const badgeRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   
-  // Prefetch /cups route for instant transition
-  useEffect(() => {
-    router.prefetch("/cups");
-  }, [router]);
-
   const storyTopRef = useRef<number>(0);
   const scrollRangeRef = useRef<number>(1);
 
@@ -47,6 +45,26 @@ export default function ConeStory() {
   const [cupSearchRequestKey, setCupSearchRequestKey] = useState(0);
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const [randomIndices, setRandomIndices] = useState<number[]>([0, 1, 2, 3, 4]);
+
+  // Cups is only needed after the cone journey. Waiting until the visitor is
+  // near the end keeps route data out of the initial mobile network window.
+  useEffect(() => {
+    if (activeIndex < FLAVOURS.length - 3) return;
+
+    const navigatorWithHints = navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const connection = navigatorWithHints.connection;
+    if (
+      connection?.saveData ||
+      connection?.effectiveType === "slow-2g" ||
+      connection?.effectiveType === "2g"
+    ) {
+      return;
+    }
+
+    router.prefetch("/cups");
+  }, [activeIndex, router]);
 
   const clamp = (val: number, min: number, max: number) =>
     Math.min(Math.max(val, min), max);
@@ -309,19 +327,6 @@ export default function ConeStory() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Progressive preloading of adjacent assets without duplicate allocations
-  useEffect(() => {
-    const nextIdx = Math.min(activeIndex + 1, FLAVOURS.length - 1);
-    const prevIdx = Math.max(activeIndex - 1, 0);
-
-    [nextIdx, prevIdx].forEach((idx) => {
-      if (typeof window !== "undefined") {
-        const img = new window.Image();
-        img.src = FLAVOURS[idx].webpSrc;
-      }
-    });
-  }, [activeIndex]);
 
   useEffect(() => {
     let ticking = false;
@@ -755,12 +760,13 @@ export default function ConeStory() {
             href="/"
             aria-label="Cone Joy's Ice Cream home"
           >
-            <img
+            <Image
               className="brand-logo block w-[110px] max-md:w-[92px] max-sm:w-[80px] h-auto"
               src="/assets/conejoys-logo-new.png"
               alt="Cone Joy's Ice Cream"
               width={500}
               height={311}
+              sizes="(max-width: 640px) 80px, (max-width: 768px) 92px, 110px"
               loading="eager"
               decoding="sync"
             />
@@ -989,30 +995,35 @@ export default function ConeStory() {
 
             {/* Cone Stack */}
             <div className="cone-stack absolute inset-0 grid place-items-center">
-              {FLAVOURS.map((item, idx) => (
-                <picture key={item.id} className="contents">
-                  <source srcSet={item.webpSrc} type="image/webp" />
-                  <img
+              {FLAVOURS.map((item, idx) => {
+                const isActive = idx === activeIndex;
+                const isAdjacent = Math.abs(idx - activeIndex) === 1;
+                if (!isActive && !isAdjacent) return null;
+
+                return (
+                  <Image
+                    key={item.id}
                     ref={(el) => {
                       coneRefs.current[idx] = el;
                     }}
                     style={{
-                      opacity: idx === 0 ? 1 : 0,
-                      visibility: idx === 0 ? "visible" : "hidden",
+                      opacity: isActive ? 1 : 0,
+                      visibility: isActive ? "visible" : "hidden",
                     }}
                     className="cone absolute w-[min(34vw,440px)] max-md:w-[min(78vw,min(46svh,380px))] max-sm:w-[min(74vw,min(42svh,330px))] h-[94%] max-md:h-full object-contain translate-3d-0 rotate-0 scale-100 pointer-events-none select-none origin-center"
                     src={item.imageSrc}
                     alt={item.alt}
                     width={540}
                     height={1500}
-                    sizes="(max-width: 480px) 74vw, (max-width: 820px) 78vw, 34vw"
-                    loading={idx <= 1 ? "eager" : "lazy"}
-                    fetchPriority={idx === 0 ? "high" : "low"}
+                    sizes={CONE_IMAGE_SIZES}
+                    loading={isActive ? "eager" : "lazy"}
+                    fetchPriority={isActive ? "high" : "low"}
+                    priority={isActive}
                     decoding="async"
                     data-color={item.color}
                   />
-                </picture>
-              ))}
+                );
+              })}
             </div>
 
             {/* Desktop Flavour Text Stack */}
