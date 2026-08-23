@@ -17,6 +17,9 @@ export default function ConeStory() {
 
   const [coneQuantities, setConeQuantities] = useState<Record<string, number>>({});
   const [isConeAdded, setIsConeAdded] = useState(false);
+  const [isConeSheetOpen, setIsConeSheetOpen] = useState(false);
+  const coneSheetRef = useRef<HTMLDivElement>(null);
+  const coneSheetOpenerRef = useRef<HTMLButtonElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const coneRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -59,7 +62,51 @@ export default function ConeStory() {
     });
   };
 
-  const handleAddConeToCart = () => {
+  const closeConeSheet = useCallback(() => {
+    setIsConeSheetOpen(false);
+    coneSheetOpenerRef.current?.focus();
+  }, []);
+
+  // Modal behaviour for the mobile cone sheet, matching Cups and Shakes.
+  useEffect(() => {
+    if (!isConeSheetOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    coneSheetRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeConeSheet();
+        return;
+      }
+      if (event.key !== "Tab" || !coneSheetRef.current) return;
+
+      const focusables = coneSheetRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isConeSheetOpen, closeConeSheet]);
+
+  const handleAddConeToCart = (fromSheet = false) => {
     if (!activeCone) return;
     addToCart({
       type: "Cone",
@@ -77,6 +124,7 @@ export default function ConeStory() {
     });
     setIsConeAdded(true);
     setTimeout(() => setIsConeAdded(false), 1800);
+    if (fromSheet) window.setTimeout(() => closeConeSheet(), 550);
   };
 
   // Load recent flavours from localStorage on mount & generate random indices fallback
@@ -534,12 +582,25 @@ export default function ConeStory() {
     });
   }, []);
 
+  // Kit Kat is the last cone, and a wheel tick or swipe used to leave for /cups
+  // the instant it appeared. Hold it on screen for a beat so it is actually seen.
+  const KIT_KAT_DWELL_MS = 3000;
+  const kitKatEnteredAtRef = useRef<number | null>(null);
+
   const handleNavigateToCups = useCallback(() => {
+    const enteredAt = kitKatEnteredAtRef.current;
+    if (enteredAt !== null && Date.now() - enteredAt < KIT_KAT_DWELL_MS) return;
+
     if (typeof window !== "undefined") {
       sessionStorage.setItem("coneLastIndex", String(activeIndexRef.current));
     }
     router.push("/cups");
   }, [router]);
+
+  useEffect(() => {
+    kitKatEnteredAtRef.current =
+      activeIndex === FLAVOURS.length - 1 ? Date.now() : null;
+  }, [activeIndex]);
 
   // Restore scroll position when returning from /cups or via ?select= query param.
   // The route flag is one-shot; the index remains available for later history
@@ -691,7 +752,7 @@ export default function ConeStory() {
         >
           <a
             className="brand inline-flex items-center text-current no-underline"
-            href="#flavours"
+            href="/"
             aria-label="Cone Joy's Ice Cream home"
           >
             <img
@@ -1072,8 +1133,8 @@ export default function ConeStory() {
             / 12
           </span>
 
-          {/* Quantity + Add to Cart */}
-          <div className="flex items-center gap-2">
+          {/* Quantity + Add to Cart — inline from xl, a sheet below it */}
+          <div className="hidden xl:flex items-center gap-2">
             <div className="flex flex-col items-start justify-center min-h-[42px] max-sm:min-h-[36px] px-2.5 max-sm:px-2 rounded-xl bg-white/60 backdrop-blur-md border border-ink/10 shadow-sm leading-none" aria-label="Cone offer: original price Rs. 150, now Rs. 100, save Rs. 50">
               <span className="flex items-baseline gap-1.5 whitespace-nowrap">
                 <strong className="text-[0.86rem] max-sm:text-[0.8rem] tracking-normal normal-case">Rs. 100</strong>
@@ -1108,7 +1169,7 @@ export default function ConeStory() {
 
             <button
               type="button"
-              onClick={handleAddConeToCart}
+              onClick={() => handleAddConeToCart(false)}
               className={`inline-flex items-center gap-1.5 min-h-[42px] max-sm:min-h-[36px] px-[17px] max-sm:px-[14px] rounded-full text-[0.74rem] max-sm:text-[0.72rem] font-black uppercase tracking-wider no-underline transition-all duration-200 ease-custom hover:-translate-y-[2px] active:scale-[0.97] cursor-pointer focus-visible:outline focus-visible:outline-3 focus-visible:outline-[rgba(21,21,15,0.32)] focus-visible:outline-offset-4 ${
                 isConeAdded
                   ? "bg-green-700 text-white shadow-[0_4px_16px_rgba(22,101,52,0.3)] scale-[1.02]"
@@ -1132,8 +1193,113 @@ export default function ConeStory() {
               )}
             </button>
           </div>
+
+          {/* Below xl: one button, same as Cups and Shakes */}
+          <button
+            ref={coneSheetOpenerRef}
+            type="button"
+            onClick={() => setIsConeSheetOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={isConeSheetOpen}
+            className="xl:hidden flex-1 min-h-[44px] max-w-[280px] rounded-full bg-ink text-panel text-[0.76rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2"
+          >
+            <span>Add to Cart</span>
+            <span className="opacity-60" aria-hidden="true">·</span>
+            <span>Rs. {CONE_PRICE}</span>
+          </button>
         </div>
+
+        {/* Site credit */}
+        <p className="site-credit w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto pb-1 text-center text-[0.66rem] font-bold tracking-wide opacity-55">
+          Designed by{" "}
+          <a href="https://mavplo.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+            MAVPLO · mavplo.com
+          </a>
+        </p>
       </main>
+
+      {isConeSheetOpen && (
+        <div
+          className="xl:hidden fixed inset-0 z-[70]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cone-sheet-heading"
+        >
+          <button
+            type="button"
+            onClick={closeConeSheet}
+            aria-label="Close cone options"
+            className="absolute inset-0 w-full h-full bg-ink/55 backdrop-blur-[2px] cursor-default"
+          />
+          <div
+            ref={coneSheetRef}
+            tabIndex={-1}
+            className="cone-sheet absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-[26px] border-t border-line bg-panel p-4 pb-6 text-ink outline-none animate-sheet-up motion-reduce:animate-none"
+          >
+            <div className="relative flex items-center justify-center mb-3">
+              <span className="h-1.5 w-12 rounded-full bg-ink/20" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={closeConeSheet}
+                aria-label="Close cone options"
+                className="absolute right-0 top-0 w-11 h-11 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center text-lg font-black transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <h4 id="cone-sheet-heading" className="text-[0.86rem] font-black uppercase tracking-[0.08em]">
+              Add your {activeCone?.name} cone
+            </h4>
+            <p className="text-[0.78rem] font-semibold mt-1 opacity-65">Single scoop, freshly rolled</p>
+
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border-2 border-line bg-white/60 p-3.5">
+              <span>
+                <span className="block text-[1.08rem] font-black leading-none">Rs. {CONE_PRICE}</span>
+                <span className="flex items-center gap-2 mt-1.5">
+                  <span className="text-[0.75rem] line-through opacity-55">Rs. {CONE_ORIGINAL_PRICE}</span>
+                  <span className="rounded-full px-2 py-0.5 text-[0.72rem] font-black bg-green-700 text-white leading-tight">
+                    Save Rs. {CONE_SAVING}
+                  </span>
+                </span>
+              </span>
+              <div className="flex items-center rounded-full border border-line bg-white/70 p-1 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => handleConeQtyChange(-1)}
+                  disabled={coneQty <= 1}
+                  className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  aria-label="Decrease cone quantity"
+                >
+                  −
+                </button>
+                <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">
+                  {coneQty}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleConeQtyChange(1)}
+                  disabled={coneQty >= 10}
+                  className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  aria-label="Increase cone quantity"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleAddConeToCart(true)}
+              className={`mt-4 w-full min-h-[52px] rounded-full text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] ${
+                isConeAdded ? "bg-green-700 text-white" : "bg-ink text-panel"
+              }`}
+            >
+              {isConeAdded ? "Added to your order" : `Add to Cart · Rs. ${CONE_PRICE * coneQty}`}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
     </>
   );

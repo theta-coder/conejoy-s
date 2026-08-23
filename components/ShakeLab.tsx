@@ -372,6 +372,9 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
         <p className="mt-2 max-sm:hidden text-[0.86rem] max-md:text-[0.8rem] opacity-75 max-w-[460px] mx-auto leading-relaxed">
           All 12 signature flavours, hand-blended to order.
         </p>
+        <p className="hidden max-sm:block mt-0.5 font-display text-[1.2rem] font-extrabold tracking-[-0.04em] leading-tight">
+          Cold, thick and fresh.
+        </p>
       </div>
 
       <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] xl:w-[min(1560px,calc(100%-72px))] max-md:w-full mx-auto grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 xl:gap-9 max-xl:flex max-xl:flex-col max-xl:flex-1 max-xl:min-h-0 max-xl:w-full">
@@ -474,8 +477,35 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
             <h3 className="font-display text-[clamp(1.3rem,2.8vw,2.1rem)] max-sm:text-[clamp(1.15rem,5.2vw,1.7rem)] font-black uppercase tracking-tight m-0 leading-tight">
               {activeShake.name}
             </h3>
-            <p className="mt-1 text-[0.72rem] font-black tabular-nums opacity-60" aria-live="polite">
-              {activeIndex + 1} of {SHAKES.length}
+            {/* Horizontal flavour rail — the Cones page rail, laid on its side */}
+            <div
+              className="mt-2 flex items-center justify-center gap-[10px] max-sm:gap-[7px]"
+              role="tablist"
+              aria-label="Shake progress"
+            >
+              {SHAKES.map((shake, idx) => {
+                const isCurrent = idx === activeIndex;
+                return (
+                  <button
+                    key={shake.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isCurrent}
+                    aria-label={`Go to ${shake.name}`}
+                    onClick={() => setActiveIndex(idx)}
+                    style={{
+                      width: isCurrent ? "30px" : "13px",
+                      height: "3.5px",
+                      backgroundColor: "#15150f",
+                      opacity: isCurrent ? 1 : 0.25,
+                    }}
+                    className="progress-dot relative appearance-none cursor-pointer rounded-full border-0 p-0 transition-all duration-200 ease-custom after:absolute after:content-[''] after:-top-3 after:-bottom-3 after:-left-[3px] after:-right-[3px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                  />
+                );
+              })}
+            </div>
+            <p className="sr-only" aria-live="polite">
+              {activeShake.name}, {activeIndex + 1} of {SHAKES.length}
             </p>
           </div>
         </div>
@@ -506,6 +536,15 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
           <span>from {formatRupees(MIN_PRICE)}</span>
         </button>
       </div>
+
+
+      {/* Site credit */}
+      <p className="site-credit w-[calc(100%-24px)] mx-auto shrink-0 pt-2 text-center text-[0.66rem] font-bold tracking-wide opacity-55">
+        Designed by{" "}
+        <a href="https://mavplo.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+          MAVPLO · mavplo.com
+        </a>
+      </p>
 
       {isSheetOpen && (
         <div className="xl:hidden fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-labelledby="shake-sheet-heading">
