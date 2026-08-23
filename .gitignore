@@ -30,3 +30,7 @@ Thumbs.db
 .env*
 
 *.tsbuildinfo
+
+.*-profile
+.chrome*
+
