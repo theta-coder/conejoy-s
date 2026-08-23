@@ -177,53 +177,84 @@ html {
   --shake-panel: color-mix(in srgb, var(--shake-accent) 17%, white);
   --shake-card: color-mix(in srgb, var(--shake-accent) 7%, white);
   --shake-selected: color-mix(in srgb, var(--shake-accent) 30%, white);
-  --shake-line: color-mix(in srgb, var(--shake-accent) 44%, #665f59);
+  /* Opaque, and mixed with a dark grey: at 44% over #665f59 the border only
+     reached 1.5:1 against the panel on pale flavours. This clears 3:1 on all 12. */
+  --shake-line: color-mix(in srgb, var(--shake-accent) 45%, #5a524b);
   --shake-muted: color-mix(in srgb, var(--shake-accent) 25%, #554e49);
   background-color: var(--shake-accent);
 }
 
 .shake-panel {
-  background-color: color-mix(in srgb, var(--shake-panel) 94%, transparent);
-  border-color: color-mix(in srgb, var(--shake-line) 42%, transparent);
+  background-color: var(--shake-panel);
+  border-color: var(--shake-line);
   box-shadow: 0 18px 55px color-mix(in srgb, var(--shake-deep) 12%, transparent);
 }
 
 .shake-muted { color: var(--shake-muted); }
-.shake-divider { border-color: color-mix(in srgb, var(--shake-line) 34%, transparent); }
+.shake-divider { border-color: var(--shake-line); }
 
-.shake-flavour,
-.shake-option,
-.shake-check,
-.shake-quantity {
-  background-color: var(--shake-card);
-  border-color: color-mix(in srgb, var(--shake-line) 42%, transparent);
+.shake-status {
+  background-color: color-mix(in srgb, var(--shake-accent) 20%, white);
+  border-color: var(--shake-line);
 }
 
-.shake-flavour.is-active,
-.shake-option.is-active,
-.shake-check.is-active {
+.shake-option,
+.shake-quantity {
+  background-color: var(--shake-card);
+  border-color: var(--shake-line);
+}
+
+.shake-option.is-active {
   background-color: var(--shake-selected);
   border-color: var(--shake-deep);
 }
 
-.shake-stage {
-  background-color: var(--shake-accent);
-  border-color: color-mix(in srgb, var(--shake-line) 32%, transparent);
-  box-shadow: 0 22px 65px color-mix(in srgb, var(--shake-deep) 13%, transparent);
-}
-
-.shake-stage-caption {
-  background: linear-gradient(to top, color-mix(in srgb, var(--shake-accent) 84%, #15150f), transparent);
-}
-
-.shake-cta {
-  color: white;
+.shake-check {
   background-color: var(--shake-deep);
 }
 
-.shake-cta:hover { opacity: 0.9; }
+/* The carousel image. Borderless: the shake photos are full-bleed (no alpha and
+   no flat margin to feather), so a soft shadow does the lifting instead of a
+   frame. The colour only shows while the image is still loading. */
+.shake-stage {
+  background-color: var(--shake-accent);
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--shake-deep) 22%, transparent);
+}
 
-@media (max-width: 640px) and (max-height: 700px) {
-  .shake-stage { min-height: 170px; }
-  .shake-lab { align-items: flex-start; }
+/* Short phones (and landscape) cannot hold the hero image plus every control at
+   accessible sizes. Rather than shrink text or tap targets below their floors,
+   drop the secondary pricing detail and the repeated labels so the whole
+   section still lands on one screen. */
+@media (max-height: 780px) {
+  .shake-lab .shake-size-card {
+    min-height: 0;
+    padding: 0.6rem 0.7rem;
+  }
+
+  /* The card stops being a tall tile: name, volume and price stack tightly. */
+  .shake-lab .shake-size-price {
+    margin-top: 0.35rem;
+    padding-top: 0;
+  }
+
+  .shake-lab .shake-size-extra,
+  .shake-lab .shake-sub {
+    display: none;
+  }
+
+  .shake-lab .shake-legend {
+    margin-bottom: 0.25rem;
+  }
+
+  /* The summary line only repeats the size chip and the topping chips, so drop
+     it and let quantity share a row with the CTA. Saves a whole row. */
+  .shake-lab .shake-summary {
+    display: none;
+  }
+
+  .shake-lab .shake-cta-btn {
+    width: auto;
+    flex: 1 1 0%;
+    margin-top: 0;
+  }
 }

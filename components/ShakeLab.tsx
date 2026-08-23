@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { FLAVOURS } from "@/data/flavours";
 
@@ -53,21 +53,32 @@ const SHAKES: ShakeFlavour[] = FLAVOURS.map((flavour) => {
   };
 });
 
-const SIZES: Record<ShakeSize, { volume: string; price: number }> = {
-  Regular: { volume: "12 oz", price: 420 },
-  Large: { volume: "16 oz", price: 520 },
+const SIZES: Record<ShakeSize, { volume: string; price: number; originalPrice: number }> = {
+  Regular: { volume: "12 oz", price: 420, originalPrice: 520 },
+  Large: { volume: "16 oz", price: 520, originalPrice: 650 },
 };
 
-const TOPPINGS = ["Whipped cream", "Wafer crunch", "Chocolate drizzle"];
+const formatRupees = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 
 export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLabProps) {
   const { addToCart } = useCart();
   const [activeIndex, setActiveIndex] = useState(0);
   const [size, setSize] = useState<ShakeSize>("Regular");
-  const [toppings, setToppings] = useState<string[]>(["Whipped cream"]);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const touchDeltaXRef = useRef(0);
+  const touchDeltaYRef = useRef(0);
+
   const activeShake = SHAKES[activeIndex];
+  const prevIdx = activeIndex > 0 ? activeIndex - 1 : null;
+  const nextIdx = activeIndex < SHAKES.length - 1 ? activeIndex + 1 : null;
+  const activeSize = SIZES[size];
+  const total = activeSize.price * quantity;
+  const saving = (activeSize.originalPrice - activeSize.price) * quantity;
 
   useEffect(() => {
     if (selectedIndex === undefined) return;
@@ -84,13 +95,85 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
     };
   }, [activeShake.accent]);
 
-  const toggleTopping = (topping: string) => {
-    setToppings((current) =>
-      current.includes(topping)
-        ? current.filter((item) => item !== topping)
-        : [...current, topping]
-    );
-  };
+  const goToPrev = useCallback(() => {
+    setActiveIndex((current) => Math.max(0, current - 1));
+  }, []);
+
+  const goToNext = useCallback(() => {
+    setActiveIndex((current) => Math.min(SHAKES.length - 1, current + 1));
+  }, []);
+
+  // Keyboard navigation, only while the section is on screen.
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      if (rect.top >= window.innerHeight || rect.bottom <= 0) return;
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goToPrev();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goToNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [goToPrev, goToNext]);
+
+  // Horizontal swipe on the stage. Listeners stay passive; `touch-action: pan-y`
+  // lets the browser own vertical scrolling.
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target && target.closest("aside, button, input, a, [role='radiogroup']")) {
+        touchStartXRef.current = null;
+        touchStartYRef.current = null;
+        return;
+      }
+      touchStartXRef.current = event.touches[0].clientX;
+      touchStartYRef.current = event.touches[0].clientY;
+      touchDeltaXRef.current = 0;
+      touchDeltaYRef.current = 0;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+      touchDeltaXRef.current = event.touches[0].clientX - touchStartXRef.current;
+      touchDeltaYRef.current = event.touches[0].clientY - touchStartYRef.current;
+    };
+
+    const handleTouchEnd = () => {
+      if (touchStartXRef.current === null) return;
+      const absX = Math.abs(touchDeltaXRef.current);
+      const absY = Math.abs(touchDeltaYRef.current);
+
+      if (absX > 20 && absX > absY) {
+        if (touchDeltaXRef.current < 0) goToNext();
+        else goToPrev();
+      }
+
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      touchDeltaXRef.current = 0;
+      touchDeltaYRef.current = 0;
+    };
+
+    sectionEl.addEventListener("touchstart", handleTouchStart, { passive: true });
+    sectionEl.addEventListener("touchmove", handleTouchMove, { passive: true });
+    sectionEl.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      sectionEl.removeEventListener("touchstart", handleTouchStart);
+      sectionEl.removeEventListener("touchmove", handleTouchMove);
+      sectionEl.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [goToNext, goToPrev]);
 
   const handleAdd = () => {
     addToCart({
@@ -99,8 +182,10 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
       flavour: activeShake.name,
       quantity,
       size,
-      servingId: `${activeShake.id}-${size.toLowerCase()}-${toppings.join("-").toLowerCase().replace(/\s+/g, "-")}`,
-      unitPrice: SIZES[size].price,
+      servingId: `${activeShake.id}-${size.toLowerCase()}`,
+      unitPrice: activeSize.price,
+      originalPrice: activeSize.originalPrice,
+      saving: activeSize.originalPrice - activeSize.price,
       image: activeShake.image,
       color: activeShake.accent,
     });
@@ -108,129 +193,253 @@ export default function ShakeLab({ selectedIndex, selectionRequestKey }: ShakeLa
     window.setTimeout(() => setAdded(false), 1800);
   };
 
+  const arrowClass =
+    "absolute top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink";
+
   return (
     <section
+      ref={sectionRef}
       id="shakes"
-      className="shake-lab relative min-h-[calc(100dvh-var(--header-height,126px))] overflow-hidden px-4 py-10 text-ink transition-colors duration-500 max-md:py-6 max-sm:flex max-sm:items-center max-sm:py-2"
+      className="shake-lab relative min-h-[calc(100dvh-var(--header-height,126px))] pt-5 max-md:pt-4 max-sm:pt-3 pb-4 max-md:pb-3 flex flex-col items-center justify-center overflow-x-hidden isolate text-ink transition-colors duration-[380ms] ease-custom touch-pan-y"
       style={{ "--shake-accent": activeShake.accent } as React.CSSProperties}
+      aria-label="Shakes Collection"
     >
-      <div className="relative mx-auto w-full max-w-[1380px]">
-        <header className="mb-8 max-w-[760px] max-md:mb-4 max-sm:mb-2">
-          <p className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.2em]">Cone Joys Shake Lab · 12 signature pours</p>
-          <h2 className="mt-3 font-display text-[clamp(2.4rem,5.6vw,5.4rem)] font-extrabold leading-[0.9] tracking-[-0.075em] max-sm:mt-1 max-sm:text-[1.65rem] max-sm:leading-none">
-            Churned to your specification.
-          </h2>
-          <p className="shake-muted mt-5 max-w-[54ch] text-sm font-semibold leading-relaxed max-sm:hidden">
-            Your favourite Cone Joys flavour, blended cold and finished exactly your way.
-          </p>
-        </header>
+      {/* 1. Collection heading */}
+      <div className="w-[min(1380px,calc(100%-64px))] max-sm:w-[calc(100%-24px)] mx-auto text-center z-10">
+        <p className="kicker mb-1 text-[0.72rem] max-md:text-[0.7rem] font-extrabold tracking-[0.18em] uppercase opacity-80">
+          <span className="inline-block w-6 h-[2px] mr-2 bg-current align-middle" aria-hidden="true" />
+          SHAKES COLLECTION
+        </p>
+        <h2 className="max-sm:hidden font-display text-[clamp(1.7rem,3.4vw,3rem)] leading-[0.95] tracking-[-0.06em] m-0 font-extrabold">
+          Blended cold, poured your way.
+        </h2>
+        <p className="mt-2 max-sm:hidden text-[0.86rem] max-md:text-[0.8rem] opacity-75 max-w-[460px] mx-auto leading-relaxed">
+          All 12 signature flavours, hand-blended to order.
+        </p>
+      </div>
 
-        <div className="grid grid-cols-[0.82fr_1.35fr_0.9fr] gap-4 max-xl:grid-cols-[0.72fr_1.28fr] max-md:grid-cols-1 max-sm:gap-2">
-          <div className="shake-panel border p-3 max-md:order-2 max-md:border-0 max-md:bg-transparent max-md:p-0">
-            <p className="shake-muted mb-3 px-2 text-[0.72rem] font-black uppercase tracking-[0.16em] max-sm:mb-1 max-sm:px-0">Select your pour</p>
-            <div className="grid grid-cols-2 gap-1.5 max-md:flex max-md:overflow-x-auto max-md:pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Shake flavours">
-              {SHAKES.map((shake, index) => {
-                const isActive = index === activeIndex;
+      <div className="my-3 max-sm:my-2 w-[min(1100px,calc(100%-48px))] xl:w-[min(1560px,calc(100%-72px))] max-md:w-full mx-auto grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 xl:gap-9 max-xl:flex max-xl:flex-col max-xl:flex-1 max-xl:min-h-0 max-xl:w-full">
+        {/* 2. Shake carousel stage */}
+        <div className="relative w-full flex flex-col items-center justify-center min-h-[clamp(200px,30svh,360px)] xl:min-h-[clamp(320px,54svh,560px)] max-xl:flex-1 max-xl:min-h-[clamp(170px,30svh,420px)] select-none">
+          <button
+            type="button"
+            onClick={goToPrev}
+            disabled={activeIndex === 0}
+            aria-label={prevIdx !== null ? `Previous shake: ${SHAKES[prevIdx].name}` : "First shake reached"}
+            className={`${arrowClass} left-4 max-md:left-2 ${
+              activeIndex === 0 ? "opacity-25 pointer-events-none" : "hover:bg-white active:scale-95 cursor-pointer"
+            }`}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <div className="relative w-full h-[clamp(200px,30svh,360px)] xl:h-[clamp(320px,54svh,560px)] max-xl:h-auto max-xl:flex-1 max-xl:min-h-0 max-xl:max-h-[calc(100vw-116px)] flex items-center justify-center">
+            {SHAKES.map((shake, idx) => {
+              const isCurrent = idx === activeIndex;
+              const isPrev = idx === prevIdx;
+              const isNext = idx === nextIdx;
+
+              // Only the visible three are mounted, same as the cups carousel.
+              if (!isCurrent && !isPrev && !isNext) return null;
+
+              let transform = "translate(-50%, -50%) scale(1)";
+              let opacity = 1;
+              let zIndex = 20;
+
+              if (isPrev) {
+                transform = "translate(-50%, -50%) translateX(-104%) scale(0.62) rotate(-4deg)";
+                opacity = 0.22;
+                zIndex = 10;
+              } else if (isNext) {
+                transform = "translate(-50%, -50%) translateX(104%) scale(0.62) rotate(4deg)";
+                opacity = 0.22;
+                zIndex = 10;
+              }
+
+              return (
+                <div
+                  key={shake.id}
+                  onClick={() => {
+                    if (isPrev) goToPrev();
+                    if (isNext) goToNext();
+                  }}
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    opacity,
+                    zIndex,
+                    transform,
+                    transformOrigin: "center center",
+                    transition: "transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease-out",
+                  }}
+                  className={`shake-stage relative h-full aspect-square overflow-hidden rounded-[26px] max-sm:rounded-[18px] ${
+                    !isCurrent ? "cursor-pointer" : ""
+                  }`}
+                >
+                  <picture>
+                    <source srcSet={shake.image} type="image/webp" />
+                    <img
+                      src={shake.fallback}
+                      alt={`${shake.name} premium ice-cream shake`}
+                      width={900}
+                      height={900}
+                      sizes="(max-width: 768px) 60vw, (max-width: 1280px) 40vw, 26vw"
+                      loading={isCurrent ? "eager" : "lazy"}
+                      fetchPriority={isCurrent ? "high" : "low"}
+                      decoding="async"
+                      className="h-full w-full object-cover"
+                    />
+                  </picture>
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={goToNext}
+            disabled={activeIndex === SHAKES.length - 1}
+            aria-label={nextIdx !== null ? `Next shake: ${SHAKES[nextIdx].name}` : "Last shake reached"}
+            className={`${arrowClass} right-4 max-md:right-2 ${
+              activeIndex === SHAKES.length - 1
+                ? "opacity-25 pointer-events-none"
+                : "hover:bg-white active:scale-95 cursor-pointer"
+            }`}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <div className="mt-3 max-sm:mt-2 text-center z-10">
+            <h3 className="font-display text-[clamp(1.3rem,2.8vw,2.1rem)] max-sm:text-[clamp(1.1rem,4.8vw,1.6rem)] font-black uppercase tracking-tight m-0 leading-tight">
+              {activeShake.name}
+            </h3>
+            <p className="shake-muted mt-1 text-[0.76rem] max-sm:text-[0.72rem] font-semibold max-sm:hidden">
+              {activeShake.note}
+            </p>
+            <p className="mt-1 text-[0.72rem] font-black tabular-nums opacity-60" aria-live="polite">
+              {activeIndex + 1} of {SHAKES.length}
+            </p>
+          </div>
+        </div>
+
+        {/* 3. Build panel */}
+        <aside
+          className="shake-panel relative z-30 w-[min(1120px,calc(100%-24px))] xl:w-full mx-auto shrink-0 rounded-[22px] border p-5 max-lg:p-4 max-sm:p-3"
+          aria-labelledby="shake-build-heading"
+        >
+          <div className="flex items-start justify-between gap-3 mb-4 max-sm:mb-2.5">
+            <div>
+              <h4 id="shake-build-heading" className="text-[0.86rem] max-sm:text-[0.8rem] font-black uppercase tracking-[0.08em]">
+                Build your <span className="hidden max-sm:inline">{activeShake.name} </span>shake
+              </h4>
+              <p className="shake-sub shake-muted max-sm:hidden text-[0.78rem] font-semibold mt-1">
+                Blended with {activeShake.name}
+              </p>
+            </div>
+            <span className="shake-status text-[0.72rem] font-black rounded-full border px-3 py-1.5 whitespace-nowrap">
+              {size} · {activeSize.volume}
+            </span>
+          </div>
+
+          <fieldset>
+            <legend className="shake-legend shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em] mb-2">Size</legend>
+            <div className="grid grid-cols-2 gap-3 max-sm:gap-2.5">
+              {(Object.keys(SIZES) as ShakeSize[]).map((item) => {
+                const option = SIZES[item];
+                const isSelected = size === item;
                 return (
                   <button
-                    key={shake.id}
+                    key={item}
                     type="button"
-                    role="radio"
-                    aria-checked={isActive}
-                    onClick={() => setActiveIndex(index)}
-                    className={`shake-flavour min-h-[92px] min-w-0 border p-3 text-left transition-[transform,background-color,border-color] active:scale-[0.98] max-md:min-w-[62vw] max-sm:min-h-[50px] max-sm:min-w-[38vw] max-sm:px-2.5 max-sm:py-2 ${isActive ? "is-active" : "hover:-translate-y-0.5"}`}
+                    onClick={() => setSize(item)}
+                    aria-pressed={isSelected}
+                    className={`shake-option shake-size-card relative min-h-[86px] max-sm:min-h-[80px] rounded-2xl border-2 p-3.5 max-sm:p-3 text-left flex flex-col cursor-pointer transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2 active:scale-[0.98] ${
+                      isSelected
+                        ? "is-active shadow-[0_10px_26px_rgba(21,21,15,0.13)] scale-[1.01]"
+                        : "shadow-sm hover:-translate-y-0.5 hover:shadow-md"
+                    }`}
                   >
-                    <span className="shake-muted block text-[0.72rem] font-black tabular-nums">{String(index + 1).padStart(2, "0")}</span>
-                    <span className="mt-2 block font-display text-[0.88rem] font-extrabold leading-tight tracking-[-0.03em] max-sm:mt-1 max-sm:text-[0.76rem]">{shake.name}</span>
-                    <span className="shake-muted mt-1.5 block text-[0.75rem] leading-snug max-xl:hidden max-md:block max-sm:hidden">{shake.note}</span>
+                    <span className="block pr-7 text-[0.88rem] font-black leading-tight">{item}</span>
+                    <span className="shake-muted block mt-1 text-[0.75rem] font-bold">{option.volume}</span>
+                    <span className="shake-size-price mt-2.5">
+                      <span className="block text-[1.08rem] font-black leading-none">{formatRupees(option.price)}</span>
+                      <span className="shake-size-extra flex flex-wrap items-center gap-2 mt-2">
+                        <span className="shake-muted text-[0.75rem] line-through">{formatRupees(option.originalPrice)}</span>
+                        <span className="rounded-full px-2 py-1 text-[0.75rem] font-black bg-green-700 text-white leading-none">
+                          Save {formatRupees(option.originalPrice - option.price)}
+                        </span>
+                      </span>
+                    </span>
+                    {isSelected && (
+                      <span
+                        className="shake-check absolute right-3 top-3 w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center shadow-sm"
+                        aria-hidden="true"
+                      >
+                        ✓
+                      </span>
+                    )}
                   </button>
                 );
               })}
             </div>
+          </fieldset>
+
+          <div className="shake-actions mt-4 max-sm:mt-2.5 flex flex-wrap items-center gap-3">
+            <div className="shake-summary min-w-0 flex-1">
+              <span className="shake-sub block text-[0.72rem] font-black uppercase tracking-[0.08em] opacity-60">Your shake</span>
+              <strong className="block mt-1 text-[0.84rem] max-sm:text-[0.78rem] truncate">
+                {activeShake.name} · {size} · {activeSize.volume}
+              </strong>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <span className="text-xs font-black max-sm:hidden">Quantity</span>
+              <div className="shake-quantity flex items-center rounded-full border p-1 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                  disabled={quantity <= 1}
+                  className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  aria-label="Decrease shake quantity"
+                >
+                  −
+                </button>
+                <span className="w-10 text-center text-sm font-black tabular-nums" aria-live="polite">
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity((value) => Math.min(10, value + 1))}
+                  disabled={quantity >= 10}
+                  className="w-11 h-11 rounded-full font-black hover:bg-ink/10 active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  aria-label="Increase shake quantity"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAdd}
+              className={`shake-cta-btn mt-3 max-sm:mt-2 w-full min-h-[48px] rounded-full text-[0.82rem] font-black uppercase tracking-wider shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] ${
+              added ? "bg-green-700 text-white" : "bg-ink text-panel"
+            }`}
+          >
+              {added ? "Added to your order" : `Add to Cart · ${formatRupees(total)}`}
+            </button>
           </div>
 
-          <div className="shake-stage relative min-h-[650px] overflow-hidden border max-xl:min-h-[620px] max-md:order-1 max-md:min-h-[360px] max-sm:min-h-[220px]">
-            <div className="absolute left-5 top-5 z-10 flex items-center gap-2 max-sm:left-3 max-sm:top-3">
-              <span className="h-2 w-2 rounded-full bg-ink" />
-              <span className="text-[0.72rem] font-black uppercase tracking-[0.14em]">Freshly churned</span>
-            </div>
-            <picture key={activeShake.id}>
-              <source srcSet={activeShake.image} type="image/webp" />
-              <img
-                src={activeShake.fallback}
-                alt={`${activeShake.name} premium ice-cream shake`}
-                width={900}
-                height={900}
-                loading={activeIndex === 0 ? "eager" : "lazy"}
-                decoding="async"
-                className="h-full w-full object-cover animate-badge-pop motion-reduce:animate-none"
-              />
-            </picture>
-            <div className="shake-stage-caption absolute inset-x-0 bottom-0 flex items-end justify-between p-6 pt-24 max-sm:p-3 max-sm:pt-12">
-              <div>
-                <p className="font-display text-[clamp(1.7rem,3vw,3rem)] font-extrabold leading-none tracking-[-0.055em] max-sm:text-[1.25rem]">{activeShake.name}</p>
-                <p className="mt-2 text-xs font-semibold opacity-65 max-sm:hidden">{activeShake.note}</p>
-              </div>
-              <span className="text-xs font-black tabular-nums">Rs. {SIZES[size].price}</span>
-            </div>
-          </div>
-
-          <aside className="shake-panel flex flex-col border p-6 max-xl:col-span-2 max-xl:grid max-xl:grid-cols-2 max-xl:gap-8 max-md:order-3 max-md:col-span-1 max-md:grid-cols-1 max-md:gap-4 max-sm:grid-cols-2 max-sm:gap-2 max-sm:p-3" aria-label="Customize your shake">
-            <div>
-              <p className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.16em] max-sm:hidden">Make it yours</p>
-              <h3 className="mt-3 font-display text-2xl font-extrabold tracking-[-0.05em] max-sm:hidden">Finish the build.</h3>
-              <fieldset className="mt-8 max-sm:mt-0">
-                <legend className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em]">Size</legend>
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  {(Object.keys(SIZES) as ShakeSize[]).map((item) => (
-                    <button key={item} type="button" onClick={() => setSize(item)} className={`shake-option border px-3 py-3 text-left transition-colors max-sm:px-2 max-sm:py-2 ${size === item ? "is-active" : ""}`}>
-                      <span className="block text-xs font-black">{item}</span>
-                      <span className="shake-muted mt-1 block text-[0.75rem]">{SIZES[item].volume}</span>
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-
-            <fieldset className="xl:mt-8 max-sm:hidden">
-              <legend className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em]">Finishing touches</legend>
-              <div className="mt-3 space-y-1">
-                {TOPPINGS.map((topping) => {
-                  const checked = toppings.includes(topping);
-                  return (
-                    <button key={topping} type="button" aria-pressed={checked} onClick={() => toggleTopping(topping)} className="shake-divider flex w-full items-center justify-between border-b py-3 text-left text-xs font-bold">
-                      <span>{topping}</span>
-                      <span className={`shake-check flex h-5 w-5 items-center justify-center border text-[0.64rem] ${checked ? "is-active" : "text-transparent"}`}>✓</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
-
-            <details className="shake-divider col-span-2 border-y py-2 sm:hidden">
-              <summary className="cursor-pointer text-[0.72rem] font-black uppercase tracking-[0.12em]">Finishing touches · {toppings.length} selected</summary>
-              <div className="mt-2 grid grid-cols-3 gap-1.5">
-                {TOPPINGS.map((topping) => (
-                  <button key={topping} type="button" aria-pressed={toppings.includes(topping)} onClick={() => toggleTopping(topping)} className={`shake-option flex min-h-[44px] items-center justify-center border px-2 py-2 text-[0.72rem] font-bold ${toppings.includes(topping) ? "is-active" : ""}`}>{topping}</button>
-                ))}
-              </div>
-            </details>
-
-            <div className="mt-auto pt-8 max-xl:col-span-2 max-xl:pt-0 max-md:col-span-1 max-sm:col-span-2">
-              <div className="shake-divider mb-3 flex items-center justify-between border-t pt-4 max-sm:mb-2 max-sm:pt-2">
-                <span className="shake-muted text-[0.72rem] font-black uppercase tracking-[0.12em]">Quantity</span>
-                <div className="shake-quantity flex items-center border">
-                  <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity === 1} className="h-11 w-11 disabled:opacity-25" aria-label="Decrease shake quantity">−</button>
-                  <span className="w-9 text-center text-xs font-black tabular-nums">{quantity}</span>
-                  <button type="button" onClick={() => setQuantity((value) => Math.min(10, value + 1))} disabled={quantity === 10} className="h-11 w-11 disabled:opacity-25" aria-label="Increase shake quantity">+</button>
-                </div>
-              </div>
-              <button type="button" onClick={handleAdd} className={`min-h-[52px] w-full px-5 text-xs font-black uppercase tracking-[0.12em] transition-all active:scale-[0.99] max-sm:min-h-[48px] ${added ? "bg-green-700 text-white" : "shake-cta"}`}>
-                {added ? "Added to your order" : `Add shake · Rs. ${(SIZES[size].price * quantity).toLocaleString("en-PK")}`}
-              </button>
-            </div>
-          </aside>
-        </div>
+          {saving > 0 && (
+            <p className="mt-2 max-sm:hidden text-center text-[0.72rem] font-black opacity-60">
+              You save {formatRupees(saving)}
+            </p>
+          )}
+        </aside>
       </div>
     </section>
   );
