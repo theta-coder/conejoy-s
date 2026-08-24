@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import Toast from "@/components/Toast";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 export default function RootLayout({
   children,
@@ -46,6 +47,7 @@ export default function RootLayout({
         <CartProvider>
           {children}
           <CartDrawer />
+          <FloatingWhatsApp />
           <Toast />
         </CartProvider>
       </body>
