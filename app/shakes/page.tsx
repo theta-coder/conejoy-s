@@ -97,12 +97,12 @@ export default function ShakesPage() {
           </Link>
           <Link href="/" className="brand inline-flex items-center" aria-label="Cone Joy's Ice Cream home">
             <Image
-              className="block h-auto w-[68px] max-md:w-[57px] max-sm:w-[50px]"
-              src="/assets/conejoys-mascot-logo.png"
+              className="block h-auto w-[150px] max-md:w-[120px] max-sm:w-[80px]"
+              src="/assets/conejoys-horizontal-logo.png"
               alt="Cone Joy's Ice Cream"
-              width={500}
-              height={500}
-              sizes="(max-width: 640px) 50px, (max-width: 768px) 57px, 68px"
+              width={1696}
+              height={640}
+              sizes="(max-width: 640px) 80px, (max-width: 768px) 120px, 150px"
               loading="eager"
             />
           </Link>
