@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 const HERO_BANNERS = [
   {
@@ -36,121 +37,109 @@ export default function HomeHero() {
   useEffect(() => {
     if (isPaused) return;
 
-    const desktop = window.matchMedia("(min-width: 1024px)");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!desktop.matches || reducedMotion.matches) return;
+    const interval = setInterval(() => {
+      showNext();
+    }, 5000);
 
-    const timer = window.setInterval(showNext, 7000);
-    return () => window.clearInterval(timer);
+    return () => clearInterval(interval);
   }, [isPaused, showNext]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        showNext();
+      } else {
+        showPrevious();
+      }
+    }
+    touchStartX.current = null;
+  };
 
   return (
     <section
-      className="relative touch-pan-y bg-[#f7f1e5]"
-      aria-roledescription="carousel"
-      aria-label="Cone Joy's promotional banners"
+      className="relative w-full overflow-hidden bg-[#fdf6e3] pt-3 pb-8"
+      aria-label="Promotional Carousel"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setIsPaused(false);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowLeft") {
-          event.preventDefault();
-          showPrevious();
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault();
-          showNext();
-        }
-      }}
-      onTouchStart={(event) => {
-        touchStartX.current = event.touches[0]?.clientX ?? null;
-      }}
-      onTouchEnd={(event) => {
-        if (touchStartX.current === null) return;
-        const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
-        const distance = endX - touchStartX.current;
-        touchStartX.current = null;
-
-        if (Math.abs(distance) < 40) return;
-        if (distance < 0) showNext();
-        else showPrevious();
-      }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      <h1 className="sr-only">Cone Joy&apos;s Ice Cream in Chung, Lahore</h1>
+      <div className="mx-auto w-full max-w-[1380px] px-[clamp(16px,4vw,64px)]">
+        {/* Banner Frame (Aspect 16:9 / 21:9 responsive) */}
+        <div className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden rounded-[28px] max-sm:rounded-2xl border border-[#4a2618]/10 bg-[#4a2618]/5 shadow-xl transition-all">
+          {HERO_BANNERS.map((banner, index) => {
+            const isCurrent = index === activeIndex;
+            return (
+              <div
+                key={banner.src}
+                aria-hidden={!isCurrent}
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                  isCurrent ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                }`}
+              >
+                <Image
+                  src={banner.src}
+                  alt={banner.alt}
+                  fill
+                  priority={index === 0}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1380px"
+                  className="object-cover object-center"
+                />
+              </div>
+            );
+          })}
 
-      <div className="relative mx-auto aspect-[8/3] max-h-[720px] w-full max-w-[1920px] overflow-hidden max-lg:aspect-[16/9]">
-        <div
-          className="flex h-full transition-transform duration-500 ease-custom motion-reduce:transition-none"
-          style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-        >
-          {HERO_BANNERS.map((banner, index) => (
-            <div
-              key={banner.src}
-              className="relative h-full w-full shrink-0"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`Slide ${index + 1} of ${HERO_BANNERS.length}`}
-              aria-hidden={index !== activeIndex}
-            >
-              <Image
-                src={banner.src}
-                alt={banner.alt}
-                fill
-                sizes="100vw"
-                className="object-contain object-top"
-                priority={index === 0}
-              />
-            </div>
-          ))}
-        </div>
+          {/* Navigation Arrows */}
+          <button
+            type="button"
+            onClick={showPrevious}
+            aria-label="Previous promotional slide"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:h-8 max-sm:w-8"
+          >
+            <ChevronLeft className="h-5 w-5 stroke-[2.5]" />
+          </button>
 
-        <button
-          type="button"
-          onClick={showPrevious}
-          aria-label="Show previous banner"
-          className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(74,38,24,0.35)] bg-[rgba(253,246,227,0.88)] text-3xl leading-none text-[var(--home-brown)] shadow-[0_8px_24px_rgba(74,38,24,0.16)] backdrop-blur-sm transition-transform hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] max-sm:left-2"
-        >
-          <span aria-hidden="true">‹</span>
-        </button>
+          <button
+            type="button"
+            onClick={showNext}
+            aria-label="Next promotional slide"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:h-8 max-sm:w-8"
+          >
+            <ChevronRight className="h-5 w-5 stroke-[2.5]" />
+          </button>
 
-        <button
-          type="button"
-          onClick={showNext}
-          aria-label="Show next banner"
-          className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(74,38,24,0.35)] bg-[rgba(253,246,227,0.88)] text-3xl leading-none text-[var(--home-brown)] shadow-[0_8px_24px_rgba(74,38,24,0.16)] backdrop-blur-sm transition-transform hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] max-sm:right-2"
-        >
-          <span aria-hidden="true">›</span>
-        </button>
-
-        <div
-          className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center rounded-full border border-[rgba(74,38,24,0.22)] bg-[rgba(253,246,227,0.88)] px-1 shadow-[0_6px_18px_rgba(74,38,24,0.12)] backdrop-blur-sm"
-          aria-label="Choose a banner"
-        >
-          {HERO_BANNERS.map((banner, index) => (
-            <button
-              key={banner.src}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Show banner ${index + 1}`}
-              aria-current={index === activeIndex ? "true" : undefined}
-              className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[var(--home-brown)]"
-            >
-              <span
-                aria-hidden="true"
-                className={`h-2 rounded-full bg-[var(--home-brown)] transition-all motion-reduce:transition-none ${
-                  index === activeIndex ? "w-6" : "w-2 opacity-35"
+          {/* Pagination Indicators & Pause Toggle */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full bg-black/35 px-3 py-1.5 backdrop-blur-md">
+            {HERO_BANNERS.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/75"
                 }`}
               />
+            ))}
+            <button
+              type="button"
+              onClick={() => setIsPaused((prev) => !prev)}
+              aria-label={isPaused ? "Play slide rotation" : "Pause slide rotation"}
+              className="ml-1 text-white/80 hover:text-white"
+            >
+              {isPaused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
             </button>
-          ))}
+          </div>
         </div>
       </div>
-
-      <p className="sr-only" aria-live="polite">
-        Showing banner {activeIndex + 1} of {HERO_BANNERS.length}
-      </p>
     </section>
   );
 }

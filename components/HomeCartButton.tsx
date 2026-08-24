@@ -1,15 +1,8 @@
 "use client";
 
+import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
-/**
- * Cart access for the home page.
- *
- * Kept as its own tiny client component so HomeHeader can stay a server
- * component — only this button needs the cart context, and pulling the whole
- * header across the client boundary would ship the nav and logo markup as JS
- * for no reason.
- */
 export default function HomeCartButton() {
   const { totalCount, setIsCartOpen } = useCart();
 
@@ -18,20 +11,11 @@ export default function HomeCartButton() {
       type="button"
       onClick={() => setIsCartOpen(true)}
       aria-label={`View cart with ${totalCount} ${totalCount === 1 ? "item" : "items"}`}
-      className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(74,38,24,0.5)] bg-[var(--home-white)] text-[var(--home-brown)] transition-transform duration-200 ease-custom hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)]"
+      className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#4a2618]/30 bg-white text-[#4a2618] shadow-sm transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"
     >
-      <svg
-        className="h-[18px] w-[18px]"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2.5}
-        aria-hidden="true"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-      </svg>
+      <ShoppingBag className="h-5 w-5 stroke-[2.2]" />
       {totalCount > 0 && (
-        <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--home-brown)] px-1 text-[0.62rem] font-black text-[var(--home-white)] shadow-md">
+        <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#e63946] px-1 text-[0.65rem] font-black text-white shadow-md animate-scale">
           {totalCount}
         </span>
       )}
