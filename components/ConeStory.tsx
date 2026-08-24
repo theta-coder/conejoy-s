@@ -615,13 +615,20 @@ export default function ConeStory() {
     if (typeof window === "undefined") return;
     const searchParams = new URLSearchParams(window.location.search);
     const selectParam = searchParams.get("select");
+    const flavourParam = searchParams.get("flavour");
     const lastConeIdx = sessionStorage.getItem("coneLastIndex");
     const isReturningFromCups = sessionStorage.getItem("coneReturnFromCups") === "true";
 
     let targetIndex: number | null = null;
-    if (selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
+    if (flavourParam) {
+      const found = FLAVOURS.findIndex(
+        (f) => f.id === flavourParam || f.name.toLowerCase() === flavourParam.toLowerCase()
+      );
+      if (found !== -1) targetIndex = found;
+    }
+    if (targetIndex === null && selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
       targetIndex = parseInt(selectParam, 10);
-    } else if (isReturningFromCups && lastConeIdx !== null && !isNaN(parseInt(lastConeIdx, 10))) {
+    } else if (targetIndex === null && isReturningFromCups && lastConeIdx !== null && !isNaN(parseInt(lastConeIdx, 10))) {
       targetIndex = parseInt(lastConeIdx, 10);
     }
 

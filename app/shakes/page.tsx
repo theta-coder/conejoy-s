@@ -23,10 +23,25 @@ export default function ShakesPage() {
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const value = new URLSearchParams(window.location.search).get("select");
-    if (value !== null && !Number.isNaN(Number(value))) {
-      setSelectedIndex(Math.max(0, Math.min(FLAVOURS.length - 1, Number(value))));
-      setSelectionRequestKey((key) => key + 1);
+    if (typeof window === "undefined") return;
+    const searchParams = new URLSearchParams(window.location.search);
+    const selectParam = searchParams.get("select");
+    const flavourParam = searchParams.get("flavour");
+
+    if (flavourParam) {
+      const found = FLAVOURS.findIndex(
+        (f) => f.id === flavourParam || f.name.toLowerCase() === flavourParam.toLowerCase()
+      );
+      if (found !== -1) {
+        setSelectedIndex(found);
+        setSelectionRequestKey((k) => k + 1);
+        return;
+      }
+    }
+
+    if (selectParam !== null && !Number.isNaN(Number(selectParam))) {
+      setSelectedIndex(Math.max(0, Math.min(FLAVOURS.length - 1, Number(selectParam))));
+      setSelectionRequestKey((k) => k + 1);
     }
   }, []);
 

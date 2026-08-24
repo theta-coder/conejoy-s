@@ -22,13 +22,26 @@ export default function CupsPage() {
 
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Handle URL query param ?select=X
+  // Handle URL query param ?select=X or ?flavour=name
   useEffect(() => {
     if (typeof window === "undefined") return;
     const searchParams = new URLSearchParams(window.location.search);
     const selectParam = searchParams.get("select");
+    const flavourParam = searchParams.get("flavour");
     const categoryParam = searchParams.get("category");
     if (categoryParam === "shakes") setSearchCategory("shakes");
+
+    if (flavourParam) {
+      const found = FLAVOURS.findIndex(
+        (f) => f.id === flavourParam || f.name.toLowerCase() === flavourParam.toLowerCase()
+      );
+      if (found !== -1) {
+        setSelectedIndex(found);
+        setSelectionRequestKey((k) => k + 1);
+        return;
+      }
+    }
+
     if (selectParam !== null && !isNaN(parseInt(selectParam, 10))) {
       setSelectedIndex(Math.max(0, Math.min(FLAVOURS.length - 1, parseInt(selectParam, 10))));
       setSelectionRequestKey((k) => k + 1);
