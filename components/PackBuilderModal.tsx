@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FLAVOURS } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
-import { Sparkles, X, Plus, Minus, Check } from "lucide-react";
+import { X, Plus, Minus, Check } from "lucide-react";
 
 interface PackBuilderModalProps {
   isOpen: boolean;
@@ -106,7 +106,6 @@ export default function PackBuilderModal({
         <div className="p-5 sm:p-6 border-b border-[#4a2618]/10 bg-white/80 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-[#faa926]/20 px-3 py-0.5 text-[0.68rem] font-black uppercase tracking-wider text-[#4a2618]">
-              <Sparkles className="h-3 w-3 text-[#faa926]" />
               <span>Multi-Flavour Pack</span>
             </div>
             <h2 className="font-display text-xl sm:text-2xl font-extrabold tracking-tight mt-1 text-[#4a2618]">
@@ -154,7 +153,6 @@ export default function PackBuilderModal({
               onClick={handleTryAll12}
               className="inline-flex items-center gap-1.5 rounded-full bg-[#4a2618] hover:bg-[#381c11] px-3.5 py-1 text-[0.7rem] font-black uppercase text-white transition-transform active:scale-95 shadow-sm"
             >
-              <Sparkles className="h-3 w-3 text-[#faa926]" />
               <span>Try All 12 Flavours</span>
             </button>
           </div>

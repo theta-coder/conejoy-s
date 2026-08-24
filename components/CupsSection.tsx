@@ -6,7 +6,7 @@ import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
 import { NORMAL_CUP_OPTIONS as SERVING_OPTIONS } from "@/data/menu";
 import PackBuilderModal from "@/components/PackBuilderModal";
-import { Sparkles, Package, ArrowRight } from "lucide-react";
+import { Package, ArrowRight } from "lucide-react";
 
 interface CupsSectionProps {
   selectedIndex?: number;
@@ -634,7 +634,6 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                 onClick={() => openPackBuilder("family")}
                 className="mt-6 w-full min-h-[46px] rounded-full bg-[#faa926] hover:bg-[#e0921a] text-[#4a2618] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-transform hover:-translate-y-0.5"
               >
-                <Sparkles className="h-4 w-4" />
                 <span>Build Family Pack</span>
               </button>
             </div>

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { CONE_PRICING, formatRupees } from "@/data/menu";
 import FlavourFormatModal from "@/components/FlavourFormatModal";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 // 6 featured/popular flavours for homepage
 const FEATURED_IDS = [
@@ -34,7 +34,6 @@ export default function HomeFlavours() {
       <div className="mx-auto w-full max-w-[1380px]">
         {/* Eyebrow */}
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[rgba(74,38,24,0.15)] bg-white/70 px-4 py-1.5 backdrop-blur-sm">
-          <Sparkles className="h-3.5 w-3.5 text-[var(--home-golden)]" />
           <span className="text-xs font-black uppercase tracking-[0.14em] text-[var(--home-brown)]">
             Featured Flavours
           </span>

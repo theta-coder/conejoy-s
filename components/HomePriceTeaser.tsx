@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, IceCream, Utensils, GlassWater } from "lucide-react";
+import { ArrowRight, IceCream, Utensils, GlassWater } from "lucide-react";
 import { CONE_PRICING, CUP_SERVING_OPTIONS, SHAKE_SIZES, formatRupees } from "@/data/menu";
 
 export default function HomePriceTeaser() {
@@ -20,7 +20,6 @@ export default function HomePriceTeaser() {
           {/* Left Intro Text */}
           <div className="max-w-[560px] space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5 text-[#faa926]" />
               <span className="text-xs font-black uppercase tracking-[0.16em] text-white">
                 Simple &amp; Transparent Rates
               </span>

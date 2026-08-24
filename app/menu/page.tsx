@@ -9,7 +9,7 @@ import {
   SHAKE_SIZES,
   formatRupees,
 } from "@/data/menu";
-import { ArrowRight, Sparkles, IceCream, Utensils, GlassWater, Package } from "lucide-react";
+import { ArrowRight, IceCream, Utensils, GlassWater, Package } from "lucide-react";
 
 export const metadata = {
   title: "Menu & Prices | ConeJoy's Ice Cream Lahore",
@@ -29,7 +29,6 @@ export default function MenuPage() {
           {/* Page Intro Header */}
           <div className="text-center max-w-[720px] mx-auto mb-12 sm:mb-16">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#4a2618]/15 bg-white/70 px-4 py-1.5 backdrop-blur-sm shadow-sm mb-4">
-              <Sparkles className="h-3.5 w-3.5 text-[#faa926]" />
               <span className="text-xs font-black uppercase tracking-[0.18em] text-[#4a2618]">
                 MENU &amp; PRICES
               </span>
@@ -274,7 +273,6 @@ export default function MenuPage() {
                     href="/cups?pack=12"
                     className="mt-6 inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-[#faa926] hover:bg-[#e0921a] px-6 text-xs font-black uppercase text-[#4a2618] transition-transform hover:-translate-y-0.5 shadow-md"
                   >
-                    <Sparkles className="h-4 w-4" />
                     <span>Build your Family Pack &rarr;</span>
                   </Link>
                 </div>
