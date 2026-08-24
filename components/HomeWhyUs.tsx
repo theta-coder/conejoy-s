@@ -1,72 +1,136 @@
-import { FLAVOURS } from "@/data/flavours";
-import { Clock, Truck, Sparkles, Zap } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-const REASONS = [
+const WHATSAPP_URL =
+  "https://wa.me/923407258700?text=Assalam-o-Alaikum%20Cone%20Joy%27s%2C%20I%20would%20like%20to%20place%20an%20order.";
+
+const PROOF_POINTS = [
   {
-    icon: Clock,
-    title: "Open till midnight",
-    body: "Doors stay open from 12 PM to 12 AM, long after most places have closed.",
-    color: "text-amber-400",
+    title: "12 flavours",
+    subtitle: "Cones, cups & shakes",
   },
   {
-    icon: Truck,
-    title: "Home delivery",
-    body: "Send your order on WhatsApp and we bring it to you across Lahore.",
-    color: "text-emerald-400",
+    title: "12 PM — 12 AM",
+    subtitle: "Open every day",
   },
   {
-    icon: Sparkles,
-    title: `${FLAVOURS.length} signature flavours`,
-    body: "Every flavour comes as a cone, a cup or a thick blended shake.",
-    color: "text-rose-400",
+    title: "WhatsApp delivery",
+    subtitle: "Simple. Quick. No app.",
   },
-  {
-    icon: Zap,
-    title: "Order in seconds",
-    body: "No app, no signup. Build your order here and send it straight to WhatsApp.",
-    color: "text-sky-400",
-  },
-];
+] as const;
 
 export default function HomeWhyUs() {
   return (
     <section
-      id="why-us"
-      className="scroll-mt-[var(--header-height)] bg-[#4a2618] px-[clamp(16px,5vw,72px)] py-[clamp(72px,9vw,128px)] text-white"
-      aria-labelledby="why-us-title"
+      id="about"
+      className="relative scroll-mt-[var(--header-height)] bg-[var(--home-cream)] px-[clamp(16px,5vw,72px)] py-[clamp(64px,8vw,120px)] border-t border-[rgba(74,38,24,0.08)] overflow-hidden"
+      aria-labelledby="why-us-headline"
     >
       <div className="mx-auto w-full max-w-[1380px]">
-        <h2
-          id="why-us-title"
-          className="max-w-[780px] font-display text-[clamp(2.5rem,5.2vw,5.4rem)] font-extrabold leading-[0.92] tracking-[-0.065em]"
-        >
-          Why Cone Joy&rsquo;s.
-        </h2>
-        <p className="mt-5 max-w-[560px] text-base font-semibold leading-relaxed text-white/80">
-          A small Chung ice cream shop, open late and built around one thing &mdash; pure delicious scoops.
-        </p>
+        <div className="grid grid-cols-1 items-center gap-[clamp(40px,6vw,96px)] lg:grid-cols-12">
+          {/* Left Column: Editorial Copy & Proof Points */}
+          <div className="lg:col-span-7 space-y-8">
+            {/* Eyebrow */}
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-[rgba(74,38,24,0.15)] bg-white/70 px-4 py-1.5 backdrop-blur-sm shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-[var(--home-golden)]" />
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-[var(--home-brown)]">
+                LOCAL · LATE · MADE TO SCOOP
+              </span>
+            </div>
 
-        <ul className="mt-12 grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-sm:mt-9 max-sm:grid-cols-1 max-sm:gap-4 list-none p-0">
-          {REASONS.map((reason) => {
-            const Icon = reason.icon;
-            return (
-              <li
-                key={reason.title}
-                className="rounded-[24px] border border-white/20 bg-white/10 p-7 max-sm:p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/15"
+            {/* Headline */}
+            <h2
+              id="why-us-headline"
+              className="font-display text-[clamp(2.5rem,4.8vw,4.8rem)] font-extrabold leading-[0.94] tracking-[-0.06em] text-[var(--home-brown)] max-w-[700px]"
+            >
+              Chung’s late-night scoop stop.
+            </h2>
+
+            {/* Body */}
+            <p className="text-[clamp(1.05rem,1.4vw,1.25rem)] font-semibold leading-relaxed text-[rgba(74,38,24,0.78)] max-w-[580px]">
+              Cones, cups and thick shakes in 12 flavours — served every day from noon till midnight. Drop by in Chung or order straight on WhatsApp.
+            </p>
+
+            {/* Compact Proof Points (Subtle Border Separators) */}
+            <div className="my-8 border-y border-[rgba(74,38,24,0.15)] py-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(74,38,24,0.12)]">
+                {PROOF_POINTS.map((point, index) => (
+                  <div
+                    key={point.title}
+                    className={`py-4 ${
+                      index === 0
+                        ? "sm:pr-6"
+                        : index === 1
+                        ? "sm:px-6"
+                        : "sm:pl-6"
+                    }`}
+                  >
+                    <div className="font-display text-xl font-extrabold text-[var(--home-brown)] tracking-tight">
+                      {point.title}
+                    </div>
+                    <div className="mt-1 text-xs font-bold uppercase tracking-wider text-[rgba(74,38,24,0.65)]">
+                      {point.subtitle}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                href="#categories"
+                className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[var(--home-brown)] px-8 text-sm font-black text-white shadow-[0_10px_28px_rgba(74,38,24,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(74,38,24,0.28)] active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)]"
               >
-                <div className={`inline-flex items-center justify-center p-3 rounded-2xl bg-white/10 ${reason.color}`}>
-                  <Icon className="h-7 w-7" strokeWidth={2.2} />
-                </div>
-                <h3 className="mt-4 font-display text-[1.35rem] font-extrabold leading-tight tracking-[-0.03em] text-white">
-                  {reason.title}
-                </h3>
-                <p className="mt-2.5 text-[0.92rem] font-medium leading-relaxed text-white/75">
-                  {reason.body}
-                </p>
-              </li>
-            );
-          })}
-        </ul>
+                Explore Menu
+              </Link>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-[52px] items-center justify-center rounded-full border-2 border-[var(--home-brown)] bg-[var(--home-golden)] px-8 text-sm font-black text-[var(--home-brown)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)]"
+              >
+                Order on WhatsApp
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column: Editorial Product Visual */}
+          <div className="lg:col-span-5 relative flex items-center justify-center py-6">
+            {/* Soft Ambient Golden Arch Backdrop */}
+            <div className="relative w-full max-w-[420px] aspect-[4/5] rounded-[40px] bg-gradient-to-b from-[var(--home-golden)]/30 to-white/60 p-6 border border-[rgba(74,38,24,0.12)] shadow-[0_24px_60px_rgba(74,38,24,0.08)] flex flex-col items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(250,169,38,0.25),transparent_70%)] pointer-events-none" />
+
+              {/* Floating Top Badge */}
+              <div className="absolute top-5 left-5 z-20 inline-flex items-center gap-2 rounded-full border border-[rgba(74,38,24,0.1)] bg-white/90 px-3.5 py-1.5 shadow-sm backdrop-blur-md">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[0.68rem] font-black uppercase tracking-wider text-[var(--home-brown)]">
+                  Fresh Daily · Chung
+                </span>
+              </div>
+
+              {/* Product Cone Image */}
+              <div className="relative z-10 h-[88%] w-full flex items-center justify-center">
+                <Image
+                  src="/assets/cones/mango.webp"
+                  alt="ConeJoy's Mango Ice Cream Cone"
+                  width={480}
+                  height={1200}
+                  sizes="(max-width: 768px) 65vw, 360px"
+                  className="h-full w-auto object-contain drop-shadow-[0_20px_30px_rgba(74,38,24,0.25)] transition-transform duration-500 hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+
+              {/* Bottom Subtle Overlay Ribbon */}
+              <div className="absolute bottom-4 inset-x-4 z-20 rounded-2xl bg-white/80 border border-[rgba(74,38,24,0.1)] p-3 text-center backdrop-blur-md shadow-sm">
+                <span className="font-display text-sm font-extrabold text-[var(--home-brown)]">
+                  Hand-crafted scoops, served till 12 AM
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

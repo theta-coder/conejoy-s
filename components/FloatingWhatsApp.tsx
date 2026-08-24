@@ -15,7 +15,7 @@ export default function FloatingWhatsApp() {
         href={WHATSAPP_URL}
         target="_blank"
         rel="noreferrer"
-        className="group flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_25px_rgba(37,211,102,0.45)] transition-all duration-300 hover:scale-110 hover:bg-[#1EBE5D] hover:shadow-[0_14px_30px_rgba(37,211,102,0.6)] active:scale-95 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#25D366]"
+        className="group flex h-14 w-14 items-center justify-center rounded-full bg-[var(--home-brown,#4a2618)] text-white shadow-[0_10px_25px_rgba(74,38,24,0.35)] transition-all duration-300 hover:scale-110 hover:bg-[#381c11] hover:shadow-[0_14px_30px_rgba(74,38,24,0.5)] active:scale-95 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown,#4a2618)]"
         aria-label="Chat with Cone Joy's on WhatsApp to order"
       >
         <MessageCircle className="h-7 w-7 stroke-[2.2] transition-transform duration-300 group-hover:rotate-12" />

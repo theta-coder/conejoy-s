@@ -37,11 +37,16 @@ export default function HomeHero() {
   useEffect(() => {
     if (isPaused) return;
 
-    const interval = setInterval(() => {
-      showNext();
-    }, 5000);
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    return () => clearInterval(interval);
+    if (!desktop.matches || reducedMotion.matches) return;
+
+    const interval = window.setInterval(() => {
+      showNext();
+    }, 7000);
+
+    return () => window.clearInterval(interval);
   }, [isPaused, showNext]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -65,16 +70,30 @@ export default function HomeHero() {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-[#fdf6e3] pt-3 pb-8"
+      className="relative w-full overflow-hidden bg-[#fdf6e3] pt-3 pb-8 max-sm:py-0"
       aria-label="Promotional Carousel"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="mx-auto w-full max-w-[1380px] px-[clamp(16px,4vw,64px)]">
+      <Image
+        key={`hero-backdrop-${activeIndex}`}
+        src={HERO_BANNERS[activeIndex].src}
+        alt=""
+        fill
+        sizes="100vw"
+        aria-hidden="true"
+        className="hidden scale-110 object-cover object-center opacity-60 blur-2xl saturate-75 lg:block"
+      />
+      <span
+        className="absolute inset-0 hidden bg-[rgba(253,246,227,0.2)] lg:block"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-[1380px] px-[clamp(16px,4vw,64px)] max-sm:px-0">
         {/* Banner Frame (Aspect 16:9 / 21:9 responsive) */}
-        <div className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden rounded-[28px] max-sm:rounded-2xl border border-[#4a2618]/10 bg-[#4a2618]/5 shadow-xl transition-all">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[28px] border border-[#4a2618]/10 bg-[#4a2618]/5 shadow-xl transition-all sm:aspect-[21/9] max-sm:rounded-none max-sm:border-x-0 max-sm:shadow-none">
           {HERO_BANNERS.map((banner, index) => {
             const isCurrent = index === activeIndex;
             return (
@@ -102,7 +121,7 @@ export default function HomeHero() {
             type="button"
             onClick={showPrevious}
             aria-label="Previous promotional slide"
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:h-8 max-sm:w-8"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:left-2"
           >
             <ChevronLeft className="h-5 w-5 stroke-[2.5]" />
           </button>
@@ -111,13 +130,13 @@ export default function HomeHero() {
             type="button"
             onClick={showNext}
             aria-label="Next promotional slide"
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:h-8 max-sm:w-8"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:right-2"
           >
             <ChevronRight className="h-5 w-5 stroke-[2.5]" />
           </button>
 
           {/* Pagination Indicators & Pause Toggle */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full bg-black/35 px-3 py-1.5 backdrop-blur-md">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full bg-black/35 px-3 py-1.5 backdrop-blur-md max-sm:border max-sm:border-[#4a2618]/20 max-sm:bg-[#fdf6e3]/90 max-sm:px-2 max-sm:py-1">
             {HERO_BANNERS.map((_, index) => (
               <button
                 key={index}
@@ -125,7 +144,9 @@ export default function HomeHero() {
                 onClick={() => setActiveIndex(index)}
                 aria-label={`Go to slide ${index + 1}`}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  index === activeIndex ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/75"
+                  index === activeIndex
+                    ? "w-6 bg-white max-sm:bg-[#4a2618]"
+                    : "w-2 bg-white/50 hover:bg-white/75 max-sm:bg-[#4a2618]/30 max-sm:hover:bg-[#4a2618]/50"
                 }`}
               />
             ))}
@@ -133,7 +154,7 @@ export default function HomeHero() {
               type="button"
               onClick={() => setIsPaused((prev) => !prev)}
               aria-label={isPaused ? "Play slide rotation" : "Pause slide rotation"}
-              className="ml-1 text-white/80 hover:text-white"
+              className="ml-1 text-white/80 hover:text-white max-sm:hidden"
             >
               {isPaused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
             </button>

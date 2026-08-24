@@ -69,7 +69,7 @@ export default function HomeHeader() {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] px-5 max-sm:px-3.5 text-xs font-black uppercase tracking-wider text-white shadow-[0_6px_20px_rgba(37,211,102,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(37,211,102,0.45)] active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#25D366]"
+            className="inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-full bg-[#4a2618] hover:bg-[#381c11] px-5 max-sm:px-3.5 text-xs font-black uppercase tracking-wider text-white shadow-[0_6px_20px_rgba(74,38,24,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(74,38,24,0.35)] active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"
           >
             <MessageCircle className="h-4 w-4 stroke-[2.5]" />
             <span className="max-sm:hidden">Order on WhatsApp</span>

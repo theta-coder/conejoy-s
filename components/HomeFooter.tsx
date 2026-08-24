@@ -46,7 +46,7 @@ export default function HomeFooter() {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-[52px] shrink-0 items-center justify-center gap-2.5 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] px-8 text-sm font-black text-white shadow-lg transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#25D366]"
+            className="inline-flex min-h-[52px] shrink-0 items-center justify-center gap-2.5 rounded-full bg-[#faa926] hover:bg-[#e0921a] px-8 text-sm font-black text-[#381c11] shadow-lg transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#faa926]"
           >
             <MessageCircle className="h-4 w-4 stroke-[2.5]" />
             <span>Order on WhatsApp</span>
@@ -83,7 +83,7 @@ export default function HomeFooter() {
               Pure ingredients. Real happiness. Crafting Lahore&apos;s finest cones, cups, and thick shakes daily in Chung.
             </p>
             <div className="inline-flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3.5 py-2 text-xs font-extrabold text-white/80">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-[#faa926] animate-pulse" />
               Store Open: 12:00 PM - 12:00 AM
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function HomeFooter() {
           <a
             href="https://mavplo.com"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
             className="inline-flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-4 py-1.5 text-white/80 transition-all hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             <span>Powered by</span>

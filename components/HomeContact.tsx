@@ -88,7 +88,7 @@ export default function HomeContact() {
                     <h3 className="text-xs font-black uppercase tracking-[0.14em] text-[#4a2618]/60">
                       Delivery Service
                     </h3>
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[0.68rem] font-extrabold text-emerald-800">
+                    <span className="rounded-full bg-[#4a2618]/10 px-2.5 py-0.5 text-[0.68rem] font-extrabold text-[#4a2618]">
                       Active
                     </span>
                   </div>
@@ -117,7 +117,7 @@ export default function HomeContact() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-[50px] flex-1 items-center justify-center gap-2 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] px-5 text-sm font-black text-white shadow-md transition-all duration-200 hover:-translate-y-0.5"
+                className="inline-flex min-h-[50px] flex-1 items-center justify-center gap-2 rounded-2xl bg-[#4a2618] hover:bg-[#381c11] px-5 text-sm font-black text-white shadow-md transition-all duration-200 hover:-translate-y-0.5"
               >
                 <MessageCircle className="h-4 w-4 stroke-[2.5]" />
                 <span>WhatsApp Order</span>
