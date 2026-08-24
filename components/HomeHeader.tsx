@@ -43,29 +43,21 @@ export default function HomeHeader() {
         className="mx-auto flex h-20 w-full max-w-[1380px] items-center justify-between gap-4 max-md:h-16"
         aria-label="Primary navigation"
       >
-        {/* Brand Logo & Tagline */}
+        {/* Horizontal brand lockup */}
         <Link
           href="/"
-          className="group inline-flex items-center gap-3 rounded-2xl focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"
+          className="group inline-flex shrink-0 items-center rounded-2xl focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"
           aria-label="Cone Joy's Ice Cream home"
         >
           <div className="relative flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
             <Image
-              src="/assets/conejoys-mascot-logo.png"
-              alt="Cone Joy's Ice Cream Mascot Logo"
-              width={160}
-              height={160}
+              src="/assets/conejoys-horizontal-logo.png"
+              alt="Cone Joy's Ice Cream"
+              width={848}
+              height={320}
               priority
-              className="h-14 w-auto max-md:h-11 max-sm:h-10 object-contain drop-shadow-sm"
+              className="h-[58px] w-auto object-contain drop-shadow-sm max-md:h-12 max-sm:h-11"
             />
-          </div>
-          <div className="hidden sm:flex flex-col">
-            <span className="font-display text-xl font-black leading-none tracking-tight text-[#4a2618]">
-              ConeJoy&apos;s
-            </span>
-            <span className="mt-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#4a2618]/70">
-              Scoop Shop &bull; Lahore
-            </span>
           </div>
         </Link>
 

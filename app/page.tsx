@@ -8,7 +8,6 @@ import HomeFlavours from "@/components/HomeFlavours";
 import HomeFooter from "@/components/HomeFooter";
 import HomeHeader from "@/components/HomeHeader";
 import HomeHero from "@/components/HomeHero";
-import HomeHowToOrder from "@/components/HomeHowToOrder";
 import HomeWhyUs from "@/components/HomeWhyUs";
 
 export default function Home() {
@@ -35,7 +34,6 @@ export default function Home() {
         <HomeCategories />
         <HomeFlavours />
         <HomePriceTeaser />
-        <HomeHowToOrder />
         <HomeWhyUs />
         <HomeContact />
       </main>

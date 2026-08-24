@@ -4,16 +4,16 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
-import { NORMAL_CUP_OPTIONS as SERVING_OPTIONS } from "@/data/menu";
+import { NORMAL_CUP_OPTIONS as SERVING_OPTIONS, PACK_OPTIONS } from "@/data/menu";
 import PackBuilderModal from "@/components/PackBuilderModal";
-import { Package, ArrowRight } from "lucide-react";
+import { Package, X } from "lucide-react";
 
 interface CupsSectionProps {
   selectedIndex?: number;
   selectionRequestKey?: number;
 }
 
-const MIN_PRICE = Math.min(...SERVING_OPTIONS.map((option) => option.price));
+const [SMALL_PACK, FAMILY_PACK] = PACK_OPTIONS;
 
 const formatRupees = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 
@@ -257,6 +257,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
     "absolute top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-lg flex items-center justify-center text-ink transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink";
 
   const openPackBuilder = (type: "small" | "family") => {
+    setIsSheetOpen(false);
     setActivePackType(type);
     setPackModalOpen(true);
   };
@@ -364,6 +365,43 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
           You save {formatRupees(selectedServingSaving)}
         </p>
       )}
+
+      <div className="mt-4 border-t border-ink/15 pt-4">
+        <div className="flex items-center gap-2">
+          <Package className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <div>
+            <h4 className="text-[0.8rem] font-black uppercase tracking-[0.07em]">
+              Mix &amp; Match Packs
+            </h4>
+            <p className="cup-serving-muted text-[0.72rem] font-semibold">
+              Pick different flavours.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => openPackBuilder("small")}
+            className="cup-serving-card min-h-[68px] rounded-2xl border-2 p-3 text-left shadow-sm transition-[transform,border-color,background-color,box-shadow] duration-200 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2"
+          >
+            <span className="block text-[0.8rem] font-black leading-tight">Small Pack</span>
+            <span className="cup-serving-muted mt-1 block text-[0.72rem] font-bold">
+              {SMALL_PACK.scoops} scoops &middot; {formatRupees(SMALL_PACK.price)}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => openPackBuilder("family")}
+            className="cup-serving-card min-h-[68px] rounded-2xl border-2 p-3 text-left shadow-sm transition-[transform,border-color,background-color,box-shadow] duration-200 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ink/35 focus-visible:ring-offset-2"
+          >
+            <span className="block text-[0.8rem] font-black leading-tight">Family Pack</span>
+            <span className="cup-serving-muted mt-1 block text-[0.72rem] font-bold">
+              {FAMILY_PACK.scoops} scoops &middot; {formatRupees(FAMILY_PACK.price)}
+            </span>
+          </button>
+        </div>
+      </div>
     </>
   );
 
@@ -373,7 +411,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         ref={sectionRef}
         id="cups"
         style={{ backgroundColor: activeFlavour.color }}
-        className="cups-section relative min-h-[calc(100dvh-var(--header-height,126px))] pt-5 max-md:pt-4 max-sm:pt-3 pb-8 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink touch-pan-y"
+        className="cups-section relative min-h-[calc(100dvh-var(--header-height,126px))] pt-5 max-md:pt-4 max-sm:pt-3 pb-4 max-md:pb-3 flex flex-col items-center justify-center overflow-x-hidden isolate transition-colors duration-[380ms] ease-custom text-ink touch-pan-y"
         aria-label="Cups Collection"
       >
         {/* 1. Collection heading */}
@@ -534,7 +572,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
         </div>
 
         {/* 3b. Mobile & tablet: one button */}
-        <div className="xl:hidden w-[calc(100%-24px)] mx-auto shrink-0 z-30 mb-8">
+        <div className="xl:hidden w-[calc(100%-24px)] mx-auto shrink-0 z-30">
           <button
             ref={sheetOpenerRef}
             type="button"
@@ -548,100 +586,13 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                 {selectedServing.name} · {formatRupees(selectedServingTotal)}
               </span>
             ) : (
-              <>
-                <span>Choose cup size</span>
-                <span className="opacity-60" aria-hidden="true">
-                  ·
-                </span>
-                <span>from {formatRupees(MIN_PRICE)}</span>
-              </>
+              <span>Choose size or pack</span>
             )}
           </button>
         </div>
 
-        {/* 4. SEPARATE "BUILD A PACK" SECTION */}
-        <div className="w-[min(1200px,calc(100%-48px))] max-sm:w-[calc(100%-24px)] mx-auto mt-10 pt-8 border-t border-black/15 z-20">
-          <div className="text-center max-w-[680px] mx-auto mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/80 border border-black/15 px-3.5 py-1 backdrop-blur-sm shadow-sm mb-2">
-              <Package className="h-3.5 w-3.5 text-[#4a2618]" />
-              <span className="text-[0.68rem] font-black uppercase tracking-[0.16em] text-[#4a2618]">
-                MULTI-FLAVOUR PACKS
-              </span>
-            </div>
-            <h3 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-[#4a2618]">
-              Want different flavours? Build a Pack.
-            </h3>
-            <p className="text-xs sm:text-sm font-semibold text-[#4a2618]/75 mt-1">
-              Pick different flavours, repeat your favourites, and build your own pack.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
-            {/* 6-Scoop Pack Card */}
-            <div className="flex flex-col justify-between p-6 rounded-[24px] bg-white border border-[#4a2618]/15 shadow-lg">
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-[#faa926] bg-[#4a2618] px-3 py-1 rounded-full">
-                    6-Scoop Pack
-                  </span>
-                  <span className="font-display text-2xl font-black text-[#4a2618]">
-                    Rs. 420
-                  </span>
-                </div>
-                <h4 className="font-display text-xl font-extrabold text-[#4a2618] mt-3">
-                  Mix &amp; Match 6 Scoops
-                </h4>
-                <p className="text-xs font-semibold text-[#4a2618]/70 mt-1">
-                  Choose any combination of our 12 signature flavours.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => openPackBuilder("small")}
-                className="mt-6 w-full min-h-[46px] rounded-full bg-[#4a2618] hover:bg-[#381c11] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-transform hover:-translate-y-0.5"
-              >
-                <span>Build 6-Scoop Pack</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-
-            {/* 12-Scoop Family Pack Card */}
-            <div className="flex flex-col justify-between p-6 rounded-[24px] bg-white border-2 border-[#faa926] shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-[#faa926] text-[#4a2618] text-[0.62rem] font-black uppercase tracking-wider px-3 py-1 rounded-bl-xl shadow-sm">
-                Best Value
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-white bg-[#4a2618] px-3 py-1 rounded-full">
-                    Family Pack
-                  </span>
-                  <span className="font-display text-2xl font-black text-[#4a2618]">
-                    Rs. 820
-                  </span>
-                </div>
-                <h4 className="font-display text-xl font-extrabold text-[#4a2618] mt-3">
-                  12-Scoop Family Pack
-                </h4>
-                <p className="text-xs font-semibold text-[#4a2618]/70 mt-1">
-                  12 scoops &bull; choose any flavours or try all 12 signature scoops.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => openPackBuilder("family")}
-                className="mt-6 w-full min-h-[46px] rounded-full bg-[#faa926] hover:bg-[#e0921a] text-[#4a2618] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-transform hover:-translate-y-0.5"
-              >
-                <span>Build Family Pack</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Site credit */}
-        <p className="site-credit w-[calc(100%-24px)] mx-auto shrink-0 pt-8 text-center text-[0.66rem] font-bold tracking-wide opacity-55">
+        <p className="site-credit w-[calc(100%-24px)] mx-auto shrink-0 pt-2 text-center text-[0.66rem] font-bold tracking-wide opacity-55">
           Designed by{" "}
           <a href="https://mavplo.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
             MAVPLO &bull; mavplo.com
@@ -667,7 +618,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
               style={{ "--cup-accent": activeFlavour.color } as React.CSSProperties}
               className="cup-sheet cup-serving-panel absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-[26px] border-t p-4 pb-6 outline-none animate-sheet-up motion-reduce:animate-none"
             >
-              <div className="relative flex items-center justify-center mb-3">
+              <div className="relative flex min-h-11 items-center justify-center mb-2">
                 <span className="h-1.5 w-12 rounded-full bg-ink/20" aria-hidden="true" />
                 <button
                   type="button"
@@ -675,7 +626,7 @@ export default function CupsSection({ selectedIndex, selectionRequestKey }: Cups
                   aria-label="Close serving options"
                   className="absolute right-0 top-0 w-11 h-11 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center text-lg font-black transition-colors"
                 >
-                  ✕
+                  <X className="h-5 w-5 stroke-[2.5]" aria-hidden="true" />
                 </button>
               </div>
               {buildControls(true, "cup-sheet-heading")}

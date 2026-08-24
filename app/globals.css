@@ -40,6 +40,12 @@ html:has(.home-page) {
   --header-height: 81px;
 }
 
+/* Fixed order shortcut should not cover modal controls or pack choices. */
+body:has([role="dialog"][aria-modal="true"])
+  aside[aria-label="Quick WhatsApp order"] {
+  visibility: hidden;
+}
+
 @media (max-width: 768px) {
   html:has(.home-page) {
     /* HomeHeader drops to h-16 below md. */
