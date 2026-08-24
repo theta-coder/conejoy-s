@@ -1,15 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle, MapPin, Sparkles, ExternalLink } from "lucide-react";
-
-const WHATSAPP_URL =
-  "https://wa.me/923407258700?text=Assalam-o-Alaikum%20Cone%20Joy%27s%2C%20I%20would%20like%20to%20place%20an%20order.";
+import { MapPin, ExternalLink } from "lucide-react";
 
 const BROWSE_LINKS = [
-  { label: "Cones Collection", href: "/" },
+  { label: "Cones Collection", href: "/cones" },
   { label: "Cups Collection", href: "/cups" },
   { label: "Shake Lab", href: "/shakes" },
-  { label: "Full Menu", href: "#categories" },
+  { label: "Build a Pack", href: "/cups?pack=6" },
+  { label: "Full Menu & Prices", href: "/menu" },
 ] as const;
 
 const SOCIAL_LINKS = [
@@ -28,31 +26,6 @@ export default function HomeFooter() {
       />
 
       <div className="mx-auto w-full max-w-[1380px] relative z-10">
-        {/* Top Order Callout Banner */}
-        <div className="mb-14 rounded-[32px] border border-white/15 bg-gradient-to-r from-[#faa926]/20 to-white/5 p-8 md:p-10 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
-          <div className="max-w-[620px]">
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#faa926]/25 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-[#faa926] mb-3">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Express Delivery in Lahore</span>
-            </div>
-            <h3 className="font-display text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
-              Craving fresh ice cream right now?
-            </h3>
-            <p className="mt-2 text-sm md:text-base font-medium text-white/75 leading-relaxed">
-              Order your favourite cones, chilled cups, or thick hand-blended shakes straight to your door via WhatsApp.
-            </p>
-          </div>
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-[52px] shrink-0 items-center justify-center gap-2.5 rounded-full bg-[#faa926] hover:bg-[#e0921a] px-8 text-sm font-black text-[#381c11] shadow-lg transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#faa926]"
-          >
-            <MessageCircle className="h-4 w-4 stroke-[2.5]" />
-            <span>Order on WhatsApp</span>
-          </a>
-        </div>
-
         {/* Main Footer Links Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 pb-14 border-b border-white/10">
           {/* Brand Column (4 Cols) */}
@@ -119,7 +92,7 @@ export default function HomeFooter() {
               </li>
               <li>
                 <a
-                  href="#visit"
+                  href="/#visit"
                   className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#faa926] hover:underline"
                 >
                   <MapPin className="h-3.5 w-3.5" />
@@ -158,7 +131,7 @@ export default function HomeFooter() {
           <a
             href="https://mavplo.com"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-4 py-1.5 text-white/80 transition-all hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             <span>Powered by</span>

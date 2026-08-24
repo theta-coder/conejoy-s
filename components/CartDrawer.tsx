@@ -14,6 +14,20 @@ export default function CartDrawer() {
 
   if (!isCartOpen) return null;
 
+  const whatsappMessage = `Hi Cone Joys, I would like to order:\n${cart
+    .map((c) => {
+      if (c.flavourBreakdownText) {
+        return `* ${c.quantity}x ${c.flavour} (${c.size}) — Rs. ${((c.unitPrice ?? 0) * c.quantity).toLocaleString("en-PK")}\n  Flavours:\n${c.flavourBreakdownText
+          .split("\n")
+          .map((line) => `   - ${line}`)
+          .join("\n")}`;
+      }
+      return `* ${c.quantity}x ${c.flavour} (${c.type}, ${c.size}${
+        c.scoopCount ? `, ${c.scoopCount} scoops` : ""
+      })${c.unitPrice ? ` = Rs. ${(c.unitPrice * c.quantity).toLocaleString("en-PK")}` : ""}`;
+    })
+    .join("\n\n")}\n\nGrand Total: Rs. ${pricedTotal.toLocaleString("en-PK")}`;
+
   return (
     <div className="fixed inset-0 z-50 overflow-hidden isolate" aria-labelledby="cart-heading" role="dialog" aria-modal="true">
       {/* Backdrop */}
@@ -52,14 +66,14 @@ export default function CartDrawer() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <p className="text-sm font-semibold">Your scoop cart is empty</p>
-                <p className="text-xs opacity-75 mt-1">Explore our Cones or Cups to add signature flavours.</p>
+                <p className="text-xs opacity-75 mt-1">Explore our Cones, Cups, Shakes or Build a Pack.</p>
               </div>
             ) : (
               cart.map((item) => (
-                <div key={item.id} className="py-4 flex items-center gap-4">
+                <div key={item.id} className="py-4 flex items-start gap-4">
                   {/* Item Image Badge */}
                   <div
-                    className="w-16 h-16 rounded-xl flex items-center justify-center p-1 flex-shrink-0 shadow-sm border border-black/10"
+                    className="w-16 h-16 rounded-xl flex items-center justify-center p-1 flex-shrink-0 shadow-sm border border-black/10 mt-1"
                     style={{ backgroundColor: item.color || "#f1b844" }}
                   >
                     <div className="relative h-full w-full">
@@ -84,9 +98,21 @@ export default function CartDrawer() {
                         {item.size}{item.scoopCount ? ` · ${item.scoopCount} scoop${item.scoopCount === 1 ? "" : "s"}` : ""}
                       </span>
                     </div>
-                    <h3 className="text-base font-extrabold text-ink truncate mt-0.5">{item.flavour}</h3>
+                    <h3 className="text-base font-extrabold text-ink mt-0.5 leading-snug">{item.flavour}</h3>
+
+                    {/* Multi-flavour breakdown sub-list if available */}
+                    {item.flavourBreakdownText && (
+                      <div className="mt-1.5 rounded-lg bg-black/5 p-2 text-xs font-semibold text-ink/80 space-y-0.5">
+                        {item.flavourBreakdownText.split("\n").map((line, idx) => (
+                          <div key={idx} className="flex items-center justify-between text-[0.72rem]">
+                            <span>{line}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {item.unitPrice !== undefined && (
-                      <p className="mt-1 text-xs font-bold text-ink/65">
+                      <p className="mt-1.5 text-xs font-bold text-ink/75">
                         {`Rs. ${item.unitPrice.toLocaleString("en-PK")} × ${item.quantity} = Rs. ${(item.unitPrice * item.quantity).toLocaleString("en-PK")}`}
                       </p>
                     )}
@@ -141,9 +167,7 @@ export default function CartDrawer() {
                 </div>
               )}
               <a
-                href={`https://wa.me/923407258700?text=Hi%20Cone%20Joys%2C%20I%20would%20like%20to%20order%3A%0A${encodeURIComponent(
-                  cart.map((c) => `- ${c.quantity}x ${c.flavour} (${c.type}, ${c.size}${c.scoopCount ? `, ${c.scoopCount} scoops` : ""})${c.unitPrice ? ` = Rs. ${(c.unitPrice * c.quantity).toLocaleString("en-PK")}` : ""}`).join("\n")
-                )}`}
+                href={`https://wa.me/923407258700?text=${encodeURIComponent(whatsappMessage)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full min-h-[48px] rounded-full bg-ink text-panel font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2 hover:opacity-95 active:scale-[0.99] transition-all shadow-lg text-center"

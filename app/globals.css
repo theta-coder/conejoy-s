@@ -47,16 +47,6 @@ html:has(.home-page) {
   }
 }
 
-/* On phones the home page carries HomeStickyOrderBar — the same WhatsApp action
-   as the floating round button, but full width and labelled. Two of them in the
-   same corner is one too many, so the round one steps aside here. It is left
-   untouched everywhere else, where it is the only order shortcut on screen. */
-@media (max-width: 767px) {
-  body:has(.home-page) aside[aria-label="Quick WhatsApp order"] {
-    display: none;
-  }
-}
-
 .home-page {
   --home-cream: #fdf6e3;
   --home-brown: #4a2618;

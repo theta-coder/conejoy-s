@@ -1,8 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, UtensilsCrossed } from "lucide-react";
-
-const WHATSAPP_URL =
-  "https://wa.me/923407258700?text=Assalam-o-Alaikum%20Cone%20Joy%27s%2C%20I%20would%20like%20to%20place%20an%20order.";
+import { UtensilsCrossed } from "lucide-react";
 
 /**
  * The page's headline band.
@@ -44,18 +41,7 @@ export default function HomeIntro() {
           </p>
         </div>
 
-        {/* shrink-0 so the two buttons never compress into two lines of text
-            beside a long headline on mid-width screens. */}
-        <div className="flex shrink-0 flex-wrap gap-3 max-sm:w-full">
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-[52px] items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[var(--home-brown)] px-8 text-sm font-black text-white shadow-[0_10px_28px_rgba(74,38,24,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#381c11] hover:shadow-[0_14px_32px_rgba(74,38,24,0.28)] active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] max-sm:flex-1"
-          >
-            <MessageCircle className="h-[18px] w-[18px] stroke-[2.2]" aria-hidden="true" />
-            Order on WhatsApp
-          </a>
+        <div className="flex shrink-0 max-sm:w-full">
           <Link
             href="#categories"
             className="inline-flex min-h-[52px] items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[rgba(74,38,24,0.25)] bg-white/70 px-8 text-sm font-black text-[var(--home-brown)] backdrop-blur-sm transition-colors duration-200 hover:bg-white focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] max-sm:flex-1"

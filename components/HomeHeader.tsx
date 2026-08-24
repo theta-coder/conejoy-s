@@ -1,14 +1,42 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MapPin, UtensilsCrossed } from "lucide-react";
 import HomeCartButton from "@/components/HomeCartButton";
 
-const NAV_LINKS = [
-  { label: "Menu", href: "#categories", icon: UtensilsCrossed },
-  { label: "Visit Us", href: "#visit", icon: MapPin },
-] as const;
+interface NavLinkItem {
+  label: string;
+  href: string;
+  targetId?: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const NAV_LINKS: NavLinkItem[] = [
+  { label: "Menu", href: "/menu", icon: UtensilsCrossed },
+  { label: "Visit Us", href: "/#visit", targetId: "visit", icon: MapPin },
+];
 
 export default function HomeHeader() {
+  const pathname = usePathname();
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    targetId?: string
+  ) => {
+    if (targetId && (pathname === "/" || pathname === "")) {
+      e.preventDefault();
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.hash = targetId;
+      }
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-[rgba(74,38,24,0.12)] bg-[#fdf6e3]/95 px-[clamp(16px,4vw,64px)] shadow-[0_10px_30px_rgba(74,38,24,0.05)] backdrop-blur-md">
       <nav
@@ -49,6 +77,7 @@ export default function HomeHeader() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href, link.targetId)}
                 className="inline-flex min-h-[38px] items-center justify-center gap-2 rounded-full px-5 text-sm font-bold text-[#4a2618]/80 transition-all duration-200 hover:bg-[#4a2618] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4a2618]"
               >
                 <Icon className="h-4 w-4" />
@@ -67,6 +96,7 @@ export default function HomeHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href, link.targetId)}
                   aria-label={link.label}
                   title={link.label}
                   className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#4a2618]/25 bg-white text-[#4a2618] shadow-sm transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"

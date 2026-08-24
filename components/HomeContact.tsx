@@ -1,7 +1,8 @@
-import { MapPin, Clock, Truck, Navigation } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Clock, Truck, Navigation, PartyPopper, ArrowRight } from "lucide-react";
 
 const GOOGLE_MAPS_DIRECTIONS =
-  "https://www.google.com/maps/dir/?api=1&destination=31.43175985641227,74.1781213394898";
+  "https://www.google.com/maps/dir/?api=1&destination=31.43180078514371,74.17333968704374";
 
 export default function HomeContact() {
   return (
@@ -12,7 +13,7 @@ export default function HomeContact() {
     >
       <div className="mx-auto w-full max-w-[1380px]">
         {/* Section Header */}
-        <div className="mb-10 max-w-[680px]">
+        <div className="mb-10 max-w-[720px]">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#4a2618]/15 bg-white/70 px-4 py-1.5 backdrop-blur-sm">
             <span className="h-2 w-2 rounded-full bg-[#e63946] animate-pulse" />
             <span className="text-xs font-black uppercase tracking-[0.14em] text-[#4a2618]">
@@ -23,14 +24,14 @@ export default function HomeContact() {
             id="visit-title"
             className="font-display text-[clamp(2.4rem,4.5vw,4.2rem)] font-extrabold leading-[0.96] tracking-[-0.06em] text-[#4a2618]"
           >
-            Visit us in Chung, Lahore.
+            Visit us — or let us bring the scoops to you.
           </h2>
           <p className="mt-4 text-[clamp(0.98rem,1.4vw,1.15rem)] font-semibold leading-relaxed text-[#4a2618]/75">
-            Stop by for fresh cones and cups, or get your favourite treats delivered straight to your doorstep.
+            Drop by our Chung scoop shop for cones, cups and shakes, or order straight to your door. Planning a birthday, mehndi or gathering? We also prepare bulk packs for events.
           </p>
         </div>
 
-        {/* Content Grid */}
+        {/* Content Grid (Info Card + Google Map) */}
         <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
           {/* Info Card Column */}
           <div className="flex flex-col justify-between rounded-[32px] border border-[#4a2618]/15 bg-white/95 p-[clamp(24px,4vw,40px)] shadow-[0_20px_50px_rgba(74,38,24,0.06)] backdrop-blur-sm lg:col-span-5">
@@ -65,7 +66,7 @@ export default function HomeContact() {
                     Opening Hours
                   </h3>
                   <p className="mt-1 text-base font-extrabold text-[#4a2618]">
-                    12:00 PM - 12:00 AM
+                    12:00 PM – 12:00 AM
                   </p>
                   <p className="text-sm font-semibold text-[#4a2618]/70 mt-0.5">
                     Open daily for dine-in, takeaway &amp; delivery
@@ -90,7 +91,7 @@ export default function HomeContact() {
                     </span>
                   </div>
                   <p className="mt-1 text-base font-extrabold text-[#4a2618]">
-                    Express Doorstep Delivery
+                    Doorstep Delivery
                   </p>
                   <p className="text-sm font-semibold text-[#4a2618]/70 mt-0.5">
                     Serving Chung and nearby areas via WhatsApp
@@ -99,16 +100,15 @@ export default function HomeContact() {
               </div>
             </div>
 
-            {/* Action Button */}
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8">
               <a
                 href={GOOGLE_MAPS_DIRECTIONS}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-[50px] flex-1 items-center justify-center gap-2 rounded-2xl bg-[#4a2618] hover:bg-[#381c11] px-5 text-sm font-black text-white shadow-md transition-all duration-200 hover:-translate-y-0.5"
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl bg-[#4a2618] hover:bg-[#381c11] px-6 text-xs font-black uppercase tracking-wider text-white shadow-md transition-all duration-200 hover:-translate-y-0.5"
               >
                 <Navigation className="h-4 w-4" />
-                <span>Get Directions on Map</span>
+                <span>Get Directions</span>
               </a>
             </div>
           </div>
@@ -116,16 +116,48 @@ export default function HomeContact() {
           {/* Map Column */}
           <div className="relative min-h-[380px] overflow-hidden rounded-[32px] border border-[#4a2618]/15 bg-white shadow-[0_20px_50px_rgba(74,38,24,0.06)] lg:col-span-7">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3405.419139268571!2d74.17554637626955!3d31.431764451586566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3918ffd624c965c7%3A0x6bfaeef7ddc3230a!2sCone%20Joy&#39;s!5e0!3m2!1sen!2s!4v1722000000000!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3404.3583275345345!2d74.17333968704374!3d31.43180078514371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3919031eeb169d51%3A0xbd009e0a8cfba415!2sConejoys!5e0!3m2!1sen!2s!4v1787551872842!5m2!1sen!2s"
               width="100%"
               height="100%"
               style={{ border: 0, minHeight: "380px" }}
               allowFullScreen
               loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
+              referrerPolicy="strict-origin-when-cross-origin"
               title="Cone Joy's Google Maps Location"
               className="h-full w-full"
             />
+          </div>
+        </div>
+
+        {/* Compact Event & Bulk Order Callout Banner */}
+        <div className="mt-10 rounded-[28px] border border-[#4a2618]/15 bg-white p-6 sm:p-8 shadow-sm backdrop-blur-md flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="max-w-[760px] space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#faa926]/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#4a2618]">
+              <PartyPopper className="h-3.5 w-3.5" />
+              <span>Events &amp; Functions</span>
+            </div>
+
+            <h3 className="font-display text-xl sm:text-2xl font-extrabold text-[#4a2618] tracking-tight">
+              Hosting something? We do bulk orders too.
+            </h3>
+
+            <p className="text-sm font-semibold text-[#4a2618]/75 leading-relaxed">
+              Birthdays, mehndi nights, office &amp; school parties, and family gatherings — choose your packs, mix your flavours, and tell us your date and headcount.
+            </p>
+
+            <div className="pt-1 text-xs font-extrabold uppercase tracking-wider text-[#4a2618]/60">
+              Birthdays &bull; Mehndi &bull; Office &amp; School Parties &bull; Family Gatherings
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center">
+            <Link
+              href="/menu"
+              className="inline-flex min-h-[46px] items-center justify-center gap-1.5 rounded-full border border-[#4a2618]/25 bg-[#fdf6e3] hover:bg-white px-5 text-xs font-black uppercase text-[#4a2618] transition-colors"
+            >
+              <span>View pack sizes</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </div>

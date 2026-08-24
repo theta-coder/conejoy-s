@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 export interface CartItem {
   id: string;
-  type: "Cup" | "Cone" | "Shake";
+  type: "Cup" | "Cone" | "Shake" | "Pack";
   flavourId?: string;
   flavour: string;
   quantity: number;
@@ -16,6 +16,7 @@ export interface CartItem {
   saving?: number;
   image: string;
   color: string;
+  flavourBreakdownText?: string;
 }
 
 interface CartContextType {
@@ -78,7 +79,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             (item.flavourId ? c.flavourId === item.flavourId : c.flavour === item.flavour) &&
             (item.servingId ? c.servingId === item.servingId : c.size === item.size)
         );
-        if (existingIdx > -1) {
+        if (existingIdx > -1 && item.type !== "Pack") {
           const updated = [...prevCart];
           updated[existingIdx] = {
             ...updated[existingIdx],
@@ -88,13 +89,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           const flavourKey = item.flavourId ?? item.flavour.toLowerCase().replace(/\s+/g, "-");
           const servingKey = item.servingId ?? item.size.toLowerCase().replace(/\s+/g, "-");
-          const id = `${item.type.toLowerCase()}-${flavourKey}-${servingKey}`;
+          const id = `${item.type.toLowerCase()}-${flavourKey}-${servingKey}-${Date.now()}`;
           return [...prevCart, { ...item, id }];
         }
       });
 
-      const itemUnit = item.quantity === 1 ? item.type.toLowerCase() : `${item.type.toLowerCase()}s`;
-      showToast(`${item.quantity} ${item.flavour} ${itemUnit} added to cart.`);
+      showToast(`${item.quantity} ${item.flavour} added to cart.`);
     },
     [showToast]
   );
