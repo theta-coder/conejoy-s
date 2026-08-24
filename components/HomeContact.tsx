@@ -1,7 +1,4 @@
-import { MapPin, Clock, Truck, Navigation, MessageCircle } from "lucide-react";
-
-const WHATSAPP_URL =
-  "https://wa.me/923407258700?text=Assalam-o-Alaikum%20Cone%20Joy%27s%2C%20I%20would%20like%20to%20place%20an%20order.";
+import { MapPin, Clock, Truck, Navigation } from "lucide-react";
 
 const GOOGLE_MAPS_DIRECTIONS =
   "https://www.google.com/maps/dir/?api=1&destination=31.43175985641227,74.1781213394898";
@@ -102,25 +99,16 @@ export default function HomeContact() {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Button */}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href={GOOGLE_MAPS_DIRECTIONS}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-[50px] flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-[#4a2618] bg-transparent px-5 text-sm font-black text-[#4a2618] transition-all duration-200 hover:bg-[#4a2618] hover:text-white"
-              >
-                <Navigation className="h-4 w-4" />
-                <span>Get Directions</span>
-              </a>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
                 className="inline-flex min-h-[50px] flex-1 items-center justify-center gap-2 rounded-2xl bg-[#4a2618] hover:bg-[#381c11] px-5 text-sm font-black text-white shadow-md transition-all duration-200 hover:-translate-y-0.5"
               >
-                <MessageCircle className="h-4 w-4 stroke-[2.5]" />
-                <span>WhatsApp Order</span>
+                <Navigation className="h-4 w-4" />
+                <span>Get Directions on Map</span>
               </a>
             </div>
           </div>

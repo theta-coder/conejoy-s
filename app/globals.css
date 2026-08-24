@@ -30,6 +30,31 @@ html {
 
 html:has(.home-page) {
   --page-accent: #fdf6e3;
+
+  /* The 141px default above is measured for the cone/cup/shake pages, where a
+     CategoryBar sits under the nav. The home page has no CategoryBar — its
+     header is the 80px nav plus a 1px border and nothing else. Without this
+     override every in-page anchor here (#categories, #flavours, #prices,
+     #visit ...) stops about 60px short of its target, leaving a dead band of
+     empty page above the section the visitor just jumped to. */
+  --header-height: 81px;
+}
+
+@media (max-width: 768px) {
+  html:has(.home-page) {
+    /* HomeHeader drops to h-16 below md. */
+    --header-height: 65px;
+  }
+}
+
+/* On phones the home page carries HomeStickyOrderBar — the same WhatsApp action
+   as the floating round button, but full width and labelled. Two of them in the
+   same corner is one too many, so the round one steps aside here. It is left
+   untouched everywhere else, where it is the only order shortcut on screen. */
+@media (max-width: 767px) {
+  body:has(.home-page) aside[aria-label="Quick WhatsApp order"] {
+    display: none;
+  }
 }
 
 .home-page {

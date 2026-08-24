@@ -1,10 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle, MapPin, UtensilsCrossed } from "lucide-react";
+import { MapPin, UtensilsCrossed } from "lucide-react";
 import HomeCartButton from "@/components/HomeCartButton";
-
-const WHATSAPP_URL =
-  "https://wa.me/923407258700?text=Assalam-o-Alaikum%20Cone%20Joy%27s%2C%20I%20would%20like%20to%20place%20an%20order.";
 
 const NAV_LINKS = [
   { label: "Menu", href: "#categories", icon: UtensilsCrossed },
@@ -61,41 +58,28 @@ export default function HomeHeader() {
           })}
         </div>
 
-        {/* Action Cluster */}
+        {/* Action Cluster (Cart button only) */}
         <div className="flex shrink-0 items-center gap-3 max-sm:gap-2">
-          <HomeCartButton />
+          <div className="flex items-center gap-2 md:hidden">
+            {NAV_LINKS.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-label={link.label}
+                  title={link.label}
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#4a2618]/25 bg-white text-[#4a2618] shadow-sm transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"
+                >
+                  <Icon className="h-5 w-5 stroke-[2.2]" aria-hidden="true" />
+                </Link>
+              );
+            })}
+          </div>
 
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-full bg-[#4a2618] hover:bg-[#381c11] px-5 max-sm:px-3.5 text-xs font-black uppercase tracking-wider text-white shadow-[0_6px_20px_rgba(74,38,24,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(74,38,24,0.35)] active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#4a2618]"
-          >
-            <MessageCircle className="h-4 w-4 stroke-[2.5]" />
-            <span className="max-sm:hidden">Order on WhatsApp</span>
-            <span className="sm:hidden">Order</span>
-          </a>
+          <HomeCartButton />
         </div>
       </nav>
-
-      {/* Mobile Sub-Navigation Bar */}
-      <div className="md:hidden -mx-[clamp(16px,4vw,64px)] border-t border-[#4a2618]/10 px-[clamp(16px,4vw,64px)] bg-[#fdf6e3]/80">
-        <div className="mx-auto flex w-full max-w-[1380px] items-center gap-2 overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {NAV_LINKS.map((link) => {
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="inline-flex min-h-[36px] shrink-0 items-center justify-center gap-1.5 rounded-full border border-[#4a2618]/15 bg-white/90 px-4 text-xs font-bold text-[#4a2618] shadow-sm transition-all hover:bg-[#4a2618] hover:text-white"
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
     </header>
   );
 }

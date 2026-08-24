@@ -1,40 +1,59 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 
 const categories = [
   {
     name: "Cones",
-    description: "Choose from 12 cone flavours.",
     href: "/cones",
-    image: "/assets/cones/chocolate.webp",
-    alt: "Chocolate chip ice cream cone",
-    className: "md:col-span-7 md:row-span-2 min-h-[560px] max-md:min-h-[440px] max-sm:min-h-[390px]",
-    imageClassName: "h-[78%] w-auto bottom-0 right-[8%] max-md:h-[70%] max-sm:right-[4%]",
-    sizes: "(max-width: 767px) 60vw, 44vw",
+    poster: "/assets/cones/chocolate-bliss-poster.webp",
+    alt: "Cone Joy's Chocolate Bliss cone poster",
   },
   {
     name: "Cups",
-    description: "Pick a cup or pack size.",
     href: "/cups",
-    image: "/assets/cups/mango.webp",
-    alt: "Mango ice cream cup",
-    className: "md:col-span-5 min-h-[270px] max-sm:min-h-[330px]",
-    imageClassName: "h-[78%] w-auto bottom-[-3%] right-[5%] max-sm:h-[72%]",
-    sizes: "(max-width: 767px) 58vw, 30vw",
+    poster: "/assets/cups/mango-magic-poster.webp",
+    alt: "Cone Joy's Mango Magic cup poster",
   },
   {
     name: "Shakes",
-    description: "Regular and large shakes.",
     href: "/shakes",
-    image: "/assets/shakes/mango.webp",
-    alt: "Mango ice cream shake",
-    className: "md:col-span-5 min-h-[270px] max-sm:min-h-[330px]",
-    imageClassName: "h-[88%] w-auto bottom-[-8%] right-[2%] max-sm:h-[80%]",
-    sizes: "(max-width: 767px) 62vw, 31vw",
+    poster: "/assets/shakes/mango-shake-poster.webp",
+    alt: "Cone Joy's Mango Shake poster",
   },
 ] as const;
 
 export default function HomeCategories() {
+  const railRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const centerSecondCard = () => {
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        rail.scrollLeft = 0;
+        return;
+      }
+
+      const secondCard = rail.children.item(1) as HTMLElement | null;
+      if (!secondCard) return;
+
+      rail.scrollLeft =
+        secondCard.offsetLeft - (rail.clientWidth - secondCard.clientWidth) / 2;
+    };
+
+    const frame = window.requestAnimationFrame(centerSecondCard);
+    window.addEventListener("resize", centerSecondCard);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", centerSecondCard);
+    };
+  }, []);
+
   return (
     <section
       id="categories"
@@ -52,33 +71,27 @@ export default function HomeCategories() {
           Start with a cone, choose a cup, or make it a shake.
         </p>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-12 md:grid-rows-2 max-sm:mt-8">
+        <div
+          ref={railRef}
+          className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-80px)] pb-4 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:mt-8 sm:px-[calc(50%-120px)] lg:grid lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0"
+        >
           {categories.map((category) => (
             <Link
               key={category.name}
               href={category.href}
-              className={`group relative isolate overflow-hidden rounded-[28px] border border-[rgba(74,38,24,0.5)] bg-[var(--home-golden)] text-[var(--home-brown)] shadow-[0_16px_45px_rgba(74,38,24,0.1)] transition-[transform,box-shadow] duration-300 ease-custom hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(74,38,24,0.16)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] ${category.className}`}
+              className="group relative isolate aspect-[2/3] w-[160px] shrink-0 snap-center overflow-hidden rounded-[20px] border border-[rgba(74,38,24,0.5)] bg-transparent text-[var(--home-brown)] shadow-[0_16px_45px_rgba(74,38,24,0.1)] transition-[transform,box-shadow] duration-300 ease-custom hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(74,38,24,0.16)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)] sm:w-[240px] lg:w-auto lg:max-w-none lg:rounded-[28px]"
               aria-label={`Browse ${category.name}`}
             >
-              <div className="relative z-20 max-w-[260px] p-7 max-sm:p-6">
-                <h3 className="font-display text-[clamp(2rem,3.4vw,3.8rem)] font-extrabold leading-none tracking-[-0.055em]">
-                  {category.name}
-                </h3>
-                <p className="mt-3 text-sm font-bold leading-relaxed text-[var(--home-brown)]">
-                  {category.description}
-                </p>
-                <span className="mt-5 inline-flex min-h-11 items-center font-black underline decoration-2 underline-offset-4">
-                  View {category.name.toLowerCase()}
-                </span>
-              </div>
               <Image
-                src={category.image}
+                src={category.poster}
                 alt={category.alt}
-                width={category.name === "Cones" ? 511 : category.name === "Cups" ? 393 : 900}
-                height={category.name === "Cones" ? 1332 : category.name === "Cups" ? 454 : 900}
-                sizes={category.sizes}
-                className={`absolute z-10 object-contain transition-transform duration-500 ease-custom group-hover:scale-[1.025] ${category.imageClassName}`}
+                fill
+                sizes="(max-width: 639px) 160px, (max-width: 1023px) 240px, (min-width: 1380px) 447px, 32vw"
+                className="absolute inset-0 z-10 object-cover transition-transform duration-500 ease-custom group-hover:scale-[1.012]"
               />
+              <span className="absolute right-3 top-3 z-30 inline-flex min-h-9 items-center justify-center rounded-full bg-[var(--home-brown)] px-3 text-[0.68rem] font-black text-white shadow-[0_10px_28px_rgba(74,38,24,0.28)] lg:right-5 lg:top-5 lg:min-h-11 lg:px-6 lg:text-sm">
+                View all {category.name.toLowerCase()}
+              </span>
             </Link>
           ))}
         </div>

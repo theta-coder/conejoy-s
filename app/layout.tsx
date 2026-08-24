@@ -14,16 +14,24 @@ const manrope = Manrope({
   weight: ["700", "800"],
 });
 
+/* The old title described a scroll-hero concept the site no longer has, and it
+   named neither the city nor the product — the two things someone searching
+   "ice cream near me in Lahore" is matching on. This is the first line of every
+   Google result and every WhatsApp link preview, so it states what is sold,
+   where, and the one fact that separates this shop from the rest: it is open
+   till midnight. */
 export const metadata: Metadata = {
-  title: "Cone Joys | Scroll the Flavours",
-  description: "Scroll through twelve signature Cone Joys flavours, one delicious scoop at a time.",
+  title: "Cone Joy's | Ice Cream Cones, Cups & Shakes in Chung, Lahore",
+  description:
+    "Twelve flavours of ice cream, served as cones, cups and thick shakes. Open 12 PM to 12 AM in Chung, Lahore, with delivery on WhatsApp.",
   icons: {
     icon: "/assets/favicon.png",
     apple: "/assets/apple-touch-icon.png",
   },
   openGraph: {
-    title: "Cone Joys | Scroll the Flavours",
-    description: "Scroll through twelve signature Cone Joys flavours, one delicious scoop at a time.",
+    title: "Cone Joy's | Ice Cream Cones, Cups & Shakes in Chung, Lahore",
+    description:
+      "Twelve flavours of ice cream, served as cones, cups and thick shakes. Open 12 PM to 12 AM in Chung, Lahore, with delivery on WhatsApp.",
     type: "website",
   },
 };

@@ -121,7 +121,7 @@ export default function HomeHero() {
             type="button"
             onClick={showPrevious}
             aria-label="Previous promotional slide"
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:left-2"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:left-2"
           >
             <ChevronLeft className="h-5 w-5 stroke-[2.5]" />
           </button>
@@ -130,7 +130,7 @@ export default function HomeHero() {
             type="button"
             onClick={showNext}
             aria-label="Next promotional slide"
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:right-2"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/80 text-[#4a2618] backdrop-blur-md shadow-md transition-all hover:bg-white hover:scale-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4a2618] max-sm:right-2"
           >
             <ChevronRight className="h-5 w-5 stroke-[2.5]" />
           </button>
@@ -143,7 +143,14 @@ export default function HomeHero() {
                 type="button"
                 onClick={() => setActiveIndex(index)}
                 aria-label={`Go to slide ${index + 1}`}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                aria-current={index === activeIndex ? "true" : undefined}
+                /* The dot stays 8px — it is an indicator, and a chunky one would
+                   fight the artwork behind it. The ::after box gives it a ~40px
+                   tall, gap-spanning tap target instead, so the thumb hits what
+                   the eye is aiming at. Focus ring added: these were previously
+                   the only controls on the page a keyboard user could not see
+                   themselves land on. */
+                className={`relative h-2 rounded-full transition-all duration-300 after:absolute after:-inset-y-4 after:-inset-x-1 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white max-sm:focus-visible:outline-[#4a2618] ${
                   index === activeIndex
                     ? "w-6 bg-white max-sm:bg-[#4a2618]"
                     : "w-2 bg-white/50 hover:bg-white/75 max-sm:bg-[#4a2618]/30 max-sm:hover:bg-[#4a2618]/50"
@@ -154,7 +161,7 @@ export default function HomeHero() {
               type="button"
               onClick={() => setIsPaused((prev) => !prev)}
               aria-label={isPaused ? "Play slide rotation" : "Pause slide rotation"}
-              className="ml-1 text-white/80 hover:text-white max-sm:hidden"
+              className="ml-1 inline-flex h-8 w-8 items-center justify-center rounded-full text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-sm:hidden"
             >
               {isPaused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
             </button>

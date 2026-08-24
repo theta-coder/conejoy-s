@@ -1,9 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const WHATSAPP_URL =
-  "https://wa.me/923407258700?text=Assalam-o-Alaikum%20Cone%20Joy%27s%2C%20I%20would%20like%20to%20place%20an%20order.";
-
 const PROOF_POINTS = [
   {
     title: "12 flavours",
@@ -26,10 +23,24 @@ export default function HomeWhyUs() {
       className="relative scroll-mt-[var(--header-height)] bg-[var(--home-cream)] px-[clamp(16px,5vw,72px)] py-[clamp(64px,8vw,120px)] border-t border-[rgba(74,38,24,0.08)] overflow-hidden"
       aria-labelledby="why-us-headline"
     >
-      <div className="mx-auto w-full max-w-[1380px]">
+      {/* Background Mascot Watermark — positioned to show behind proof points on mobile & bottom right on desktop */}
+      <div
+        className="absolute top-[28%] -right-8 max-sm:w-[220px] w-[280px] opacity-[0.14] sm:top-1/3 sm:right-0 md:opacity-[0.11] lg:top-auto lg:bottom-[-20px] lg:right-12 lg:w-[480px] z-0 pointer-events-none select-none -rotate-6 transition-all"
+        aria-hidden="true"
+      >
+        <Image
+          src="/assets/conejoys-mascot-logo.png"
+          alt=""
+          width={500}
+          height={500}
+          className="h-auto w-full object-contain"
+        />
+      </div>
+
+      <div className="mx-auto w-full max-w-[1380px] relative z-10">
         <div className="grid grid-cols-1 items-center gap-[clamp(40px,6vw,96px)] lg:grid-cols-12">
           {/* Left Column: Editorial Copy & Proof Points */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-7 space-y-8 relative">
             {/* Eyebrow */}
             <div className="inline-flex items-center gap-2.5 rounded-full border border-[rgba(74,38,24,0.15)] bg-white/70 px-4 py-1.5 backdrop-blur-sm shadow-sm">
               <span className="h-2 w-2 rounded-full bg-[var(--home-golden)]" />
@@ -52,7 +63,7 @@ export default function HomeWhyUs() {
             </p>
 
             {/* Compact Proof Points (Subtle Border Separators) */}
-            <div className="my-8 border-y border-[rgba(74,38,24,0.15)] py-2">
+            <div className="my-8 border-y border-[rgba(74,38,24,0.15)] py-2 relative z-10 backdrop-blur-[1px]">
               <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(74,38,24,0.12)]">
                 {PROOF_POINTS.map((point, index) => (
                   <div
@@ -77,21 +88,13 @@ export default function HomeWhyUs() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center gap-4 pt-2 relative z-10">
               <Link
                 href="#categories"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[var(--home-brown)] px-8 text-sm font-black text-white shadow-[0_10px_28px_rgba(74,38,24,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(74,38,24,0.28)] active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)]"
               >
                 Explore Menu
               </Link>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-[52px] items-center justify-center rounded-full border-2 border-[var(--home-brown)] bg-[var(--home-golden)] px-8 text-sm font-black text-[var(--home-brown)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--home-brown)]"
-              >
-                Order on WhatsApp
-              </a>
             </div>
           </div>
 
