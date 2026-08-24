@@ -80,42 +80,39 @@ export default function CategoryBar({ onCategoryChange, onNavigate }: CategoryBa
         <button
           type="button"
           onClick={() => scrollToSection("cones")}
-          className={`flex min-h-[44px] max-sm:min-h-[38px] items-center gap-2 px-5 max-sm:px-4 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`flex min-h-[44px] max-sm:min-h-[38px] items-center px-5 max-sm:px-4 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeCategory === "cones"
               ? "bg-ink text-panel shadow-md scale-[1.02]"
               : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
           }`}
           aria-current={activeCategory === "cones" ? "page" : undefined}
         >
-          <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
           <span>Cones</span>
         </button>
 
         <button
           type="button"
           onClick={() => scrollToSection("cups")}
-          className={`flex min-h-[44px] max-sm:min-h-[38px] items-center gap-2 px-5 max-sm:px-4 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`flex min-h-[44px] max-sm:min-h-[38px] items-center px-5 max-sm:px-4 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeCategory === "cups"
               ? "bg-ink text-panel shadow-md scale-[1.02]"
               : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
           }`}
           aria-current={activeCategory === "cups" ? "page" : undefined}
         >
-          <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
           <span>Cups</span>
         </button>
 
         <button
           type="button"
           onClick={() => scrollToSection("shakes")}
-          className={`flex min-h-[44px] max-sm:min-h-[38px] items-center gap-2 px-5 max-sm:px-4 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
+          className={`flex min-h-[44px] max-sm:min-h-[38px] items-center px-5 max-sm:px-4 py-1.5 rounded-full text-[0.8rem] max-sm:text-[0.74rem] font-black tracking-wide transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink ${
             activeCategory === "shakes"
               ? "bg-ink text-panel shadow-md scale-[1.02]"
               : "bg-transparent text-ink/70 hover:text-ink hover:bg-ink/5"
           }`}
           aria-current={activeCategory === "shakes" ? "page" : undefined}
         >
-          <span className="w-2 h-2 rounded-full bg-current opacity-80" aria-hidden="true" />
           <span>Shakes</span>
         </button>
       </div>

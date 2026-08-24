@@ -193,9 +193,6 @@ export default function PackBuilderModal({
                       <h4 className="font-extrabold text-sm text-[#4a2618] truncate">
                         {flavour.name}
                       </h4>
-                      <p className="text-[0.68rem] font-bold text-[#4a2618]/60 truncate">
-                        {flavour.indexLabel}
-                      </p>
                     </div>
                   </div>
 
