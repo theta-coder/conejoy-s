@@ -70,13 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         try {
           setAdmin(await startServerSession(currentUser));
-        } catch (sessionError) {
+        } catch {
           setAdmin(null);
-          setError(
-            sessionError instanceof Error
-              ? sessionError.message
-              : "Session verification failed.",
-          );
           await logoutUser().catch(() => undefined);
         } finally {
           setLoading(false);
