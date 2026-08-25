@@ -46,7 +46,8 @@ async function startServerSession(user: User): Promise<Admin> {
     }
     return payload.user as Admin;
   }
-  throw new Error("Unable to verify admin session with server.");
+  const text = await response.text().catch(() => "");
+  throw new Error(`Server error (${response.status}). ${text.slice(0, 80)}`);
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

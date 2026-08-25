@@ -75,21 +75,23 @@ function getSessionSecret(): string {
     process.env.SESSION_SECRET ||
     process.env.FIREBASE_ADMIN_PRIVATE_KEY ||
     process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
-    "conejoys-secret-session-key-2026-safe-fallback"
+    "conejoys-admin-default-session-secret-2026"
   );
 }
 
 export function createSignedSessionToken(payload: { uid: string; email: string; role: string }): string {
+  const secret = getSessionSecret();
   const data = Buffer.from(JSON.stringify({ ...payload, exp: Date.now() + 5 * 24 * 60 * 60 * 1000 })).toString("base64url");
-  const signature = crypto.createHmac("sha256", getSessionSecret()).update(data).digest("base64url");
+  const signature = crypto.createHmac("sha256", secret).update(data).digest("base64url");
   return `${data}.${signature}`;
 }
 
 export function verifySignedSessionToken(token: string): { uid: string; email: string; role: AdminRole } | null {
   try {
+    const secret = getSessionSecret();
     const [data, signature] = token.split(".");
     if (!data || !signature) return null;
-    const expectedSig = crypto.createHmac("sha256", getSessionSecret()).update(data).digest("base64url");
+    const expectedSig = crypto.createHmac("sha256", secret).update(data).digest("base64url");
     if (signature !== expectedSig) return null;
     const decoded = JSON.parse(Buffer.from(data, "base64url").toString("utf8"));
     if (!decoded.exp || Date.now() > decoded.exp) return null;
