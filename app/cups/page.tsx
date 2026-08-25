@@ -1,3 +1,4 @@
+import BrandLogo from "@/components/BrandLogo";
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -129,15 +130,7 @@ export default function CupsPage() {
           </Link>
 
           <Link href="/" className="brand inline-flex items-center text-current no-underline" aria-label="Cone Joy's Ice Cream home">
-            <Image
-              className="brand-logo block h-auto w-[150px] max-md:w-[120px] max-sm:w-[80px]"
-              src="/assets/conejoys-horizontal-logo.png"
-              alt="Cone Joy's Ice Cream"
-              width={1696}
-              height={640}
-              sizes="(max-width: 640px) 80px, (max-width: 768px) 120px, 150px"
-              loading="eager"
-            />
+            <BrandLogo priority className="brand-logo block h-auto w-[150px] max-md:w-[120px] max-sm:w-[80px]" />
           </Link>
         </div>
 

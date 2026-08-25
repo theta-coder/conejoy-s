@@ -1,3 +1,4 @@
+import { BRAND } from "@/data/brand";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -29,7 +30,7 @@ export default function HomeWhyUs() {
         aria-hidden="true"
       >
         <Image
-          src="/assets/conejoys-mascot-logo.png"
+          src={BRAND.logo}
           alt=""
           width={500}
           height={500}

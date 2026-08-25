@@ -1,0 +1,47 @@
+import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth, type Auth } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
+
+const requiredClientEnv = [
+  "NEXT_PUBLIC_FIREBASE_API_KEY",
+  "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+  "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+  "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+  "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+  "NEXT_PUBLIC_FIREBASE_APP_ID",
+] as const;
+
+function readClientConfig() {
+  const missing = requiredClientEnv.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(
+      `Firebase client configuration is missing: ${missing.join(", ")}. Copy .env.local.example to .env.local and add your Firebase values.`,
+    );
+  }
+
+  return {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
+  };
+}
+
+export function getFirebaseClientApp(): FirebaseApp {
+  return getApps().length > 0 ? getApp() : initializeApp(readClientConfig());
+}
+
+export function getFirebaseAuth(): Auth {
+  return getAuth(getFirebaseClientApp());
+}
+
+export function getFirebaseFirestore(): Firestore {
+  return getFirestore(getFirebaseClientApp());
+}
+
+export function getFirebaseStorage(): FirebaseStorage {
+  return getStorage(getFirebaseClientApp());
+}

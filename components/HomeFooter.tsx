@@ -1,13 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
-import { MapPin, ExternalLink } from "lucide-react";
+import { MessageCircle, MapPin, Sparkles, ExternalLink } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
+import { BRAND } from "@/data/brand";
 
 const BROWSE_LINKS = [
   { label: "Cones Collection", href: "/cones" },
   { label: "Cups Collection", href: "/cups" },
   { label: "Shake Lab", href: "/shakes" },
-  { label: "Build a Pack", href: "/cups?pack=6" },
-  { label: "Full Menu & Prices", href: "/menu" },
+  { label: "Full Menu", href: "/menu" },
 ] as const;
 
 const SOCIAL_LINKS = [
@@ -26,31 +26,41 @@ export default function HomeFooter() {
       />
 
       <div className="mx-auto w-full max-w-[1380px] relative z-10">
+        {/* Top Order Callout Banner */}
+        <div className="mb-14 rounded-[32px] border border-white/15 bg-gradient-to-r from-[#faa926]/20 to-white/5 p-8 md:p-10 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+          <div className="max-w-[620px]">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#faa926]/25 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-[#faa926] mb-3">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Express Delivery in Lahore</span>
+            </div>
+            <h3 className="font-display text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              Craving fresh ice cream right now?
+            </h3>
+            <p className="mt-2 text-sm md:text-base font-medium text-white/75 leading-relaxed">
+              Order your favourite cones, chilled cups, or thick hand-blended shakes straight to your door via WhatsApp.
+            </p>
+          </div>
+          <a
+            href={BRAND.whatsappOrderUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-[52px] shrink-0 items-center justify-center gap-2.5 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] px-8 text-sm font-black text-white shadow-lg transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#25D366]"
+          >
+            <MessageCircle className="h-4 w-4 stroke-[2.5]" />
+            <span>Order on WhatsApp</span>
+          </a>
+        </div>
+
         {/* Main Footer Links Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 pb-14 border-b border-white/10">
           {/* Brand Column (4 Cols) */}
           <div className="md:col-span-5 lg:col-span-4 space-y-4">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="inline-flex items-center rounded-2xl transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               aria-label="Cone Joy's Ice Cream home"
             >
-              <Image
-                src="/assets/conejoys-mascot-logo.png"
-                alt="Cone Joy's Ice Cream"
-                width={160}
-                height={160}
-                className="h-16 w-auto object-contain drop-shadow-md"
-                loading="lazy"
-              />
-              <div>
-                <span className="block font-display text-xl font-extrabold text-white tracking-tight">
-                  ConeJoy&apos;s
-                </span>
-                <span className="block text-xs font-black uppercase tracking-[0.14em] text-[#faa926]">
-                  Ice Cream
-                </span>
-              </div>
+              <BrandLogo className="h-14 w-auto object-contain drop-shadow-md brightness-105" />
             </Link>
             <p className="text-sm font-medium leading-relaxed text-white/70 max-w-[320px]">
               Pure ingredients. Real happiness. Crafting Lahore&apos;s finest cones, cups, and thick shakes daily in Chung.

@@ -27,7 +27,7 @@ export default function MenuPage() {
       <main className="py-[clamp(40px,6vw,80px)] px-[clamp(16px,5vw,72px)]">
         <div className="mx-auto w-full max-w-[1200px]">
           {/* Page Intro Header */}
-          <div className="text-center max-w-[720px] mx-auto mb-12 sm:mb-16">
+          <div className="mx-auto mb-8 max-w-[720px] text-center sm:mb-10">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#4a2618]/15 bg-white/70 px-4 py-1.5 backdrop-blur-sm shadow-sm mb-4">
               <span className="text-xs font-black uppercase tracking-[0.18em] text-[#4a2618]">
                 MENU &amp; PRICES
@@ -41,38 +41,43 @@ export default function MenuPage() {
             <p className="mt-4 text-[clamp(1rem,1.4vw,1.2rem)] font-semibold leading-relaxed text-[#4a2618]/75">
               Choose single-flavour cones, cups and shakes, or build a multi-flavour pack. What you see here is what you pay.
             </p>
+          </div>
 
-            {/* Quick Category Anchors */}
-            <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#4a2618]/15 bg-white/80 p-1.5 shadow-sm backdrop-blur-md">
+          {/* Sticky Menu Category Anchors */}
+          <div className="sticky top-16 z-40 -mx-2 mb-12 bg-[#fdf6e3]/95 px-2 py-2 shadow-[0_10px_24px_rgba(74,38,24,0.08)] backdrop-blur-md md:top-20 md:mx-0 md:mb-16 md:bg-transparent md:px-0 md:shadow-none md:backdrop-blur-none">
+            <nav
+              aria-label="Menu categories"
+              className="mx-auto flex w-full flex-nowrap items-center gap-1 overflow-x-auto rounded-full border border-[#4a2618]/15 bg-white/95 p-1.5 shadow-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-max"
+            >
               <a
                 href="#menu-cones"
-                className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-extrabold text-[#4a2618] hover:bg-[#4a2618] hover:text-white transition-colors"
+                className="inline-flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-1 py-1.5 text-[0.65rem] font-extrabold text-[#4a2618] transition-colors hover:bg-[#4a2618] hover:text-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4a2618] sm:flex-none sm:flex-row sm:gap-2 sm:px-5 sm:py-2 sm:text-xs"
               >
-                <IceCream className="h-4 w-4" />
+                <IceCream className="h-4 w-4" aria-hidden="true" />
                 <span>Cones</span>
               </a>
               <a
                 href="#menu-cups"
-                className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-extrabold text-[#4a2618] hover:bg-[#4a2618] hover:text-white transition-colors"
+                className="inline-flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-1 py-1.5 text-[0.65rem] font-extrabold text-[#4a2618] transition-colors hover:bg-[#4a2618] hover:text-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4a2618] sm:flex-none sm:flex-row sm:gap-2 sm:px-5 sm:py-2 sm:text-xs"
               >
-                <Utensils className="h-4 w-4" />
+                <Utensils className="h-4 w-4" aria-hidden="true" />
                 <span>Cups</span>
               </a>
               <a
                 href="#menu-packs"
-                className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-extrabold text-[#4a2618] hover:bg-[#4a2618] hover:text-white transition-colors"
+                className="inline-flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-1 py-1.5 text-[0.65rem] font-extrabold text-[#4a2618] transition-colors hover:bg-[#4a2618] hover:text-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4a2618] sm:flex-none sm:flex-row sm:gap-2 sm:px-5 sm:py-2 sm:text-xs"
               >
-                <Package className="h-4 w-4" />
+                <Package className="h-4 w-4" aria-hidden="true" />
                 <span>Build a Pack</span>
               </a>
               <a
                 href="#menu-shakes"
-                className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-extrabold text-[#4a2618] hover:bg-[#4a2618] hover:text-white transition-colors"
+                className="inline-flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-1 py-1.5 text-[0.65rem] font-extrabold text-[#4a2618] transition-colors hover:bg-[#4a2618] hover:text-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4a2618] sm:flex-none sm:flex-row sm:gap-2 sm:px-5 sm:py-2 sm:text-xs"
               >
-                <GlassWater className="h-4 w-4" />
+                <GlassWater className="h-4 w-4" aria-hidden="true" />
                 <span>Shakes</span>
               </a>
-            </div>
+            </nav>
           </div>
 
           {/* Menu Sections Container */}
@@ -80,7 +85,7 @@ export default function MenuPage() {
             {/* Category 1: Cones */}
             <section
               id="menu-cones"
-              className="scroll-mt-28 rounded-[32px] border border-[#4a2618]/15 bg-white p-6 sm:p-10 shadow-[0_20px_50px_rgba(74,38,24,0.05)]"
+              className="scroll-mt-36 rounded-[32px] border border-[#4a2618]/15 bg-white p-6 sm:p-10 shadow-[0_20px_50px_rgba(74,38,24,0.05)]"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#4a2618]/10">
                 <div className="flex items-center gap-4">
@@ -140,7 +145,7 @@ export default function MenuPage() {
             {/* Category 2: Cups */}
             <section
               id="menu-cups"
-              className="scroll-mt-28 rounded-[32px] border border-[#4a2618]/15 bg-white p-6 sm:p-10 shadow-[0_20px_50px_rgba(74,38,24,0.05)]"
+              className="scroll-mt-36 rounded-[32px] border border-[#4a2618]/15 bg-white p-6 sm:p-10 shadow-[0_20px_50px_rgba(74,38,24,0.05)]"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#4a2618]/10">
                 <div className="flex items-center gap-4">
@@ -205,7 +210,7 @@ export default function MenuPage() {
             {/* Category 3: Build a Pack (Multi-Flavour) */}
             <section
               id="menu-packs"
-              className="scroll-mt-28 rounded-[32px] border-2 border-[#faa926] bg-[#4a2618] text-white p-6 sm:p-10 shadow-xl"
+              className="scroll-mt-36 rounded-[32px] border-2 border-[#faa926] bg-[#4a2618] text-white p-6 sm:p-10 shadow-xl"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/15">
                 <div className="flex items-center gap-4">
@@ -282,7 +287,7 @@ export default function MenuPage() {
             {/* Category 4: Shakes */}
             <section
               id="menu-shakes"
-              className="scroll-mt-28 rounded-[32px] border border-[#4a2618]/15 bg-white p-6 sm:p-10 shadow-[0_20px_50px_rgba(74,38,24,0.05)]"
+              className="scroll-mt-36 rounded-[32px] border border-[#4a2618]/15 bg-white p-6 sm:p-10 shadow-[0_20px_50px_rgba(74,38,24,0.05)]"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#4a2618]/10">
                 <div className="flex items-center gap-4">

@@ -70,7 +70,8 @@ export default function HomeHero() {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-[#fdf6e3] pt-3 pb-8 max-sm:py-0"
+      id="home"
+      className="relative w-full scroll-mt-[var(--header-height)] overflow-hidden bg-[#fdf6e3] pt-3 pb-8 max-sm:py-0"
       aria-label="Promotional Carousel"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}

@@ -1,3 +1,4 @@
+import BrandLogo from "@/components/BrandLogo";
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -96,15 +97,7 @@ export default function ShakesPage() {
             <span aria-hidden="true">←</span><span className="max-sm:hidden">Cups</span>
           </Link>
           <Link href="/" className="brand inline-flex items-center" aria-label="Cone Joy's Ice Cream home">
-            <Image
-              className="block h-auto w-[150px] max-md:w-[120px] max-sm:w-[80px]"
-              src="/assets/conejoys-horizontal-logo.png"
-              alt="Cone Joy's Ice Cream"
-              width={1696}
-              height={640}
-              sizes="(max-width: 640px) 80px, (max-width: 768px) 120px, 150px"
-              loading="eager"
-            />
+            <BrandLogo priority className="block h-auto w-[150px] max-md:w-[120px] max-sm:w-[80px]" />
           </Link>
         </div>
 

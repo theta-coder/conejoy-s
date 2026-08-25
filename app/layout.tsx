@@ -36,10 +36,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { CartProvider } from "@/context/CartContext";
-import CartDrawer from "@/components/CartDrawer";
-import Toast from "@/components/Toast";
-import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import AppProviders from "@/components/AppProviders";
 
 export default function RootLayout({
   children,
@@ -52,12 +49,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${dmSans.variable} ${manrope.variable} antialiased m-0 text-ink font-sans overflow-x-hidden`}
       >
-        <CartProvider>
-          {children}
-          <CartDrawer />
-          <FloatingWhatsApp />
-          <Toast />
-        </CartProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );
