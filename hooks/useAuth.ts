@@ -38,11 +38,15 @@ async function startServerSession(user: User): Promise<Admin> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ idToken }),
   });
-  const payload = await response.json();
-  if (!response.ok || !payload.success) {
-    throw new Error(payload.error ?? "Admin verification failed.");
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    const payload = await response.json();
+    if (!response.ok || !payload.success) {
+      throw new Error(payload.error ?? "Admin verification failed.");
+    }
+    return payload.user as Admin;
   }
-  return payload.user as Admin;
+  throw new Error("Unable to verify admin session with server.");
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

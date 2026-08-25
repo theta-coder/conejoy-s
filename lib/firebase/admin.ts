@@ -1,7 +1,6 @@
 import "server-only";
 
 import {
-  applicationDefault,
   cert,
   getApp,
   getApps,
@@ -13,30 +12,28 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
 function adminOptions() {
-  const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
+  const projectId =
+    process.env.FIREBASE_ADMIN_PROJECT_ID ||
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ||
+    "aethel-ea1e0";
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
   const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n");
   const storageBucket =
-    process.env.FIREBASE_ADMIN_STORAGE_BUCKET ??
-    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+    process.env.FIREBASE_ADMIN_STORAGE_BUCKET ||
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    "aethel-ea1e0.firebasestorage.app";
 
-  if (!projectId) {
-    throw new Error("FIREBASE_ADMIN_PROJECT_ID is not configured.");
-  }
-
-  if ((clientEmail && !privateKey) || (!clientEmail && privateKey)) {
-    throw new Error(
-      "FIREBASE_ADMIN_CLIENT_EMAIL and FIREBASE_ADMIN_PRIVATE_KEY must be configured together.",
-    );
+  if (clientEmail && privateKey) {
+    return {
+      projectId,
+      storageBucket,
+      credential: cert({ projectId, clientEmail, privateKey }),
+    };
   }
 
   return {
     projectId,
     storageBucket,
-    credential:
-      clientEmail && privateKey
-        ? cert({ projectId, clientEmail, privateKey })
-        : applicationDefault(),
   };
 }
 
@@ -86,8 +83,12 @@ function storageObjectPath(pathOrUrl: string, bucketName: string) {
 }
 
 export async function deleteStoredFile(pathOrUrl: string) {
-  const bucket = getAdminBucket();
-  const objectPath = storageObjectPath(pathOrUrl, bucket.name);
-  if (!objectPath) return;
-  await bucket.file(objectPath).delete({ ignoreNotFound: true });
+  try {
+    const bucket = getAdminBucket();
+    const objectPath = storageObjectPath(pathOrUrl, bucket.name);
+    if (!objectPath) return;
+    await bucket.file(objectPath).delete({ ignoreNotFound: true });
+  } catch (error) {
+    console.warn("Unable to delete stored file:", error);
+  }
 }
