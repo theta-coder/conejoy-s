@@ -5,8 +5,12 @@ import Image from "next/image";
 import { FLAVOURS, FlavourItem } from "@/data/flavours";
 import { useCart } from "@/context/CartContext";
 import { NORMAL_CUP_OPTIONS as SERVING_OPTIONS, PACK_OPTIONS } from "@/data/menu";
-import PackBuilderModal from "@/components/PackBuilderModal";
+import dynamic from "next/dynamic";
 import { Package, X } from "lucide-react";
+
+const PackBuilderModal = dynamic(() => import("@/components/PackBuilderModal"), {
+  ssr: false,
+});
 
 interface CupsSectionProps {
   selectedIndex?: number;

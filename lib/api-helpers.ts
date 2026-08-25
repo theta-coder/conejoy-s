@@ -70,10 +70,16 @@ export function assertTrustedOrigin(request: NextRequest, bearerToken?: string) 
   }
 }
 
-const SESSION_SECRET =
-  process.env.FIREBASE_ADMIN_PRIVATE_KEY ||
-  process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
-  "conejoys-admin-secret-2026";
+const SESSION_SECRET = (() => {
+  const secret = process.env.SESSION_SECRET || process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+  if (!secret) {
+    throw new Error(
+      "SESSION_SECRET or FIREBASE_ADMIN_PRIVATE_KEY environment variable is required. " +
+      "Generate one with: openssl rand -base64 32"
+    );
+  }
+  return secret;
+})();
 
 export function createSignedSessionToken(payload: { uid: string; email: string; role: string }): string {
   const data = Buffer.from(JSON.stringify({ ...payload, exp: Date.now() + 5 * 24 * 60 * 60 * 1000 })).toString("base64url");
@@ -173,35 +179,30 @@ export async function verifyAdmin(request: NextRequest): Promise<Admin> {
     }
   }
 
-  // 3. Check Firestore document if accessible
+  // 3. Check Firestore document — user MUST exist in admins collection
   try {
     const snapshot = await getAdminDb().collection("admins").doc(uid).get();
-    if (snapshot.exists) {
-      const data = snapshot.data() ?? {};
-      if (isAdminRole(data.role)) {
-        return {
-          uid,
-          email: String(data.email ?? email),
-          displayName: String(data.displayName ?? data.email ?? "Admin"),
-          role: data.role,
-          avatar: typeof data.avatar === "string" ? data.avatar : undefined,
-          createdAt: toIsoString(data.createdAt),
-          lastLogin: toIsoString(data.lastLogin),
-        };
-      }
+    if (!snapshot.exists) {
+      throw new ApiError(403, "Access denied. You are not registered as an admin. Contact the super admin to get access.");
     }
-  } catch {
-    // If Firestore Admin read fails due to missing service account, fallback to default super_admin for verified user
+    const data = snapshot.data() ?? {};
+    if (!isAdminRole(data.role)) {
+      throw new ApiError(403, "Access denied. Invalid admin role assigned to your account.");
+    }
+    return {
+      uid,
+      email: String(data.email ?? email),
+      displayName: String(data.displayName ?? data.email ?? "Admin"),
+      role: data.role,
+      avatar: typeof data.avatar === "string" ? data.avatar : undefined,
+      createdAt: toIsoString(data.createdAt),
+      lastLogin: toIsoString(data.lastLogin),
+    };
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    console.error("Firestore admin lookup failed:", error);
+    throw new ApiError(503, "Admin verification service is temporarily unavailable. Please ensure Firebase Admin credentials are configured.");
   }
-
-  return {
-    uid,
-    email,
-    displayName: email.split("@")[0] || "Admin",
-    role: "super_admin",
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-  };
 }
 
 export function toIsoString(value: unknown): string {

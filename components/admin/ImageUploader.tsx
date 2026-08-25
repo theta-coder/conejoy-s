@@ -51,8 +51,9 @@ export default function ImageUploader({
       const remoteUrl = await uploadFile(file, folder);
       onUpload(remoteUrl);
       setPreview(remoteUrl);
-    } catch (err: any) {
-      setClientError(err?.message || "Upload failed");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Upload failed";
+      setClientError(message);
     }
   };
 

@@ -46,8 +46,9 @@ export function useCollection<T = DocumentData>(
       );
 
       return unsubscribe;
-    } catch (err: any) {
-      setError(err?.message || "Failed to subscribe to collection");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to subscribe to collection";
+      setError(message);
       setLoading(false);
       return () => {};
     }
@@ -93,8 +94,9 @@ export function useDoc<T = DocumentData>(collectionName: string, docId?: string)
       );
 
       return () => unsubscribe();
-    } catch (err: any) {
-      setError(err?.message || "Failed to fetch document");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to fetch document";
+      setError(message);
       setLoading(false);
     }
   }, [collectionName, docId]);

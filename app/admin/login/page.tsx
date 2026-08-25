@@ -30,8 +30,9 @@ function AdminLoginForm() {
     try {
       await signIn(email, password);
       router.push(redirectPath);
-    } catch (err: any) {
-      setError(err?.message || "Invalid credentials. Please try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Invalid credentials. Please try again.";
+      setError(message);
     } finally {
       setLoadingEmail(false);
     }
@@ -44,8 +45,9 @@ function AdminLoginForm() {
     try {
       await signInWithGoogle();
       router.push(redirectPath);
-    } catch (err: any) {
-      setError(err?.message || "Google sign-in failed. Please try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Google sign-in failed. Please try again.";
+      setError(message);
     } finally {
       setLoadingGoogle(false);
     }
