@@ -1,6 +1,6 @@
-import BrandLogo from "@/components/BrandLogo";
 "use client";
 
+import BrandLogo from "@/components/BrandLogo";
 import React, { Suspense, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";

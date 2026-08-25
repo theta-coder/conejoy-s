@@ -1,6 +1,6 @@
-import BrandLogo from "@/components/BrandLogo";
 "use client";
 
+import BrandLogo from "@/components/BrandLogo";
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
