@@ -13,6 +13,7 @@ import {
 import type { User } from "firebase/auth";
 import {
   loginWithEmail,
+  loginWithGoogle,
   logoutUser,
   subscribeToAuthChanges,
 } from "@/lib/firebase/auth";
@@ -24,6 +25,7 @@ interface AuthContextValue {
   loading: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<Admin>;
+  signInWithGoogle: () => Promise<Admin>;
   signOut: () => Promise<void>;
 }
 
@@ -65,7 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setAdmin(await startServerSession(currentUser));
         } catch (sessionError) {
           setAdmin(null);
-          setError(sessionError instanceof Error ? sessionError.message : "Session verification failed.");
+          setError(
+            sessionError instanceof Error
+              ? sessionError.message
+              : "Session verification failed.",
+          );
           await logoutUser().catch(() => undefined);
         } finally {
           setLoading(false);
@@ -93,7 +99,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return verifiedAdmin;
     } catch (signInError) {
       await logoutUser().catch(() => undefined);
-      const message = signInError instanceof Error ? signInError.message : "Unable to sign in.";
+      const message =
+        signInError instanceof Error ? signInError.message : "Unable to sign in.";
+      setError(message);
+      throw new Error(message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const signInWithGoogle = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const authenticatedUser = await loginWithGoogle();
+      const verifiedAdmin = await startServerSession(authenticatedUser);
+      setUser(authenticatedUser);
+      setAdmin(verifiedAdmin);
+      return verifiedAdmin;
+    } catch (signInError) {
+      await logoutUser().catch(() => undefined);
+      const message =
+        signInError instanceof Error
+          ? signInError.message
+          : "Unable to sign in with Google.";
       setError(message);
       throw new Error(message);
     } finally {
@@ -115,8 +144,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, admin, loading, error, signIn, signOut }),
-    [user, admin, loading, error, signIn, signOut],
+    () => ({ user, admin, loading, error, signIn, signInWithGoogle, signOut }),
+    [user, admin, loading, error, signIn, signInWithGoogle, signOut],
   );
   return createElement(AuthContext.Provider, { value }, children);
 }

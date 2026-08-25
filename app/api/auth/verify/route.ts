@@ -26,14 +26,30 @@ export async function POST(request: NextRequest) {
     const decoded = await auth.verifyIdToken(idToken, true);
 
     const signedInAt = Number(decoded.auth_time ?? 0) * 1000;
-    if (!signedInAt || Date.now() - signedInAt > 5 * 60 * 1000) {
+    if (!signedInAt || Date.now() - signedInAt > 15 * 60 * 1000) {
       throw new ApiError(401, "Please sign in again before starting an admin session.");
     }
 
     const adminRef = getAdminDb().collection("admins").doc(decoded.uid);
-    const adminSnapshot = await adminRef.get();
+    let adminSnapshot = await adminRef.get();
+
+    // 🚀 Bootstrap First Admin: If admins collection is empty, auto-grant super_admin to the first user
     if (!adminSnapshot.exists) {
-      throw new ApiError(403, "This account is not approved for admin access.");
+      const adminsCountSnapshot = await getAdminDb().collection("admins").limit(1).get();
+      if (adminsCountSnapshot.empty) {
+        const initialAdminData = {
+          email: String(decoded.email ?? ""),
+          displayName: String(decoded.name ?? decoded.email?.split("@")[0] ?? "Super Admin"),
+          role: "super_admin" as const,
+          avatar: typeof decoded.picture === "string" ? decoded.picture : undefined,
+          createdAt: FieldValue.serverTimestamp(),
+          lastLogin: FieldValue.serverTimestamp(),
+        };
+        await adminRef.set(initialAdminData);
+        adminSnapshot = await adminRef.get();
+      } else {
+        throw new ApiError(403, "This account is not approved for admin access.");
+      }
     }
 
     const stored = adminSnapshot.data() ?? {};

@@ -1,6 +1,8 @@
 import {
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   type NextOrObserver,
   type Unsubscribe,
@@ -14,6 +16,13 @@ export async function loginWithEmail(email: string, password: string): Promise<U
     email,
     password,
   );
+  return credential.user;
+}
+
+export async function loginWithGoogle(): Promise<User> {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  const credential = await signInWithPopup(getFirebaseAuth(), provider);
   return credential.user;
 }
 
