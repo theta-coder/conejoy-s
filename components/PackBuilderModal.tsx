@@ -83,7 +83,7 @@ export default function PackBuilderModal({
       scoopCount: targetScoops,
       unitPrice: packPrice,
       quantity: 1,
-      image: "/assets/mascot-logo.png",
+      image: "/assets/conejoys-mascot-logo.png",
       color: "#faa926",
       flavourBreakdownText: breakdownLines,
     });

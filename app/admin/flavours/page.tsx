@@ -88,7 +88,7 @@ export default function AdminFlavoursPage() {
           style={{ backgroundColor: `color-mix(in srgb, ${row.color || "#faa926"} 20%, white)` }}
         >
           <Image
-            src={row.images?.cone?.webp || row.images?.cone?.png || "/assets/mascot-logo.png"}
+            src={row.images?.cone?.webp || row.images?.cone?.png || "/assets/conejoys-mascot-logo.png"}
             alt={row.name}
             width={40}
             height={40}
